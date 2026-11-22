@@ -19,6 +19,7 @@
 # nem são gravadas em arquivo.
 # =============================================================================
 set -euo pipefail
+trap 'echo "ERRO: novo_projeto.sh parou na linha $LINENO (código $?)" >&2' ERR
 
 DB_CONTAINER="${DB_CONTAINER:-supabase-db}"
 PG_ADMIN="${PG_ADMIN:-postgres}"
@@ -42,7 +43,8 @@ valida_nome() { [[ "$1" =~ ^[a-z][a-z0-9_]{1,40}$ ]] || { echo "nome inválido: 
 valida_nome "$BANCO"; valida_nome "$PREFIXO"
 APP="${PREFIXO}_app"; LEITURA="${PREFIXO}_leitura"
 
-gera_senha() { tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32; }
+# Subshell sem pipefail: o tr recebe SIGPIPE quando o head já leu 32 caracteres (esperado).
+gera_senha() { ( set +o pipefail; LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 ); }
 le_senha() {
   local rotulo="$1" s1 s2
   while true; do

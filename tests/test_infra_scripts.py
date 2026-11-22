@@ -82,3 +82,14 @@ def test_bancos_conf_sem_senhas():
         if linha.strip() and not linha.startswith("#"):
             assert len(linha.split()) == 3, linha
             assert "senha" not in linha.lower() and ":" not in linha
+
+
+def test_gera_senha_funciona_com_pipefail():
+    """Regressão: com `set -o pipefail`, o SIGPIPE do tr encerrava o script em silêncio."""
+    script = (
+        "set -euo pipefail; "
+        f'source <(sed -n "/^gera_senha()/p" "{INFRA / "novo_projeto.sh"}"); '
+        'S=$(gera_senha); printf "%s" "$S"'
+    )
+    saida = subprocess.run(["bash", "-c", script], check=True, capture_output=True, text=True)
+    assert re.fullmatch(r"[A-Za-z0-9]{32}", saida.stdout)
