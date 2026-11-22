@@ -36,6 +36,7 @@ vps-diag:         ## diagnóstico somente leitura da VPS (saída bruta fica loca
 	@echo "Saída em docs/infra/diagnostico_vps.raw.txt (não versionada)"
 
 vps-sync:         ## copia infra/vps para a VPS (não executa nada lá)
+	ssh $(VPS_SSH) 'mkdir -p $(VPS_DIR)/infra/vps'
 	rsync -av --exclude '*.raw.txt' infra/vps/ $(VPS_SSH):$(VPS_DIR)/infra/vps/
 
 test:             ## testes unitários com cobertura
