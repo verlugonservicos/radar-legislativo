@@ -40,3 +40,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# --- Saída bruta do diagnóstico da VPS (revisar antes de versionar) ---
+*.raw.txt
