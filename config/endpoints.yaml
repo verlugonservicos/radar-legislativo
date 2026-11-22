@@ -1,0 +1,902 @@
+# =============================================================================
+# Catálogo dos endpoints da API de Dados Abertos da Câmara (SPEC V3, seções 3.4 e 4)
+# Cada entrada = uma tabela bronze.<nome>. Gerado por `radar catalog sync` e
+# revisado à mão: ajustes manuais são preservados nas próximas sincronizações.
+# Entradas novas da API chegam com `revisar: true`; removidas ficam `obsoleto: true`.
+# =============================================================================
+versao: 2
+defaults:
+  paginado: false
+  itens: 100
+endpoints:
+- nome: referencias_deputados
+  path: /referencias/deputados
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave: objeto_unico
+  observacao: 'Agregada: dados é um objeto com várias listas (confirmado na fixture); 1 linha na Bronze, explodida
+    na Silver.'
+- nome: referencias_deputados_cod_situacao
+  path: /referencias/deputados/codSituacao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_deputados_cod_tipo_profissao
+  path: /referencias/deputados/codTipoProfissao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_deputados_sigla_uf
+  path: /referencias/deputados/siglaUF
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_deputados_tipo_despesa
+  path: /referencias/deputados/tipoDespesa
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_eventos
+  path: /referencias/eventos
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave: objeto_unico
+  observacao: 'Agregada: dados é um objeto com várias listas (confirmado na fixture); 1 linha na Bronze, explodida
+    na Silver.'
+- nome: referencias_eventos_cod_situacao_evento
+  path: /referencias/eventos/codSituacaoEvento
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_eventos_cod_tipo_evento
+  path: /referencias/eventos/codTipoEvento
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_orgaos
+  path: /referencias/orgaos
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave: objeto_unico
+  observacao: 'Agregada: dados é um objeto com várias listas (confirmado na fixture); 1 linha na Bronze, explodida
+    na Silver.'
+- nome: referencias_orgaos_cod_situacao
+  path: /referencias/orgaos/codSituacao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_orgaos_cod_tipo_orgao
+  path: /referencias/orgaos/codTipoOrgao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_proposicoes
+  path: /referencias/proposicoes
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave: objeto_unico
+  observacao: 'Agregada: dados é um objeto com várias listas (confirmado na fixture); 1 linha na Bronze, explodida
+    na Silver.'
+- nome: referencias_proposicoes_cod_situacao
+  path: /referencias/proposicoes/codSituacao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_proposicoes_cod_tema
+  path: /referencias/proposicoes/codTema
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_proposicoes_cod_tipo_autor
+  path: /referencias/proposicoes/codTipoAutor
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_proposicoes_cod_tipo_tramitacao
+  path: /referencias/proposicoes/codTipoTramitacao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_proposicoes_sigla_tipo
+  path: /referencias/proposicoes/siglaTipo
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_situacoes_deputado
+  path: /referencias/situacoesDeputado
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_situacoes_evento
+  path: /referencias/situacoesEvento
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_situacoes_orgao
+  path: /referencias/situacoesOrgao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_situacoes_proposicao
+  path: /referencias/situacoesProposicao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_tipos_autor
+  path: /referencias/tiposAutor
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_tipos_evento
+  path: /referencias/tiposEvento
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_tipos_orgao
+  path: /referencias/tiposOrgao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_tipos_proposicao
+  path: /referencias/tiposProposicao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_tipos_tramitacao
+  path: /referencias/tiposTramitacao
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: referencias_uf
+  path: /referencias/uf
+  grupo: referencias
+  tipo: referencia
+  frequencia: semanal
+  chave:
+  - cod
+- nome: legislaturas
+  path: /legislaturas
+  grupo: legislaturas
+  tipo: lista
+  paginado: true
+  frequencia: mensal
+  chave:
+  - id
+- nome: legislaturas_detalhe
+  path: /legislaturas/{id}
+  grupo: legislaturas
+  tipo: detalhe
+  paginado: false
+  frequencia: mensal
+  chave:
+  - id
+  ids:
+    de: legislaturas
+    campo: id
+    filtro: legislaturas_recentes
+- nome: legislaturas_lideres
+  path: /legislaturas/{id}/lideres
+  grupo: legislaturas
+  tipo: subrecurso
+  paginado: true
+  frequencia: mensal
+  chave:
+  - '{id_pai}'
+  - parlamentar.id
+  - titulo
+  - dataInicio
+  ids:
+    de: legislaturas
+    campo: id
+    filtro: legislaturas_recentes
+- nome: legislaturas_mesa
+  path: /legislaturas/{id}/mesa
+  grupo: legislaturas
+  tipo: subrecurso
+  paginado: false
+  frequencia: mensal
+  chave:
+  - '{id_pai}'
+  - id
+  - codTitulo
+  - dataInicio
+  ids:
+    de: legislaturas
+    campo: id
+    filtro: legislaturas_recentes
+- nome: partidos
+  path: /partidos
+  grupo: partidos
+  tipo: lista
+  paginado: true
+  frequencia: diaria
+  chave:
+  - id
+  params: &id001
+    idLegislatura: '{id_legislatura}'
+- nome: partidos_detalhe
+  path: /partidos/{id}
+  grupo: partidos
+  tipo: detalhe
+  paginado: false
+  frequencia: semanal
+  chave:
+  - id
+  ids:
+    de: partidos
+    campo: id
+    filtro: ultima_execucao
+- nome: partidos_lideres
+  path: /partidos/{id}/lideres
+  grupo: partidos
+  tipo: subrecurso
+  paginado: true
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - id
+  - codTitulo
+  - dataInicio
+  ids:
+    de: partidos
+    campo: id
+    filtro: ultima_execucao
+- nome: partidos_membros
+  path: /partidos/{id}/membros
+  grupo: partidos
+  tipo: subrecurso
+  paginado: true
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - id
+  params: *id001
+  ids:
+    de: partidos
+    campo: id
+    filtro: ultima_execucao
+- nome: blocos
+  path: /blocos
+  grupo: blocos
+  tipo: lista
+  paginado: true
+  frequencia: semanal
+  chave:
+  - id
+  params: *id001
+- nome: blocos_detalhe
+  path: /blocos/{id}
+  grupo: blocos
+  tipo: detalhe
+  paginado: false
+  frequencia: semanal
+  chave:
+  - id
+  ids:
+    de: blocos
+    campo: id
+    filtro: ultima_execucao
+- nome: blocos_partidos
+  path: /blocos/{id}/partidos
+  grupo: blocos
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: blocos
+    campo: id
+    filtro: ultima_execucao
+- nome: deputados
+  path: /deputados
+  grupo: deputados
+  tipo: lista
+  paginado: true
+  frequencia: diaria
+  chave:
+  - id
+  params: *id001
+- nome: deputados_detalhe
+  path: /deputados/{id}
+  grupo: deputados
+  tipo: detalhe
+  paginado: false
+  frequencia: semanal
+  chave:
+  - id
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+- nome: deputados_despesas
+  path: /deputados/{id}/despesas
+  grupo: deputados
+  tipo: subrecurso
+  paginado: true
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - ano
+  - mes
+  - codDocumento
+  - numDocumento
+  - parcela
+  - valorDocumento
+  params:
+    ordem: ASC
+    ordenarPor: dataDocumento
+  janela:
+    tipo: mensal
+    params:
+      ano: '{ano}'
+      mes: '{mes}'
+    reprocessar_meses: 3
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+  observacao: Sem datas a API retorna 6 meses.
+- nome: deputados_discursos
+  path: /deputados/{id}/discursos
+  grupo: deputados
+  tipo: subrecurso
+  paginado: true
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - dataHoraInicio
+  - tipoDiscurso
+  - urlTexto
+  janela: &id002
+    tipo: periodo
+    params: &id004
+      dataInicio: '{inicio}'
+      dataFim: '{fim}'
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+  observacao: Sem datas a API retorna 7 dias.
+- nome: deputados_eventos
+  path: /deputados/{id}/eventos
+  grupo: deputados
+  tipo: subrecurso
+  paginado: true
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  janela: *id002
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+- nome: deputados_frentes
+  path: /deputados/{id}/frentes
+  grupo: deputados
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+  observacao: 'Sem paginação: lista completa numa resposta (confirmado: centenas de registros, só link self).'
+- nome: deputados_historico
+  path: /deputados/{id}/historico
+  grupo: deputados
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - dataHora
+  - idLegislatura
+  - siglaPartido
+  - situacao
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+  observacao: situacao pode vir nula (entra vazia na chave_registro).
+- nome: deputados_mandatos_externos
+  path: /deputados/{id}/mandatosExternos
+  grupo: deputados
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - cargo
+  - siglaUf
+  - municipio
+  - anoInicio
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+- nome: deputados_ocupacoes
+  path: /deputados/{id}/ocupacoes
+  grupo: deputados
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - titulo
+  - entidade
+  - anoInicio
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+  observacao: Campos da chave podem vir nulos (entram vazios na chave_registro).
+- nome: deputados_orgaos
+  path: /deputados/{id}/orgaos
+  grupo: deputados
+  tipo: subrecurso
+  paginado: true
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - idOrgao
+  - codTitulo
+  - dataInicio
+  janela: &id003
+    tipo: legislatura
+    params:
+      dataInicio: '{inicio_legislatura}'
+      dataFim: '{hoje}'
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+- nome: deputados_profissoes
+  path: /deputados/{id}/profissoes
+  grupo: deputados
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - codTipoProfissao
+  - dataHora
+  ids:
+    de: deputados
+    campo: id
+    filtro: ultima_execucao
+- nome: orgaos
+  path: /orgaos
+  grupo: orgaos
+  tipo: lista
+  paginado: true
+  frequencia: semanal
+  chave:
+  - id
+  janela: *id003
+- nome: orgaos_detalhe
+  path: /orgaos/{id}
+  grupo: orgaos
+  tipo: detalhe
+  paginado: false
+  frequencia: semanal
+  chave:
+  - id
+  ids:
+    de: orgaos
+    campo: id
+    filtro: ultima_execucao
+- nome: orgaos_eventos
+  path: /orgaos/{id}/eventos
+  grupo: orgaos
+  tipo: subrecurso
+  paginado: true
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  janela: *id002
+  ids:
+    de: eventos
+    campo: orgaos[].id
+    filtro: janela
+- nome: orgaos_membros
+  path: /orgaos/{id}/membros
+  grupo: orgaos
+  tipo: subrecurso
+  paginado: true
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - id
+  - codTitulo
+  - dataInicio
+  janela: *id003
+  ids:
+    de: orgaos
+    campo: id
+    filtro: ultima_execucao
+- nome: orgaos_votacoes
+  path: /orgaos/{id}/votacoes
+  grupo: orgaos
+  tipo: subrecurso
+  paginado: true
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  janela: &id005
+    tipo: periodo
+    params: *id004
+    particao: ano
+  ids:
+    de: eventos
+    campo: orgaos[].id
+    filtro: janela
+  observacao: Datas no mesmo ano e intervalo de no máximo 3 meses (HTTP 400 acima disso, testado em 22/11/2026);
+    máximo de 100 itens por página.
+- nome: eventos
+  path: /eventos
+  grupo: eventos
+  tipo: lista
+  paginado: true
+  frequencia: diaria
+  chave:
+  - id
+  janela: *id002
+  observacao: Sem datas a API retorna ±5 dias.
+- nome: eventos_detalhe
+  path: /eventos/{id}
+  grupo: eventos
+  tipo: detalhe
+  paginado: false
+  frequencia: diaria
+  chave:
+  - id
+  ids:
+    de: eventos
+    campo: id
+    filtro: janela
+- nome: eventos_deputados
+  path: /eventos/{id}/deputados
+  grupo: eventos
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: eventos
+    campo: id
+    filtro: janela
+- nome: eventos_orgaos
+  path: /eventos/{id}/orgaos
+  grupo: eventos
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: eventos
+    campo: id
+    filtro: janela
+- nome: eventos_pauta
+  path: /eventos/{id}/pauta
+  grupo: eventos
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - ordem
+  - proposicao_.id
+  ids:
+    de: eventos
+    campo: id
+    filtro: janela
+- nome: eventos_votacoes
+  path: /eventos/{id}/votacoes
+  grupo: eventos
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: eventos
+    campo: id
+    filtro: janela
+- nome: frentes
+  path: /frentes
+  grupo: frentes
+  tipo: lista
+  paginado: true
+  frequencia: semanal
+  chave:
+  - id
+  params: *id001
+  observacao: Sem idLegislatura retorna tudo desde 2003.
+- nome: frentes_detalhe
+  path: /frentes/{id}
+  grupo: frentes
+  tipo: detalhe
+  paginado: false
+  frequencia: semanal
+  chave:
+  - id
+  ids:
+    de: frentes
+    campo: id
+    filtro: ultima_execucao
+- nome: frentes_membros
+  path: /frentes/{id}/membros
+  grupo: frentes
+  tipo: subrecurso
+  paginado: false
+  frequencia: semanal
+  chave:
+  - '{id_pai}'
+  - id
+  - codTitulo
+  ids:
+    de: frentes
+    campo: id
+    filtro: ultima_execucao
+  observacao: 'Sem paginação: lista completa numa resposta (confirmado: centenas de registros, só link self).'
+- nome: grupos
+  path: /grupos
+  grupo: grupos
+  tipo: lista
+  paginado: true
+  frequencia: mensal
+  chave:
+  - id
+- nome: grupos_detalhe
+  path: /grupos/{id}
+  grupo: grupos
+  tipo: detalhe
+  paginado: false
+  frequencia: mensal
+  chave:
+  - id
+  ids:
+    de: grupos
+    campo: id
+    filtro: ultima_execucao
+- nome: grupos_historico
+  path: /grupos/{id}/historico
+  grupo: grupos
+  tipo: subrecurso
+  paginado: false
+  frequencia: mensal
+  chave:
+  - '{id_pai}'
+  - idLegislatura
+  - dataStatus
+  - documentoSGM
+  ids:
+    de: grupos
+    campo: id
+    filtro: ultima_execucao
+  observacao: Chave confirmada na fixture (campos do ofício de criação/alteração do grupo).
+- nome: grupos_membros
+  path: /grupos/{id}/membros
+  grupo: grupos
+  tipo: subrecurso
+  paginado: false
+  frequencia: mensal
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: grupos
+    campo: id
+    filtro: ultima_execucao
+  observacao: 'Retorna o grupo (id, nome) com a lista membros[] dentro: 1 linha por grupo na Bronze; a Silver desmembra
+    membros[] (confirmado na fixture).'
+- nome: proposicoes
+  path: /proposicoes
+  grupo: proposicoes
+  tipo: lista
+  paginado: true
+  frequencia: diaria
+  chave:
+  - id
+  janela:
+    tipo: periodo
+    particao: diaria
+    passes:
+    - dataApresentacaoInicio: '{inicio}'
+      dataApresentacaoFim: '{fim}'
+    - dataInicio: '{inicio}'
+      dataFim: '{fim}'
+  observacao: 'Passe 1: apresentadas na janela; passe 2: com tramitação na janela.'
+- nome: proposicoes_detalhe
+  path: /proposicoes/{id}
+  grupo: proposicoes
+  tipo: detalhe
+  paginado: false
+  frequencia: diaria
+  chave:
+  - id
+  ids:
+    de: proposicoes
+    campo: id
+    filtro: janela
+- nome: proposicoes_autores
+  path: /proposicoes/{id}/autores
+  grupo: proposicoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - nome
+  - ordemAssinatura
+  ids:
+    de: proposicoes
+    campo: id
+    filtro: janela
+- nome: proposicoes_relacionadas
+  path: /proposicoes/{id}/relacionadas
+  grupo: proposicoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: proposicoes
+    campo: id
+    filtro: janela
+- nome: proposicoes_temas
+  path: /proposicoes/{id}/temas
+  grupo: proposicoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - codTema
+  ids:
+    de: proposicoes
+    campo: id
+    filtro: janela
+- nome: proposicoes_tramitacoes
+  path: /proposicoes/{id}/tramitacoes
+  grupo: proposicoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - sequencia
+  ids:
+    de: proposicoes
+    campo: id
+    filtro: janela
+- nome: proposicoes_votacoes
+  path: /proposicoes/{id}/votacoes
+  grupo: proposicoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - id
+  ids:
+    de: proposicoes
+    campo: id
+    filtro: janela
+- nome: votacoes
+  path: /votacoes
+  grupo: votacoes
+  tipo: lista
+  paginado: true
+  frequencia: diaria
+  chave:
+  - id
+  janela: *id005
+  observacao: Datas no mesmo ano e intervalo de no máximo 3 meses (HTTP 400 acima disso, testado em 22/11/2026);
+    máximo de 100 itens por página.
+- nome: votacoes_detalhe
+  path: /votacoes/{id}
+  grupo: votacoes
+  tipo: detalhe
+  paginado: false
+  frequencia: diaria
+  chave:
+  - id
+  ids:
+    de: &id006
+    - votacoes
+    - eventos_votacoes
+    - orgaos_votacoes
+    - proposicoes_votacoes
+    campo: id
+    filtro: janela
+- nome: votacoes_orientacoes
+  path: /votacoes/{id}/orientacoes
+  grupo: votacoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - siglaPartidoBloco
+  ids:
+    de: *id006
+    campo: id
+    filtro: janela
+- nome: votacoes_votos
+  path: /votacoes/{id}/votos
+  grupo: votacoes
+  tipo: subrecurso
+  paginado: false
+  frequencia: diaria
+  chave:
+  - '{id_pai}'
+  - deputado_.id
+  ids:
+    de: *id006
+    campo: id
+    filtro: janela
+  observacao: 'Sem paginação: lista completa numa resposta (confirmado: centenas de registros, só link self).'
