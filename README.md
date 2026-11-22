@@ -39,7 +39,7 @@ Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md
 | Marco | Status |
 |---|---|
 | M0 Setup | ✅ |
-| M0.A Infra VPS | ⏳ |
+| M0.A Infra VPS | ✅ |
 | M1 Catálogo dos 78 endpoints | ⏳ |
 | M2 Landing + Bronze | ⏳ |
 | M3 Silver + Gold | ⏳ |

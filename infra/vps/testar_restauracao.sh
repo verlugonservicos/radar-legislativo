@@ -22,13 +22,16 @@ DUMP="${2:-$(ls -1t "$BACKUP_DIR/$BANCO/${BANCO}"_*.dump 2>/dev/null | head -1)}
 TESTE="${BANCO}_restore_teste"
 
 psql_admin() { docker exec "$CONTEINER" psql -U "$PG_ADMIN" -d postgres -XAtq "$@" </dev/null; }
-limpa() { psql_admin -c "DROP DATABASE IF EXISTS \"$TESTE\" WITH (FORCE)" >/dev/null 2>&1 || true; }
+# O banco de teste pertence ao dono do projeto: o provisionador assume esse papel (SET) para removê-lo.
+limpa() {
+  psql_admin -c "SET ROLE \"$DONO\"" -c "DROP DATABASE IF EXISTS \"$TESTE\" WITH (FORCE)" >/dev/null \
+    || echo "AVISO: não consegui remover $TESTE; remova manualmente." >&2
+}
 trap limpa EXIT
 
 echo "Restaurando $DUMP em $TESTE…"
 limpa
 psql_admin -c "CREATE DATABASE \"$TESTE\" OWNER \"$DONO\" TEMPLATE template0 ENCODING 'UTF8'"
-psql_admin -c "GRANT CONNECT ON DATABASE \"$TESTE\" TO \"$DONO\""
 # O schema extensions e o pgvector são criados pelo provisionador (como no novo_projeto.sql);
 # a restauração (feita pelo dono) pula essas entradas do dump.
 docker exec "$CONTEINER" psql -h 127.0.0.1 -U "$DONO" -d "$TESTE" -XAtq </dev/null -c "
