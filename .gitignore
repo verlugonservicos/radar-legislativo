@@ -1,0 +1,42 @@
+# --- Material de negócio (fica só na máquina local) ---
+# Material do curso, áudio e rascunhos: não são código e podem ter direitos autorais.
+negocio/
+
+# --- Dados (landing JSON, dumps, extrações) ---
+data/*
+!data/.gitkeep
+
+# --- Segredos ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Logs ---
+*.log
+
+# --- Dashboards gerados no build ---
+site/
+
+# --- Sistema / editores ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
