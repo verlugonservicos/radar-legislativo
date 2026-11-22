@@ -85,6 +85,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # CLI do gitleaks (mesma versão do pre-commit) varrendo o histórico inteiro.
+      # A gitleaks-action falha no primeiro push de um repositório (compara com o pai
+      # do commit raiz, que não existe).
+      - name: gitleaks (histórico completo)
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.0 \
+            git /repo --no-banner --redact --verbose
