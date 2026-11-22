@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radar-legislativo"
+version = "0.0.1"
+description = "Pipeline ETL medalhão + IA sobre a API de Dados Abertos da Câmara dos Deputados"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+# Dependências fixadas em requirements.txt / requirements-dev.txt (geradas dos arquivos .in).
+
+[project.scripts]
+radar = "radar.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+radar = ["py.typed"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["negocio", "data", "site"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "PD"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["radar"]
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "integration: testes que precisam de um PostgreSQL real (DATABASE_URL)",
+]
+
+[tool.coverage.run]
+source = ["radar"]

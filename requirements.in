@@ -1,0 +1,16 @@
+requests
+urllib3
+pandas
+numpy
+SQLAlchemy>=2.0
+psycopg[binary]>=3.1
+pgvector
+python-dotenv
+pydantic>=2
+pydantic-settings
+PyYAML
+openai>=1.0
+tenacity
+fastapi
+uvicorn[standard]
+Jinja2

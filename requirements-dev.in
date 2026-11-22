@@ -1,0 +1,10 @@
+-r requirements.in
+pytest
+pytest-cov
+responses
+ruff
+pre-commit
+jupyter
+matplotlib
+plotly
+httpx
