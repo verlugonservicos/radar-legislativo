@@ -1,0 +1,86 @@
+{
+  "dados": [
+    {
+      "id": 91228,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/91228",
+      "nome": "Waldemar Oliveira",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "PE",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/91228.jpg",
+      "email": "dep.waldemaroliveira@camara.leg.br"
+    },
+    {
+      "id": 160510,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160510",
+      "nome": "Luis Tibé",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "MG",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/160510.jpg",
+      "email": "dep.luistibe@camara.leg.br"
+    },
+    {
+      "id": 198197,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/198197",
+      "nome": "Greyce Elias",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "MG",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/198197.jpg",
+      "email": "dep.greyceelias@camara.leg.br"
+    },
+    {
+      "id": 204515,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204515",
+      "nome": "André Janones",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "MG",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204515.jpg",
+      "email": "dep.andrejanones@camara.leg.br"
+    },
+    {
+      "id": 204553,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204553",
+      "nome": "Pastor Sargento Isidório",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "BA",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204553.jpg",
+      "email": "dep.pastorsargentoisidorio@camara.leg.br"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/membros?idLegislatura=57&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/membros?idLegislatura=57&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/membros?idLegislatura=57&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/membros?idLegislatura=57&pagina=3&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "partidos_membros",
+    "path": "/partidos/{id}/membros",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/membros?idLegislatura=57&itens=5",
+    "id_pai": 36898,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "dados": {
+    "uriDeputados": null,
+    "uriConvidados": null,
+    "fases": null,
+    "id": 83102,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/eventos/83102",
+    "dataHoraInicio": "2026-11-17T11:00",
+    "dataHoraFim": "2026-11-17T12:13",
+    "situacao": "Encerrada",
+    "descricaoTipo": "Sessão Não Deliberativa Solene",
+    "descricao": "Homenagem aos 60 anos da instituição do Fundo de Garantia do Tempo de Serviço (FGTS)\r\n Homenagem aos 60 anos da instituição do Fundo de Garantia do Tempo de Serviço (FGTS)",
+    "localExterno": null,
+    "orgaos": [
+      {
+        "id": 180,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/180",
+        "sigla": "PLEN",
+        "nome": "Plenário",
+        "apelido": "Plenário",
+        "codTipoOrgao": 26,
+        "tipoOrgao": "Plenário Virtual",
+        "nomePublicacao": "Plenário",
+        "nomeResumido": "Plenário"
+      }
+    ],
+    "requerimentos": [
+      {
+        "titulo": "REQ 1842/2026",
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2613078"
+      }
+    ],
+    "localCamara": {
+      "nome": "Plenário da Câmara dos Deputados",
+      "predio": null,
+      "sala": null,
+      "andar": null
+    },
+    "urlDocumentoPauta": "https://dadosabertos.camara.leg.br/api/v2/eventos/83102/pauta",
+    "urlRegistro": "https://www.youtube.com/watch?v=kRHfNqKJOLM"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/eventos/83102"
+    },
+    {
+      "rel": "related",
+      "href": "https://www.youtube.com/watch?v=kRHfNqKJOLM",
+      "type": "text/html"
+    }
+  ],
+  "_meta": {
+    "endpoint": "eventos_detalhe",
+    "path": "/eventos/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/eventos/83102",
+    "id_pai": 83102,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

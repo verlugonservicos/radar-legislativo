@@ -1,0 +1,87 @@
+{
+  "dados": [
+    {
+      "id": 83363,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/eventos/83363",
+      "dataHoraInicio": "2026-11-17T13:55",
+      "dataHoraFim": "2026-11-17T18:11",
+      "situacao": "Encerrada",
+      "descricaoTipo": "Sessão Deliberativa",
+      "descricao": "Sessão Deliberativa Extraordinária Semipresencial (AM nº 123/2020)",
+      "localExterno": null,
+      "orgaos": [
+        {
+          "id": 180,
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/180",
+          "sigla": "PLEN",
+          "nome": "Plenário",
+          "apelido": "Plenário",
+          "codTipoOrgao": 26,
+          "tipoOrgao": "Plenário Virtual",
+          "nomePublicacao": "Plenário",
+          "nomeResumido": "Plenário"
+        }
+      ],
+      "localCamara": {
+        "nome": "Plenário da Câmara dos Deputados",
+        "predio": null,
+        "sala": null,
+        "andar": null
+      },
+      "urlRegistro": "https://www.youtube.com/watch?v=XwiLj7eSj2s"
+    },
+    {
+      "id": 83325,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/eventos/83325",
+      "dataHoraInicio": "2026-11-18T10:30",
+      "dataHoraFim": null,
+      "situacao": "Cancelada",
+      "descricaoTipo": "Reunião Deliberativa",
+      "descricao": "Discussão e votação de propostas legislativas",
+      "localExterno": null,
+      "orgaos": [
+        {
+          "id": 2003,
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2003",
+          "sigla": "CCJC",
+          "nome": "Comissão de Constituição e Justiça e de Cidadania",
+          "apelido": "Constituição e Justiça e de Cidadania",
+          "codTipoOrgao": 2,
+          "tipoOrgao": "Comissão Permanente",
+          "nomePublicacao": "Comissão de Constituição e Justiça e de Cidadania",
+          "nomeResumido": "Constituição e Justiça"
+        }
+      ],
+      "localCamara": {
+        "nome": "Anexo II, Plenário 01",
+        "predio": null,
+        "sala": null,
+        "andar": null
+      },
+      "urlRegistro": null
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/eventos?dataInicio=2026-11-15&dataFim=2026-11-21&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/eventos?dataInicio=2026-11-15&dataFim=2026-11-21&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/eventos?dataInicio=2026-11-15&dataFim=2026-11-21&pagina=1&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_eventos",
+    "path": "/deputados/{id}/eventos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/eventos?dataInicio=2026-11-15&dataFim=2026-11-21&itens=5",
+    "id_pai": 204379,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 2,
+    "tipo_dados": "list"
+  }
+}

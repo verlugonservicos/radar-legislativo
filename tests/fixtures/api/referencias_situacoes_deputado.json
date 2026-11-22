@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "",
+      "sigla": "A",
+      "nome": "Afastado",
+      "descricao": ""
+    },
+    {
+      "cod": "",
+      "sigla": "C",
+      "nome": "Convocado",
+      "descricao": ""
+    },
+    {
+      "cod": "",
+      "sigla": "E",
+      "nome": "Exercício",
+      "descricao": ""
+    },
+    {
+      "cod": "",
+      "sigla": "F",
+      "nome": "Fim de Mandato",
+      "descricao": ""
+    },
+    {
+      "cod": "",
+      "sigla": "L",
+      "nome": "Licença",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/situacoesDeputado"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_situacoes_deputado",
+    "path": "/referencias/situacoesDeputado",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/situacoesDeputado",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 8,
+    "tipo_dados": "list"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "1",
+      "sigla": "",
+      "nome": "Não Confirmada           ",
+      "descricao": ""
+    },
+    {
+      "cod": "2",
+      "sigla": "",
+      "nome": "Convocada                ",
+      "descricao": ""
+    },
+    {
+      "cod": "3",
+      "sigla": "",
+      "nome": "Em Andamento             ",
+      "descricao": ""
+    },
+    {
+      "cod": "4",
+      "sigla": "",
+      "nome": "Encerrada                ",
+      "descricao": ""
+    },
+    {
+      "cod": "5",
+      "sigla": "",
+      "nome": "Cancelada                ",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos/codSituacaoEvento"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_eventos_cod_situacao_evento",
+    "path": "/referencias/eventos/codSituacaoEvento",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos/codSituacaoEvento",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 10,
+    "tipo_dados": "list"
+  }
+}

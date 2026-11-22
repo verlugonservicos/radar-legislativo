@@ -1,0 +1,29 @@
+{
+  "dados": [
+    {
+      "dataHora": "2022-11-14T08:01",
+      "codTipoProfissao": 31,
+      "titulo": "Arquiteto"
+    },
+    {
+      "dataHora": "2022-11-14T08:01",
+      "codTipoProfissao": 864,
+      "titulo": "Designer"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/profissoes"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_profissoes",
+    "path": "/deputados/{id}/profissoes",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/profissoes",
+    "id_pai": 220593,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 2,
+    "tipo_dados": "list"
+  }
+}

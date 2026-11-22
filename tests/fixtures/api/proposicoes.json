@@ -1,0 +1,82 @@
+{
+  "dados": [
+    {
+      "id": 2648812,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648812",
+      "siglaTipo": "RIC",
+      "codTipo": 148,
+      "numero": 2802,
+      "ano": 2026,
+      "ementa": "Solicita informações a Senhora Ministra da Gestão e da Inovação em Serviços Públicos, sobre o envio de mensagens por WhatsApp para divulgação de programas e serviços federais, especialmente durante o período de defeso eleitoral.",
+      "dataApresentacao": "2026-10-23T07:26"
+    },
+    {
+      "id": 2648813,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648813",
+      "siglaTipo": "RIC",
+      "codTipo": 148,
+      "numero": 2803,
+      "ano": 2026,
+      "ementa": "Solicita informações ao Senhor Ministro de Estado Chefe da Secretaria de Comunicação Social da Presidência da República, sobre os critérios de elaboração, aprovação e divulgação de mensagens governamentais por WhatsApp, durante o período de defeso eleitoral de 2026.",
+      "dataApresentacao": "2026-10-23T07:26"
+    },
+    {
+      "id": 2648814,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648814",
+      "siglaTipo": "REQ",
+      "codTipo": 441,
+      "numero": 4329,
+      "ano": 2026,
+      "ementa": "Requer a aprovação de moção de repúdio às declarações atribuídas a professora da rede municipal de ensino de Potirendaba/SP, noticiadas em 21 de outubro de 2026, envolvendo referências discriminatórias a estudantes e possível utilização do ambiente escolar para indução político-ideológica.",
+      "dataApresentacao": "2026-10-23T07:39"
+    },
+    {
+      "id": 2648815,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648815",
+      "siglaTipo": "DOC",
+      "codTipo": 1003,
+      "numero": 1702,
+      "ano": 2026,
+      "ementa": "Of. nº 678/2026/PS-GSE, que encaminha ao Senado Federal o processado do PDL n. 1.097/2025, para apreciação.",
+      "dataApresentacao": "2026-10-23T10:06"
+    },
+    {
+      "id": 2648816,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648816",
+      "siglaTipo": "REQ",
+      "codTipo": 448,
+      "numero": 354,
+      "ano": 2026,
+      "ementa": "Requer o convite da Sra. Roberta Luchsinger para comparecer à Comissão de Segurança Pública e Combate ao Crime Organizado, a fim de prestar esclarecimentos sobre declarações públicas relativas a supostas ameaças de morte, coação e tentativas de silenciamento que afirma estar sofrendo, bem como sobre fatos relacionados às investigações envolvendo o empresário Fábio Luís Lula da Silva, conhecido como “Lulinha”.",
+      "dataApresentacao": "2026-10-23T09:52"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes?dataApresentacaoInicio=2026-10-23&dataApresentacaoFim=2026-11-21&itens=100"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes?dataApresentacaoInicio=2026-10-23&dataApresentacaoFim=2026-11-21&pagina=2&itens=100"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes?dataApresentacaoInicio=2026-10-23&dataApresentacaoFim=2026-11-21&pagina=1&itens=100"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes?dataApresentacaoInicio=2026-10-23&dataApresentacaoFim=2026-11-21&pagina=60&itens=100"
+    }
+  ],
+  "_meta": {
+    "endpoint": "proposicoes",
+    "path": "/proposicoes",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/proposicoes?dataApresentacaoInicio=2026-10-23&dataApresentacaoFim=2026-11-21&itens=100",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "janela_dias": 30,
+    "registros_originais": 100,
+    "tipo_dados": "list"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "dados": [
+    {
+      "id": 220686,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220686",
+      "nome": "Duarte Jr.",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "MA",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/220686.jpg",
+      "email": "dep.duartejr@camara.leg.br",
+      "titulo": "Coordenador",
+      "codTitulo": 14,
+      "dataInicio": null,
+      "dataFim": null
+    },
+    {
+      "id": 62881,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/62881",
+      "nome": "Danilo Forte",
+      "siglaPartido": "PP",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37903",
+      "siglaUf": "CE",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/62881.jpg",
+      "email": "dep.daniloforte@camara.leg.br",
+      "titulo": "Membro",
+      "codTitulo": 1004,
+      "dataInicio": null,
+      "dataFim": null
+    },
+    {
+      "id": 66828,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/66828",
+      "nome": "Fausto Pinato",
+      "siglaPartido": "UNIÃO",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/38009",
+      "siglaUf": "SP",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/66828.jpg",
+      "email": "dep.faustopinato@camara.leg.br",
+      "titulo": "Membro",
+      "codTitulo": 1004,
+      "dataInicio": null,
+      "dataFim": null
+    },
+    {
+      "id": 69871,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/69871",
+      "nome": "Bacelar",
+      "siglaPartido": "PV",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36851",
+      "siglaUf": "BA",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/69871.jpg",
+      "email": "dep.bacelar@camara.leg.br",
+      "titulo": "Membro",
+      "codTitulo": 1004,
+      "dataInicio": null,
+      "dataFim": null
+    },
+    {
+      "id": 72442,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/72442",
+      "nome": "Felipe Carreras",
+      "siglaPartido": "PSB",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36832",
+      "siglaUf": "PE",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/72442.jpg",
+      "email": "dep.felipecarreras@camara.leg.br",
+      "titulo": "Membro",
+      "codTitulo": 1004,
+      "dataInicio": null,
+      "dataFim": null
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/frentes/55703/membros"
+    }
+  ],
+  "_meta": {
+    "endpoint": "frentes_membros",
+    "path": "/frentes/{id}/membros",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/frentes/55703/membros",
+    "id_pai": 55703,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 197,
+    "tipo_dados": "list"
+  }
+}

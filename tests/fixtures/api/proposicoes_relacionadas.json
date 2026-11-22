@@ -1,0 +1,29 @@
+{
+  "dados": [
+    {
+      "id": 2654963,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2654963",
+      "siglaTipo": "REL",
+      "codTipo": "292",
+      "numero": "1",
+      "ano": "2026",
+      "ementa": "Dispõe sobre as Emendas da Comissão de Desenvolvimento Econômico, ao PLN n.º 24, de 2026-CN – Projeto de Lei Orçamentária Anual para 2027, nos termos da Resolução 01, de 2006-CN.",
+      "dataApresentacao": "2026-11-17T19:12"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962/relacionadas"
+    }
+  ],
+  "_meta": {
+    "endpoint": "proposicoes_relacionadas",
+    "path": "/proposicoes/{id}/relacionadas",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962/relacionadas",
+    "id_pai": 2653962,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "list"
+  }
+}

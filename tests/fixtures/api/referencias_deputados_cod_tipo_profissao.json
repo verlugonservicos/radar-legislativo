@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "1",
+      "sigla": "",
+      "nome": "Administrador",
+      "descricao": ""
+    },
+    {
+      "cod": "6",
+      "sigla": "",
+      "nome": "Advogado",
+      "descricao": ""
+    },
+    {
+      "cod": "8",
+      "sigla": "",
+      "nome": "Aeroviário",
+      "descricao": ""
+    },
+    {
+      "cod": "9",
+      "sigla": "",
+      "nome": "Agente de viagem",
+      "descricao": ""
+    },
+    {
+      "cod": "12",
+      "sigla": "",
+      "nome": "Agricultor",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/deputados/codTipoProfissao"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/deputados/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_deputados_cod_tipo_profissao",
+    "path": "/referencias/deputados/codTipoProfissao",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/deputados/codTipoProfissao",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 174,
+    "tipo_dados": "list"
+  }
+}

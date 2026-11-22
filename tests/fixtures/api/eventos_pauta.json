@@ -1,0 +1,194 @@
+{
+  "dados": [
+    {
+      "ordem": 1,
+      "topico": "Medidas Provisórias",
+      "regime": "Urgência (Art. 62, CF)",
+      "codRegime": 100,
+      "titulo": "MPV 1383/2026",
+      "proposicao_": {
+        "id": 2652098,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2652098",
+        "siglaTipo": "RRL",
+        "codTipo": 667,
+        "numero": 1,
+        "ano": 0,
+        "ementa": "VOTO: pela aprovação da Medida Provisória, na forma proposta pelo Poder Executivo. Quanto às 2 (duas) emendas apresentadas o voto do relator e pela INADMISSIBILIDADE.",
+        "dataApresentacao": "2026-08-13T00:00"
+      },
+      "relator": {
+        "id": 73588,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73588",
+        "nome": "Mauro Benevides",
+        "siglaPartido": null,
+        "uriPartido": null,
+        "siglaUf": null,
+        "idLegislatura": null,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/73588.jpg",
+        "email": "dep.maurobenevides@camara.leg.br"
+      },
+      "textoParecer": null,
+      "proposicaoRelacionada_": {
+        "id": 2643429,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2643429",
+        "siglaTipo": "MPV",
+        "codTipo": "291",
+        "numero": "1383",
+        "ano": "2026",
+        "ementa": "Abre crédito extraordinário, em favor do Ministério da Integração e do Desenvolvimento Regional, no valor de R$ 360.000.000,00, para o fim que especifica.",
+        "dataApresentacao": null
+      },
+      "uriVotacao": null,
+      "situacaoItem": "Lido o Relatório pelo Relator, Deputado Mauro Benevides.Declaradas inadmitidas as duas Emendas indicadas pelo Relator no seu voto.Iniciada a discussão.Não houve quem quisesse discutir a matéria. Iniciada a votação do Relatório. O Relatório foi APROVADO, em 10.11.2026, na representação de ambas as Casas do Congresso."
+    },
+    {
+      "ordem": 2,
+      "topico": "Medidas Provisórias",
+      "regime": "Urgência (Art. 62, CF)",
+      "codRegime": 100,
+      "titulo": "MPV 1384/2026",
+      "proposicao_": {
+        "id": 2652113,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2652113",
+        "siglaTipo": "RRL",
+        "codTipo": 667,
+        "numero": 1,
+        "ano": 0,
+        "ementa": "VOTO: pela aprovação da Medida Provisória, na forma proposta pelo Poder Executivo. No prazo regimental, não foram apresentadas emendas.",
+        "dataApresentacao": "2026-08-13T00:00"
+      },
+      "relator": null,
+      "textoParecer": null,
+      "proposicaoRelacionada_": {
+        "id": 2643435,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2643435",
+        "siglaTipo": "MPV",
+        "codTipo": "291",
+        "numero": "1384",
+        "ano": "2026",
+        "ementa": "Abre crédito extraordinário, em favor dos Ministérios do Desenvolvimento Agrário e Agricultura Familiar e do Desenvolvimento e Assistência Social, Família e Combate à Fome, no valor de R$ 924.985.960,00, para os fins que especifica.",
+        "dataApresentacao": null
+      },
+      "uriVotacao": null,
+      "situacaoItem": "Lido o Relatório pela Relatora ad hoc, Senadora Tereza Cristina.Iniciada a discussão.Não houve quem quisesse discutir a matéria. Iniciada a votação do Relatório. O Relatório foi APROVADO, em 10.11.2026, na representação de ambas as Casas do Congresso."
+    },
+    {
+      "ordem": 3,
+      "topico": "Medidas Provisórias",
+      "regime": "Urgência (Art. 62, CF)",
+      "codRegime": 100,
+      "titulo": "MPV 1389/2026",
+      "proposicao_": {
+        "id": 2652137,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2652137",
+        "siglaTipo": "RRL",
+        "codTipo": 667,
+        "numero": 1,
+        "ano": 0,
+        "ementa": "VOTO: pela aprovação da Medida Provisória, na forma proposta pelo Poder Executivo. À Medida Provisória não foram apresentadas emendas.",
+        "dataApresentacao": "2026-09-09T00:00"
+      },
+      "relator": null,
+      "textoParecer": "VOTO: pela aprovação da Medida Provisória, na forma proposta pelo Poder Executivo. À Medida Provisória não foram apresentadas emendas.",
+      "proposicaoRelacionada_": {
+        "id": 2646241,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2646241",
+        "siglaTipo": "MPV",
+        "codTipo": "291",
+        "numero": "1389",
+        "ano": "2026",
+        "ementa": "Abre crédito extraordinário, em favor do Ministério de Minas e Energia, no valor de R$ 6.605.000.000,00, para os fins que especifica.",
+        "dataApresentacao": null
+      },
+      "uriVotacao": null,
+      "situacaoItem": "Lido o Relatório pela Relatora ad hoc, Senadora Tereza Cristina.Iniciada a discussão.Não houve quem quisesse discutir a matéria. Iniciada a votação do Relatório. O Relatório foi APROVADO, em 10.11.2026, na representação de ambas as Casas do Congresso."
+    },
+    {
+      "ordem": 4,
+      "topico": "Medidas Provisórias",
+      "regime": "Urgência (Art. 62, CF)",
+      "codRegime": 100,
+      "titulo": "MPV 1397/2026",
+      "proposicao_": {
+        "id": 2652140,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2652140",
+        "siglaTipo": "RRL",
+        "codTipo": 667,
+        "numero": 1,
+        "ano": 0,
+        "ementa": "VOTO: pela aprovação da Medida Provisória, na forma proposta pelo Poder Executivo. Quanto às 2 (duas) emendas apresentadas o voto do relator é pela REJEIÇÃO da de nº 1 e INADMISSIBILIDADE a de nº 2.",
+        "dataApresentacao": "2026-10-21T00:00"
+      },
+      "relator": null,
+      "textoParecer": null,
+      "proposicaoRelacionada_": {
+        "id": 2648606,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648606",
+        "siglaTipo": "MPV",
+        "codTipo": "291",
+        "numero": "1397",
+        "ano": "2026",
+        "ementa": "Abre crédito extraordinário, em favor de Encargos Financeiros da União, no valor de R$6.494.296.446,00, para o fim que especifica.",
+        "dataApresentacao": null
+      },
+      "uriVotacao": null,
+      "situacaoItem": "Lido o Relatório pela Relatora ad hoc,Senadora Tereza Cristina.Declarada inadmitida a Emenda nº 2, indicada pelo Relator no seu voto.Iniciada a discussão.Não houve quem quisesse discutir a matéria. Iniciada a votação do Relatório. O Relatório foi APROVADO, em 10.11.2026, na representação de ambas as Casas do Congresso."
+    },
+    {
+      "ordem": 5,
+      "topico": "Medidas Provisórias",
+      "regime": "Urgência (Art. 62, CF)",
+      "codRegime": 100,
+      "titulo": "MPV 1398/2026",
+      "proposicao_": {
+        "id": 2652138,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2652138",
+        "siglaTipo": "RRL",
+        "codTipo": 667,
+        "numero": 1,
+        "ano": 0,
+        "ementa": "VOTO: pela aprovação da Medida Provisória, na forma proposta pelo Poder Executivo. Quanto à emenda apresentada o voto do relator e pela INADMISSIBILIDADE.",
+        "dataApresentacao": "2026-10-21T00:00"
+      },
+      "relator": {
+        "id": 73788,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73788",
+        "nome": "Ricardo Barros",
+        "siglaPartido": "PP",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37903",
+        "siglaUf": "PR",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/73788.jpg",
+        "email": "dep.ricardobarros@camara.leg.br"
+      },
+      "textoParecer": null,
+      "proposicaoRelacionada_": {
+        "id": 2648616,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2648616",
+        "siglaTipo": "MPV",
+        "codTipo": "291",
+        "numero": "1398",
+        "ano": "2026",
+        "ementa": "Abre crédito extraordinário, em favor do Ministério da Integração e do Desenvolvimento Regional, no valor de R$ 300.000.000,00, para o fim que especifica.",
+        "dataApresentacao": null
+      },
+      "uriVotacao": null,
+      "situacaoItem": "Lido o Relatório pelo Relator ad hoc, Deputado Mauro Benevides Filho.Declarada inadmitida a Emenda indicada pelo Relator no seu voto.Iniciada a discussão.Não houve quem quisesse discutir a matéria. Iniciada a votação do Relatório. O Relatório foi APROVADO, em 10.11.2026, na representação de ambas as Casas do Congresso."
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/eventos/83106/pauta"
+    }
+  ],
+  "_meta": {
+    "endpoint": "eventos_pauta",
+    "path": "/eventos/{id}/pauta",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/eventos/83106/pauta",
+    "id_pai": 83106,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 35,
+    "tipo_dados": "list"
+  }
+}

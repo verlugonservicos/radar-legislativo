@@ -1,0 +1,85 @@
+{
+  "dados": [
+    {
+      "id": "2630021-23",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2630021-23",
+      "data": "2026-11-04",
+      "dataHoraRegistro": "2026-11-04T15:42:46",
+      "siglaOrgao": "CMULHER",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/537870",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674",
+      "proposicaoObjeto": null,
+      "uriProposicaoObjeto": null,
+      "descricao": "Aprovado o Parecer.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2604967-21",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2604967-21",
+      "data": "2026-11-04",
+      "dataHoraRegistro": "2026-11-04T15:40:31",
+      "siglaOrgao": "CMULHER",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/537870",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674",
+      "proposicaoObjeto": null,
+      "uriProposicaoObjeto": null,
+      "descricao": "Aprovado o Parecer.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2600604-21",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2600604-21",
+      "data": "2026-11-04",
+      "dataHoraRegistro": "2026-11-04T15:37:54",
+      "siglaOrgao": "CMULHER",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/537870",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674",
+      "proposicaoObjeto": null,
+      "uriProposicaoObjeto": null,
+      "descricao": "Aprovado o Parecer.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2543173-31",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2543173-31",
+      "data": "2026-11-04",
+      "dataHoraRegistro": "2026-11-04T15:35:39",
+      "siglaOrgao": "CMULHER",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/537870",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674",
+      "proposicaoObjeto": null,
+      "uriProposicaoObjeto": null,
+      "descricao": "Aprovado o Parecer.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2495414-57",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2495414-57",
+      "data": "2026-11-04",
+      "dataHoraRegistro": "2026-11-04T15:32:50",
+      "siglaOrgao": "CMULHER",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/537870",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674",
+      "proposicaoObjeto": null,
+      "uriProposicaoObjeto": null,
+      "descricao": "Aprovado o Parecer.",
+      "aprovacao": 1
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674/votacoes"
+    }
+  ],
+  "_meta": {
+    "endpoint": "eventos_votacoes",
+    "path": "/eventos/{id}/votacoes",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/eventos/82674/votacoes",
+    "id_pai": 82674,
+    "coletado_em": "2026-11-22",
+    "janela_dias": 30,
+    "registros_originais": 15,
+    "tipo_dados": "list"
+  }
+}

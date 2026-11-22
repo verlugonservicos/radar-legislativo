@@ -1,0 +1,44 @@
+{
+  "dados": {
+    "id": 36898,
+    "sigla": "AVANTE",
+    "nome": "Avante",
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+    "status": {
+      "data": "2026-04-15T21:26",
+      "idLegislatura": "57",
+      "situacao": "Ativo",
+      "totalPosse": "7",
+      "totalMembros": "5",
+      "uriMembros": "https://dadosabertos.camara.leg.br/api/v2/deputados?idLegislatura=57&siglaPartido=AVANTE",
+      "lider": {
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/91228",
+        "nome": "Waldemar Oliveira",
+        "siglaPartido": "AVANTE",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+        "uf": "PE",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/91228.jpg"
+      }
+    },
+    "numeroEleitoral": null,
+    "urlLogo": "https://www.camara.leg.br/internet/Deputado/img/partidos/AVANTE.gif",
+    "urlWebSite": null,
+    "urlFacebook": null
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898"
+    }
+  ],
+  "_meta": {
+    "endpoint": "partidos_detalhe",
+    "path": "/partidos/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+    "id_pai": 36898,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

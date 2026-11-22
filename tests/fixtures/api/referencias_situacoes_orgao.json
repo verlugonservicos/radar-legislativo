@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "2",
+      "sigla": "",
+      "nome": "Pronta para criação",
+      "descricao": ""
+    },
+    {
+      "cod": "3",
+      "sigla": "",
+      "nome": "Aguardando indicações dos Líderes",
+      "descricao": ""
+    },
+    {
+      "cod": "4",
+      "sigla": "",
+      "nome": "Completa aguardando constituição",
+      "descricao": ""
+    },
+    {
+      "cod": "5",
+      "sigla": "",
+      "nome": "Aguardando definição de Presidente e/ou relator",
+      "descricao": ""
+    },
+    {
+      "cod": "6",
+      "sigla": "",
+      "nome": "Pronta para instalação",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/situacoesOrgao"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_situacoes_orgao",
+    "path": "/referencias/situacoesOrgao",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/situacoesOrgao",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 20,
+    "tipo_dados": "list"
+  }
+}

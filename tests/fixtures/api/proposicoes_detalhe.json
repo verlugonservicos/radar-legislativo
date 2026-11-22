@@ -1,0 +1,55 @@
+{
+  "dados": {
+    "id": 2653962,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962",
+    "siglaTipo": "SOR",
+    "codTipo": 611,
+    "numero": 1,
+    "ano": 2026,
+    "ementa": "Sugestões e emendas apresentada ao PLOA 2027 na Comissão de Desenvolvimento Econômico",
+    "dataApresentacao": "2026-11-16T08:56",
+    "uriOrgaoNumerador": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2008",
+    "statusProposicao": {
+      "dataHora": "2026-11-18T10:00",
+      "sequencia": 5,
+      "siglaOrgao": "CDE",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2008",
+      "uriUltimoRelator": "https://dadosabertos.camara.leg.br/api/v2/deputados/220697",
+      "regime": ".",
+      "descricaoTramitacao": "Aprovação de Proposição Interna",
+      "codTipoTramitacao": "241",
+      "descricaoSituacao": "Aguardando Providências Internas",
+      "codSituacao": 936,
+      "despacho": "Aprovada a SOR 1/2026 CDE.",
+      "url": null,
+      "ambito": "Regimental",
+      "apreciacao": "Indefinida"
+    },
+    "uriAutores": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962/autores",
+    "descricaoTipo": "Sugestão de Emenda ao Orçamento - Comissões",
+    "ementaDetalhada": null,
+    "keywords": null,
+    "uriPropPrincipal": null,
+    "uriPropAnterior": null,
+    "uriPropPosterior": null,
+    "urlInteiroTeor": "https://www.camara.leg.br/proposicoesWeb/prop_mostrarintegra?codteor=3196193",
+    "urnFinal": null,
+    "texto": null,
+    "justificativa": null
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962"
+    }
+  ],
+  "_meta": {
+    "endpoint": "proposicoes_detalhe",
+    "path": "/proposicoes/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962",
+    "id_pai": 2653962,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

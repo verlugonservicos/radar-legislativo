@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "27",
+      "sigla": "OF",
+      "nome": "Ofício do Congresso Nacional",
+      "descricao": ""
+    },
+    {
+      "cod": "129",
+      "sigla": "CON",
+      "nome": "Consulta",
+      "descricao": "Consulta"
+    },
+    {
+      "cod": "130",
+      "sigla": "EMC",
+      "nome": "Emenda na Comissão",
+      "descricao": "Emenda Apresentada na Comissão"
+    },
+    {
+      "cod": "131",
+      "sigla": "EMP",
+      "nome": "Emenda de Plenário",
+      "descricao": "Emenda de Plenário"
+    },
+    {
+      "cod": "132",
+      "sigla": "EMS",
+      "nome": "Emenda/Substitutivo do Senado",
+      "descricao": "Emenda/Substitutivo do Senado"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/siglaTipo"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_proposicoes_sigla_tipo",
+    "path": "/referencias/proposicoes/siglaTipo",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/siglaTipo",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 544,
+    "tipo_dados": "list"
+  }
+}

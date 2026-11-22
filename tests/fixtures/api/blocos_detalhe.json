@@ -1,0 +1,24 @@
+{
+  "dados": {
+    "id": "590",
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/blocos/590",
+    "nome": "AVANTE, SOLIDARIEDADE, PRD",
+    "idLegislatura": "57",
+    "federacao": false
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/blocos/590"
+    }
+  ],
+  "_meta": {
+    "endpoint": "blocos_detalhe",
+    "path": "/blocos/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/blocos/590",
+    "id_pai": "590",
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

@@ -1,0 +1,335 @@
+{
+  "dados": [
+    {
+      "id": 2,
+      "nome": "Brasil/África do Sul",
+      "membros": [
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": null,
+          "dataInicio": "2023-02-02T00:00:00",
+          "dataFim": null,
+          "nome": "MARCELO CRIVELLA",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220599",
+          "cargo": "Presidente"
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 5,
+          "dataInicio": "2023-02-02T00:00:00",
+          "dataFim": null,
+          "nome": "CELSO RUSSOMANNO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73441",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 32,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "VINICIUS CARVALHO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/141555",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 22,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "MÁRCIO MARINHO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/150418",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 13,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "GILBERTO ABRAMO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204491",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 8,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "DAVID SOARES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204511",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 25,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "MARIA ROSAS",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204540",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 26,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "MILTON VIEIRA",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/154178",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 10,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "EDUARDO BISMARCK",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204541",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 11,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "EVAIR VIEIRA DE MELO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178871",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 6,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "CELSO SABINO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204496",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 29,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "PROF. REGINALDO VERAS",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220533",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 28,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "PEZENTI",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/161440",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 31,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "SÓSTENES CAVALCANTE",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178947",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 4,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "CARLOS HENRIQUE GAGUIM",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178993",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 15,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "HELDER SALOMÃO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178873",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 19,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "LÊDA BORGES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220566",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 18,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "JORGE SOLLA",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178857",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 14,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "GILVAN MAXIMO",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220531",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 23,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "MARCOS SOARES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178943",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 27,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "NEWTON CARDOSO JR",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178896",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 3,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "CARLOS GOMES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178962",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 2,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "AMOM MANDEL",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220715",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 12,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "GERALDO MENDES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220702",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 17,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "JONAS DONIZETTE",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160548",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 21,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "LUIS CARLOS GOMES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/222429",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 24,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "MARCOS TAVARES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220604",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 20,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "LUCIO MOSQUINI",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178954",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 7,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "CORONEL MEIRA",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220666",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 16,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "JADYEL ALENCAR",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220697",
+          "cargo": null
+        },
+        {
+          "idLegislatura": "57",
+          "ordemEntrada": 30,
+          "dataInicio": "2023-06-20T00:00:00",
+          "dataFim": null,
+          "nome": "SARGENTO GONÇALVES",
+          "tipo": "Deputado(a)",
+          "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220621",
+          "cargo": null
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos/2/membros"
+    }
+  ],
+  "_meta": {
+    "endpoint": "grupos_membros",
+    "path": "/grupos/{id}/membros",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/grupos/2/membros",
+    "id_pai": 2,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "list"
+  }
+}

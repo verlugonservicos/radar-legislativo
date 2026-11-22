@@ -1,0 +1,61 @@
+{
+  "dados": [
+    {
+      "id": 36898,
+      "sigla": "AVANTE",
+      "nome": "Avante",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898"
+    },
+    {
+      "id": 37905,
+      "sigla": "CIDADANIA",
+      "nome": "Cidadania",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/37905"
+    },
+    {
+      "id": 36899,
+      "sigla": "MDB",
+      "nome": "Movimento Democrático Brasileiro",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36899"
+    },
+    {
+      "id": 38011,
+      "sigla": "MISSÃO",
+      "nome": "Partido Missão",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/38011"
+    },
+    {
+      "id": 37901,
+      "sigla": "NOVO",
+      "nome": "Partido Novo",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/37901"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos?idLegislatura=57&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos?idLegislatura=57&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos?idLegislatura=57&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos?idLegislatura=57&pagina=6&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "partidos",
+    "path": "/partidos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/partidos?idLegislatura=57&itens=5",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

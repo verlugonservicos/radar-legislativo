@@ -1,0 +1,93 @@
+{
+  "dados": [
+    {
+      "id": "2654020-4",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2654020-4",
+      "data": "2026-11-18",
+      "dataHoraRegistro": "2026-11-18T14:31:54",
+      "siglaOrgao": "CCULT",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/83300",
+      "proposicaoObjeto": null,
+      "uriProposicaoObjeto": null,
+      "descricao": "Aprovada.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2654105-2",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2654105-2",
+      "data": "2026-11-18",
+      "dataHoraRegistro": "2026-11-18T14:31:53",
+      "siglaOrgao": "CCULT",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/83300",
+      "proposicaoObjeto": "SLD 4/2026 CCULT",
+      "uriProposicaoObjeto": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2654105",
+      "descricao": "Aprovada.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2654104-2",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2654104-2",
+      "data": "2026-11-18",
+      "dataHoraRegistro": "2026-11-18T14:31:53",
+      "siglaOrgao": "CCULT",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/83300",
+      "proposicaoObjeto": "SLD 3/2026 CCULT",
+      "uriProposicaoObjeto": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2654104",
+      "descricao": "Aprovada.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2654101-2",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2654101-2",
+      "data": "2026-11-18",
+      "dataHoraRegistro": "2026-11-18T14:31:53",
+      "siglaOrgao": "CCULT",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/83300",
+      "proposicaoObjeto": "SLD 2/2026 CCULT",
+      "uriProposicaoObjeto": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2654101",
+      "descricao": "Aprovada.",
+      "aprovacao": 1
+    },
+    {
+      "id": "2654099-2",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2654099-2",
+      "data": "2026-11-18",
+      "dataHoraRegistro": "2026-11-18T14:31:53",
+      "siglaOrgao": "CCULT",
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996",
+      "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/83300",
+      "proposicaoObjeto": "SLD 1/2026 CCULT",
+      "uriProposicaoObjeto": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2654099",
+      "descricao": "Aprovada.",
+      "aprovacao": 1
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996/votacoes?dataInicio=2026-10-23&dataFim=2026-11-21&itens=100"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996/votacoes?dataInicio=2026-10-23&dataFim=2026-11-21&pagina=1&itens=100"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996/votacoes?dataInicio=2026-10-23&dataFim=2026-11-21&pagina=1&itens=100"
+    }
+  ],
+  "_meta": {
+    "endpoint": "orgaos_votacoes",
+    "path": "/orgaos/{id}/votacoes",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/orgaos/536996/votacoes?dataInicio=2026-10-23&dataFim=2026-11-21&itens=100",
+    "id_pai": 536996,
+    "coletado_em": "2026-11-22",
+    "janela_dias": 30,
+    "registros_originais": 68,
+    "tipo_dados": "list"
+  }
+}

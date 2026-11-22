@@ -1,0 +1,95 @@
+{
+  "dados": [
+    {
+      "tipoVoto": "Não",
+      "dataRegistroVoto": "2025-08-27T22:46:23",
+      "deputado_": {
+        "id": 160559,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160559",
+        "nome": "Alceu Moreira",
+        "siglaPartido": "MDB",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36899",
+        "siglaUf": "RS",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/160559.jpg",
+        "email": "dep.alceumoreira@camara.leg.br"
+      }
+    },
+    {
+      "tipoVoto": "Não",
+      "dataRegistroVoto": "2025-08-27T22:46:19",
+      "deputado_": {
+        "id": 204355,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204355",
+        "nome": "Da Vitoria",
+        "siglaPartido": "PP",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37903",
+        "siglaUf": "ES",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204355.jpg",
+        "email": "dep.davitoria@camara.leg.br"
+      }
+    },
+    {
+      "tipoVoto": "Não",
+      "dataRegistroVoto": "2025-08-27T22:46:15",
+      "deputado_": {
+        "id": 204501,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204501",
+        "nome": "Alencar Santana",
+        "siglaPartido": "PT",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36844",
+        "siglaUf": "SP",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204501.jpg",
+        "email": "dep.alencarsantana@camara.leg.br"
+      }
+    },
+    {
+      "tipoVoto": "Sim",
+      "dataRegistroVoto": "2025-08-27T22:45:59",
+      "deputado_": {
+        "id": 178873,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178873",
+        "nome": "Helder Salomão",
+        "siglaPartido": "PT",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36844",
+        "siglaUf": "ES",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178873.jpg",
+        "email": "dep.heldersalomao@camara.leg.br"
+      }
+    },
+    {
+      "tipoVoto": "Sim",
+      "dataRegistroVoto": "2025-08-27T22:45:47",
+      "deputado_": {
+        "id": 73441,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73441",
+        "nome": "Celso Russomanno",
+        "siglaPartido": "REPUBLICANOS",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37908",
+        "siglaUf": "SP",
+        "idLegislatura": 57,
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/73441.jpg",
+        "email": "dep.celsorussomanno@camara.leg.br"
+      }
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2432423-93/votos"
+    }
+  ],
+  "_meta": {
+    "endpoint": "votacoes_votos",
+    "path": "/votacoes/{id}/votos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2432423-93/votos",
+    "id_pai": "2432423-93",
+    "coletado_em": "2026-11-22",
+    "janela_dias": 30,
+    "registros_originais": 378,
+    "tipo_dados": "list"
+  }
+}

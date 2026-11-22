@@ -1,0 +1,37 @@
+{
+  "dados": [
+    {
+      "cargo": "Vereador(a)",
+      "siglaUf": "MT",
+      "municipio": "Cuiabá",
+      "anoInicio": "2017",
+      "anoFim": "2020",
+      "siglaPartidoEleicao": "PSC",
+      "uriPartidoEleicao": "https://dadosabertos.camara.leg.br/api/v2/partidos/36833"
+    },
+    {
+      "cargo": "Prefeito(a)",
+      "siglaUf": "MT",
+      "municipio": "Cuiabá",
+      "anoInicio": "2025",
+      "anoFim": null,
+      "siglaPartidoEleicao": "PL",
+      "uriPartidoEleicao": "https://dadosabertos.camara.leg.br/api/v2/partidos/37906"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/mandatosExternos"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_mandatos_externos",
+    "path": "/deputados/{id}/mandatosExternos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/mandatosExternos",
+    "id_pai": 220593,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 2,
+    "tipo_dados": "list"
+  }
+}

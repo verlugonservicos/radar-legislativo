@@ -1,0 +1,46 @@
+{
+  "dados": {
+    "id": 1,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/grupos/1",
+    "nome": "Brasil/África",
+    "anoCriacao": "2004",
+    "resolucaoTitulo": "21/2004",
+    "resolucaoUri": null,
+    "subvencionado": "0",
+    "grupoMisto": "1",
+    "ativo": "1",
+    "observacoes": "",
+    "ultimoStatus": null,
+    "projetoTitulo": "42/2003",
+    "projetoUri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/",
+    "ultimoStatusID": {
+      "idLegislatura": "55",
+      "dataStatus": "2017-08-18T00:00:00",
+      "presidenteNome": "TAKAYAMA",
+      "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74385",
+      "oficioTitulo": null,
+      "oficioUri": null,
+      "documento": "4326/2017",
+      "oficioAutorTipo": "Deputado(a)",
+      "oficioAutorNome": "TAKAYAMA",
+      "oficioAutorUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74385",
+      "oficioDataApresentacao": "2017-08-18T00:00:00",
+      "oficioDataPublicacao": "2017-08-21T00:00:00"
+    }
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos/1"
+    }
+  ],
+  "_meta": {
+    "endpoint": "grupos_detalhe",
+    "path": "/grupos/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/grupos/1",
+    "id_pai": 1,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

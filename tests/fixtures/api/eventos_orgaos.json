@@ -1,0 +1,30 @@
+{
+  "dados": [
+    {
+      "id": 180,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/180",
+      "sigla": "PLEN",
+      "nome": "Plenário",
+      "apelido": "Plenário",
+      "codTipoOrgao": 26,
+      "tipoOrgao": "Plenário Virtual",
+      "nomePublicacao": "Plenário",
+      "nomeResumido": "Plenário"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/eventos/83102/orgaos"
+    }
+  ],
+  "_meta": {
+    "endpoint": "eventos_orgaos",
+    "path": "/eventos/{id}/orgaos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/eventos/83102/orgaos",
+    "id_pai": 83102,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "list"
+  }
+}

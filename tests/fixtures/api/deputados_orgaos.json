@@ -1,0 +1,86 @@
+{
+  "dados": [
+    {
+      "idOrgao": 2006,
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2006",
+      "siglaOrgao": "CDU",
+      "nomeOrgao": "Comissão de Desenvolvimento Urbano",
+      "nomePublicacao": "Comissão de Desenvolvimento Urbano",
+      "titulo": "Suplente",
+      "codTitulo": "102",
+      "dataInicio": "2023-03-15T00:00",
+      "dataFim": "2024-02-04T00:00"
+    },
+    {
+      "idOrgao": 2007,
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2007",
+      "siglaOrgao": "CDHMIR",
+      "nomeOrgao": "Comissão de Direitos Humanos, Minorias e Igualdade Racial",
+      "nomePublicacao": "Comissão de Direitos Humanos, Minorias e Igualdade Racial",
+      "titulo": "Suplente",
+      "codTitulo": "102",
+      "dataInicio": "2023-03-15T00:00",
+      "dataFim": "2023-11-20T00:00"
+    },
+    {
+      "idOrgao": 2009,
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2009",
+      "siglaOrgao": "CE",
+      "nomeOrgao": "Comissão de Educação",
+      "nomePublicacao": "Comissão de Educação",
+      "titulo": "Suplente",
+      "codTitulo": "102",
+      "dataInicio": "2023-03-15T00:00",
+      "dataFim": "2024-02-04T00:00"
+    },
+    {
+      "idOrgao": 2010,
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2010",
+      "siglaOrgao": "CFT",
+      "nomeOrgao": "Comissão de Finanças e Tributação",
+      "nomePublicacao": "Comissão de Finanças e Tributação",
+      "titulo": "Suplente",
+      "codTitulo": "102",
+      "dataInicio": "2023-03-15T00:00",
+      "dataFim": "2024-02-04T00:00"
+    },
+    {
+      "idOrgao": 2014,
+      "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2014",
+      "siglaOrgao": "CSAUDE",
+      "nomeOrgao": "Comissão de Saúde",
+      "nomePublicacao": "Comissão de Saúde",
+      "titulo": "Titular",
+      "codTitulo": "101",
+      "dataInicio": "2023-03-15T00:00",
+      "dataFim": "2024-02-04T00:00"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=6&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_orgaos",
+    "path": "/deputados/{id}/orgaos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&itens=5",
+    "id_pai": 220593,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

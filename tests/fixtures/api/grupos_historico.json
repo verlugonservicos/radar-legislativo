@@ -1,0 +1,33 @@
+{
+  "dados": [
+    {
+      "idLegislatura": "55",
+      "dataStatus": "2017-08-18T00:00:00",
+      "documentoSGM": "4326/2017",
+      "oficioTitulo": null,
+      "oficioAutorTipo": "Deputado(a)",
+      "oficioAutor": "TAKAYAMA",
+      "oficioAutorUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74385",
+      "oficioDataApresentacao": "2017-08-18T00:00:00",
+      "oficioDataPublicacao": "2017-08-21T00:00:00",
+      "presidente": "TAKAYAMA",
+      "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74385",
+      "observacao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos/1/historico"
+    }
+  ],
+  "_meta": {
+    "endpoint": "grupos_historico",
+    "path": "/grupos/{id}/historico",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/grupos/1/historico",
+    "id_pai": 1,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "list"
+  }
+}

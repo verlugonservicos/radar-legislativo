@@ -1,0 +1,66 @@
+{
+  "dados": [
+    {
+      "id": "590",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/blocos/590",
+      "nome": "AVANTE, SOLIDARIEDADE, PRD",
+      "idLegislatura": "57",
+      "federacao": false
+    },
+    {
+      "id": "584",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/blocos/584",
+      "nome": "Federação Brasil da Esperança - Fe Brasil",
+      "idLegislatura": "57",
+      "federacao": true
+    },
+    {
+      "id": "585",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/blocos/585",
+      "nome": "Federação PSDB CIDADANIA",
+      "idLegislatura": "57",
+      "federacao": true
+    },
+    {
+      "id": "586",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/blocos/586",
+      "nome": "Federação PSOL REDE",
+      "idLegislatura": "57",
+      "federacao": true
+    },
+    {
+      "id": "587",
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/blocos/587",
+      "nome": "REPUBLICANOS",
+      "idLegislatura": "57",
+      "federacao": false
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/blocos?idLegislatura=57&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/blocos?idLegislatura=57&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/blocos?idLegislatura=57&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/blocos?idLegislatura=57&pagina=2&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "blocos",
+    "path": "/blocos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/blocos?idLegislatura=57&itens=5",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

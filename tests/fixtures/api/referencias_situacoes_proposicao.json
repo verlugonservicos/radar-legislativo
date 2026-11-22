@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "900",
+      "sigla": "",
+      "nome": "Aguardando Autógrafos na Mesa",
+      "descricao": ""
+    },
+    {
+      "cod": "901",
+      "sigla": "",
+      "nome": "Aguardando Constituição de Comissão Temporária ",
+      "descricao": ""
+    },
+    {
+      "cod": "902",
+      "sigla": "",
+      "nome": "Aguardando Criação de Comissão Temporária",
+      "descricao": ""
+    },
+    {
+      "cod": "903",
+      "sigla": "",
+      "nome": "Aguardando Deliberação",
+      "descricao": ""
+    },
+    {
+      "cod": "904",
+      "sigla": "",
+      "nome": "Aguardando Deliberação de Recurso",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/situacoesProposicao"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_situacoes_proposicao",
+    "path": "/referencias/situacoesProposicao",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/situacoesProposicao",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 99,
+    "tipo_dados": "list"
+  }
+}

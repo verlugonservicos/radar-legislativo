@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "34",
+      "sigla": "",
+      "nome": "Administração Pública",
+      "descricao": ""
+    },
+    {
+      "cod": "35",
+      "sigla": "",
+      "nome": "Arte, Cultura e Religião",
+      "descricao": ""
+    },
+    {
+      "cod": "37",
+      "sigla": "",
+      "nome": "Comunicações",
+      "descricao": ""
+    },
+    {
+      "cod": "39",
+      "sigla": "",
+      "nome": "Esporte e Lazer",
+      "descricao": ""
+    },
+    {
+      "cod": "40",
+      "sigla": "",
+      "nome": "Economia",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/codTema"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_proposicoes_cod_tema",
+    "path": "/referencias/proposicoes/codTema",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/codTema",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 32,
+    "tipo_dados": "list"
+  }
+}

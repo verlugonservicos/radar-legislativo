@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "110",
+      "sigla": "",
+      "nome": "Sessão Deliberativa",
+      "descricao": ""
+    },
+    {
+      "cod": "112",
+      "sigla": "",
+      "nome": "Reunião Deliberativa",
+      "descricao": ""
+    },
+    {
+      "cod": "115",
+      "sigla": "",
+      "nome": "Sessão Não Deliberativa Solene",
+      "descricao": ""
+    },
+    {
+      "cod": "118",
+      "sigla": "",
+      "nome": "Trabalho de Comissões",
+      "descricao": ""
+    },
+    {
+      "cod": "120",
+      "sigla": "",
+      "nome": "Audiência Pública",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/tiposEvento"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_tipos_evento",
+    "path": "/referencias/tiposEvento",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/tiposEvento",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 41,
+    "tipo_dados": "list"
+  }
+}

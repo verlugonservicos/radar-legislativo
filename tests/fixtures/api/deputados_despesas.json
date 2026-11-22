@@ -1,0 +1,126 @@
+{
+  "dados": [
+    {
+      "ano": 2026,
+      "mes": 10,
+      "tipoDespesa": "HOSPEDAGEM ,EXCETO DO PARLAMENTAR NO DISTRITO FEDERAL.",
+      "codDocumento": "8161842",
+      "tipoDocumento": "Nota Fiscal",
+      "codTipoDocumento": 0,
+      "dataDocumento": "2026-10-05T00:00:00",
+      "numDocumento": "12722",
+      "valorDocumento": 1542.25,
+      "urlDocumento": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3308/2026/8161842.pdf",
+      "nomeFornecedor": "M C G MONTEIRO LTDA",
+      "cnpjCpfFornecedor": "07810282000212",
+      "valorLiquido": -1542.25,
+      "valorGlosa": 0.0,
+      "numRessarcimento": "",
+      "codLote": 2268134,
+      "parcela": 0
+    },
+    {
+      "ano": 2026,
+      "mes": 10,
+      "tipoDespesa": "HOSPEDAGEM ,EXCETO DO PARLAMENTAR NO DISTRITO FEDERAL.",
+      "codDocumento": "8162418",
+      "tipoDocumento": "Nota Fiscal",
+      "codTipoDocumento": 0,
+      "dataDocumento": "2026-10-05T00:00:00",
+      "numDocumento": "1674",
+      "valorDocumento": 1940.0,
+      "urlDocumento": "https://www.camara.leg.br/cota-parlamentar/documentos/publ/3308/2026/8162418.pdf",
+      "nomeFornecedor": "MIRAFLORES HOTEIS LTDA",
+      "cnpjCpfFornecedor": "63010552000109",
+      "valorLiquido": -1840.0,
+      "valorGlosa": 100.0,
+      "numRessarcimento": "",
+      "codLote": 2268134,
+      "parcela": 0
+    },
+    {
+      "ano": 2026,
+      "mes": 10,
+      "tipoDespesa": "PASSAGEM AÉREA - RPA",
+      "codDocumento": "1778843",
+      "tipoDocumento": "Nota Fiscal",
+      "codTipoDocumento": 0,
+      "dataDocumento": "2026-10-06T00:00:00",
+      "numDocumento": "Bilhete: 9574479337689",
+      "valorDocumento": 302.0,
+      "urlDocumento": null,
+      "nomeFornecedor": "Cia Aérea - TAM",
+      "cnpjCpfFornecedor": "02012862000160",
+      "valorLiquido": 302.0,
+      "valorGlosa": 0.0,
+      "numRessarcimento": "0",
+      "codLote": 0,
+      "parcela": 0
+    },
+    {
+      "ano": 2026,
+      "mes": 10,
+      "tipoDespesa": "PASSAGEM AÉREA - RPA",
+      "codDocumento": "1778844",
+      "tipoDocumento": "Nota Fiscal",
+      "codTipoDocumento": 0,
+      "dataDocumento": "2026-10-06T00:00:00",
+      "numDocumento": "Bilhete: 9574479337692",
+      "valorDocumento": 302.0,
+      "urlDocumento": null,
+      "nomeFornecedor": "Cia Aérea - TAM",
+      "cnpjCpfFornecedor": "02012862000160",
+      "valorLiquido": 302.0,
+      "valorGlosa": 0.0,
+      "numRessarcimento": "0",
+      "codLote": 0,
+      "parcela": 0
+    },
+    {
+      "ano": 2026,
+      "mes": 10,
+      "tipoDespesa": "PASSAGEM AÉREA - RPA",
+      "codDocumento": "1778842",
+      "tipoDocumento": "Nota Fiscal",
+      "codTipoDocumento": 0,
+      "dataDocumento": "2026-10-06T00:00:00",
+      "numDocumento": "Bilhete: 9574479337684",
+      "valorDocumento": 302.0,
+      "urlDocumento": null,
+      "nomeFornecedor": "Cia Aérea - TAM",
+      "cnpjCpfFornecedor": "02012862000160",
+      "valorLiquido": 302.0,
+      "valorGlosa": 0.0,
+      "numRessarcimento": "0",
+      "codLote": 0,
+      "parcela": 0
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/despesas?ordem=ASC&ordenarPor=dataDocumento&ano=2026&mes=10&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/despesas?ordem=ASC&ordenarPor=dataDocumento&ano=2026&mes=10&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/despesas?ordem=ASC&ordenarPor=dataDocumento&ano=2026&mes=10&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/despesas?ordem=ASC&ordenarPor=dataDocumento&ano=2026&mes=10&pagina=4&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_despesas",
+    "path": "/deputados/{id}/despesas",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/204379/despesas?ordem=ASC&ordenarPor=dataDocumento&ano=2026&mes=10&itens=5",
+    "id_pai": 204379,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

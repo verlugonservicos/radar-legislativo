@@ -1,0 +1,94 @@
+{
+  "dados": [
+    {
+      "id": 178947,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178947",
+      "nome": "Sóstenes Cavalcante",
+      "siglaPartido": "PL",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37906",
+      "siglaUf": "RJ",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178947.jpg",
+      "email": null,
+      "dataInicio": "2023-02-01",
+      "dataFim": "2025-02-01",
+      "titulo": "2º Vice-Presidente",
+      "codTitulo": "3"
+    },
+    {
+      "id": 178854,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178854",
+      "nome": "Elmar Nascimento",
+      "siglaPartido": "UNIÃO",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/38009",
+      "siglaUf": "BA",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178854.jpg",
+      "email": null,
+      "dataInicio": "2025-02-01",
+      "dataFim": null,
+      "titulo": "2º Vice-Presidente",
+      "codTitulo": "3"
+    },
+    {
+      "id": 178954,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178954",
+      "nome": "Lucio Mosquini",
+      "siglaPartido": "MDB",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37906",
+      "siglaUf": "RO",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178954.jpg",
+      "email": null,
+      "dataInicio": "2023-02-01",
+      "dataFim": "2025-02-01",
+      "titulo": "4º Secretário",
+      "codTitulo": "8"
+    },
+    {
+      "id": 178933,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178933",
+      "nome": "Sergio Souza",
+      "siglaPartido": "MDB",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36899",
+      "siglaUf": "PR",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178933.jpg",
+      "email": null,
+      "dataInicio": "2025-02-01",
+      "dataFim": null,
+      "titulo": "4º Secretário",
+      "codTitulo": "8"
+    },
+    {
+      "id": 74270,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74270",
+      "nome": "Gilberto Nascimento",
+      "siglaPartido": "PSC",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36896",
+      "siglaUf": "SP",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/74270.jpg",
+      "email": null,
+      "dataInicio": "2023-02-01",
+      "dataFim": "2025-02-01",
+      "titulo": "1º Suplente de Secretário",
+      "codTitulo": "9"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/mesa"
+    }
+  ],
+  "_meta": {
+    "endpoint": "legislaturas_mesa",
+    "path": "/legislaturas/{id}/mesa",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/mesa",
+    "id_pai": 57,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 22,
+    "tipo_dados": "list"
+  }
+}

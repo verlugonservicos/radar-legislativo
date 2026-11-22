@@ -1,0 +1,337 @@
+{
+  "dados": {
+    "codTipoEvento": [
+      {
+        "cod": "110",
+        "sigla": "",
+        "nome": "Sessão Deliberativa",
+        "descricao": ""
+      },
+      {
+        "cod": "112",
+        "sigla": "",
+        "nome": "Reunião Deliberativa",
+        "descricao": ""
+      },
+      {
+        "cod": "115",
+        "sigla": "",
+        "nome": "Sessão Não Deliberativa Solene",
+        "descricao": ""
+      },
+      {
+        "cod": "118",
+        "sigla": "",
+        "nome": "Trabalho de Comissões",
+        "descricao": ""
+      },
+      {
+        "cod": "120",
+        "sigla": "",
+        "nome": "Audiência Pública",
+        "descricao": ""
+      },
+      {
+        "cod": "122",
+        "sigla": "",
+        "nome": "Tomada de Depoimento",
+        "descricao": ""
+      },
+      {
+        "cod": "125",
+        "sigla": "",
+        "nome": "Audiência Pública e Deliberação",
+        "descricao": ""
+      },
+      {
+        "cod": "130",
+        "sigla": "",
+        "nome": "Seminário",
+        "descricao": ""
+      },
+      {
+        "cod": "140",
+        "sigla": "",
+        "nome": "Mesa Redonda",
+        "descricao": ""
+      },
+      {
+        "cod": "150",
+        "sigla": "",
+        "nome": "Sessão Não Deliberativa de Debates",
+        "descricao": ""
+      },
+      {
+        "cod": "152",
+        "sigla": "",
+        "nome": "Reunião de Debate",
+        "descricao": ""
+      },
+      {
+        "cod": "155",
+        "sigla": "",
+        "nome": "Visita Técnica",
+        "descricao": ""
+      },
+      {
+        "cod": "157",
+        "sigla": "",
+        "nome": "Visita Oficial",
+        "descricao": ""
+      },
+      {
+        "cod": "160",
+        "sigla": "",
+        "nome": "Painel",
+        "descricao": ""
+      },
+      {
+        "cod": "170",
+        "sigla": "",
+        "nome": "Simpósio",
+        "descricao": ""
+      },
+      {
+        "cod": "175",
+        "sigla": "",
+        "nome": "Sessão Preparatória - Posse",
+        "descricao": ""
+      },
+      {
+        "cod": "177",
+        "sigla": "",
+        "nome": "Sessão Preparatória - Eleição",
+        "descricao": ""
+      },
+      {
+        "cod": "180",
+        "sigla": "",
+        "nome": "Reunião de Instalação e Eleição",
+        "descricao": ""
+      },
+      {
+        "cod": "185",
+        "sigla": "",
+        "nome": "Reunião de Instalação",
+        "descricao": ""
+      },
+      {
+        "cod": "190",
+        "sigla": "",
+        "nome": "Reunião de Eleição",
+        "descricao": ""
+      },
+      {
+        "cod": "191",
+        "sigla": "",
+        "nome": "Comissão Geral",
+        "descricao": ""
+      },
+      {
+        "cod": "194",
+        "sigla": "",
+        "nome": "Debate",
+        "descricao": ""
+      },
+      {
+        "cod": "195",
+        "sigla": "",
+        "nome": "Outro Evento",
+        "descricao": ""
+      },
+      {
+        "cod": "196",
+        "sigla": "",
+        "nome": "Diligência",
+        "descricao": ""
+      },
+      {
+        "cod": "197",
+        "sigla": "",
+        "nome": "Sessão de Eleição",
+        "descricao": ""
+      },
+      {
+        "cod": "198",
+        "sigla": "",
+        "nome": "Palestra",
+        "descricao": ""
+      },
+      {
+        "cod": "199",
+        "sigla": "",
+        "nome": "Conferência",
+        "descricao": ""
+      },
+      {
+        "cod": "200",
+        "sigla": "",
+        "nome": "Ato Solene de Instalação",
+        "descricao": ""
+      },
+      {
+        "cod": "201",
+        "sigla": "",
+        "nome": "Reunião",
+        "descricao": ""
+      },
+      {
+        "cod": "202",
+        "sigla": "",
+        "nome": "Sessão Solene",
+        "descricao": ""
+      },
+      {
+        "cod": "203",
+        "sigla": "",
+        "nome": "Sessão de Debates",
+        "descricao": ""
+      },
+      {
+        "cod": "204",
+        "sigla": "",
+        "nome": "Sessão Deliberativa",
+        "descricao": ""
+      },
+      {
+        "cod": "205",
+        "sigla": "",
+        "nome": "Teste do Painel Eletrônico",
+        "descricao": ""
+      },
+      {
+        "cod": "206",
+        "sigla": "",
+        "nome": "Reunião Técnica",
+        "descricao": ""
+      },
+      {
+        "cod": "207",
+        "sigla": "",
+        "nome": "Reunião de Comparecimento de Ministro(a)",
+        "descricao": ""
+      },
+      {
+        "cod": "208",
+        "sigla": "",
+        "nome": "Evento Técnico",
+        "descricao": ""
+      },
+      {
+        "cod": "209",
+        "sigla": "",
+        "nome": "Homenagem",
+        "descricao": ""
+      },
+      {
+        "cod": "210",
+        "sigla": "",
+        "nome": "Tomada de Depoimento e Deliberação",
+        "descricao": ""
+      },
+      {
+        "cod": "211",
+        "sigla": "",
+        "nome": "Tomada de Depoimento e Audiência Pública",
+        "descricao": ""
+      },
+      {
+        "cod": "212",
+        "sigla": "",
+        "nome": "Tom. Depoimento, Aud. Pública e Delib.",
+        "descricao": ""
+      },
+      {
+        "cod": "215",
+        "sigla": "",
+        "nome": "Prévia Ordem do Dia",
+        "descricao": ""
+      }
+    ],
+    "codSituacao": [
+      {
+        "cod": "1",
+        "sigla": "",
+        "nome": "Não Confirmada           ",
+        "descricao": ""
+      },
+      {
+        "cod": "2",
+        "sigla": "",
+        "nome": "Convocada                ",
+        "descricao": ""
+      },
+      {
+        "cod": "3",
+        "sigla": "",
+        "nome": "Em Andamento             ",
+        "descricao": ""
+      },
+      {
+        "cod": "4",
+        "sigla": "",
+        "nome": "Encerrada                ",
+        "descricao": ""
+      },
+      {
+        "cod": "5",
+        "sigla": "",
+        "nome": "Cancelada                ",
+        "descricao": ""
+      },
+      {
+        "cod": "6",
+        "sigla": "",
+        "nome": "Suspensa                 ",
+        "descricao": ""
+      },
+      {
+        "cod": "7",
+        "sigla": "",
+        "nome": "Encerrada (Termo)        ",
+        "descricao": ""
+      },
+      {
+        "cod": "8",
+        "sigla": "",
+        "nome": "Encerrada (Final)        ",
+        "descricao": ""
+      },
+      {
+        "cod": "9",
+        "sigla": "",
+        "nome": "Encerrada (Comunicado)   ",
+        "descricao": ""
+      },
+      {
+        "cod": "130",
+        "sigla": "",
+        "nome": "Agendada                 ",
+        "descricao": ""
+      }
+    ]
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos"
+    },
+    {
+      "rel": "item",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos/codTipoEvento"
+    },
+    {
+      "rel": "item",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos/codSituacao"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_eventos",
+    "path": "/referencias/eventos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/eventos",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "dados": [
+    {
+      "id": 55606,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/frentes/55606",
+      "titulo": "Frente Parlamentar em Defesa da Polícia Penal",
+      "idLegislatura": 57
+    },
+    {
+      "id": 55656,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/frentes/55656",
+      "titulo": "Frente Parlamentar em Defesa da Enfermagem",
+      "idLegislatura": 57
+    },
+    {
+      "id": 55641,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/frentes/55641",
+      "titulo": "Frente Parlamentar Conservadora em Defesa da Liberdade",
+      "idLegislatura": 57
+    },
+    {
+      "id": 55640,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/frentes/55640",
+      "titulo": "Frente Parlamentar Mista do Cooperativismo de Seguros e do Mutualismo de Proteção Patrimonial - FREPAM",
+      "idLegislatura": 57
+    },
+    {
+      "id": 55639,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/frentes/55639",
+      "titulo": "Frente Parlamentar em Defesa da Liberdade de Expressão - FPDLE",
+      "idLegislatura": 57
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/frentes"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_frentes",
+    "path": "/deputados/{id}/frentes",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/220593/frentes",
+    "id_pai": 220593,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 134,
+    "tipo_dados": "list"
+  }
+}

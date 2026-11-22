@@ -1,0 +1,87 @@
+{
+  "dados": [
+    {
+      "id": 160510,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160510",
+      "idLegislatura": 57,
+      "nome": "Luis Tibé",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "MG",
+      "email": "dep.luistibe@camara.leg.br",
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/160510.jpgmaior.jpg",
+      "titulo": "Presidente",
+      "codTitulo": 1,
+      "dataInicio": "2026-03-31",
+      "dataFim": null
+    },
+    {
+      "id": 91228,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/91228",
+      "idLegislatura": 57,
+      "nome": "Waldemar Oliveira",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "PE",
+      "email": "dep.waldemaroliveira@camara.leg.br",
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/91228.jpgmaior.jpg",
+      "titulo": "Líder",
+      "codTitulo": 1001,
+      "dataInicio": "2026-04-15",
+      "dataFim": null
+    },
+    {
+      "id": 204553,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204553",
+      "idLegislatura": 57,
+      "nome": "Pastor Sargento Isidório",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "BA",
+      "email": "dep.pastorsargentoisidorio@camara.leg.br",
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204553.jpgmaior.jpg",
+      "titulo": "Vice-Líder",
+      "codTitulo": 1002,
+      "dataInicio": "2026-05-26",
+      "dataFim": null
+    },
+    {
+      "id": 160510,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160510",
+      "idLegislatura": 57,
+      "nome": "Luis Tibé",
+      "siglaPartido": "AVANTE",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+      "siglaUf": "MG",
+      "email": "dep.luistibe@camara.leg.br",
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/160510.jpgmaior.jpg",
+      "titulo": "Vice-Líder",
+      "codTitulo": 1002,
+      "dataInicio": "2026-10-14",
+      "dataFim": null
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/lideres?itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/lideres?pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/lideres?pagina=1&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "partidos_lideres",
+    "path": "/partidos/{id}/lideres",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898/lideres?itens=5",
+    "id_pai": 36898,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 4,
+    "tipo_dados": "list"
+  }
+}

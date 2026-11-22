@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "1",
+      "sigla": "",
+      "nome": "MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR",
+      "descricao": ""
+    },
+    {
+      "cod": "2",
+      "sigla": "",
+      "nome": "LOCOMOÇÃO, ALIMENTAÇÃO E  HOSPEDAGEM",
+      "descricao": ""
+    },
+    {
+      "cod": "3",
+      "sigla": "",
+      "nome": "COMBUSTÍVEIS E LUBRIFICANTES.",
+      "descricao": ""
+    },
+    {
+      "cod": "4",
+      "sigla": "",
+      "nome": "CONSULTORIAS, PESQUISAS E TRABALHOS TÉCNICOS.",
+      "descricao": ""
+    },
+    {
+      "cod": "5",
+      "sigla": "",
+      "nome": "DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/deputados/tipoDespesa"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/deputados/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_deputados_tipo_despesa",
+    "path": "/referencias/deputados/tipoDespesa",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/deputados/tipoDespesa",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 26,
+    "tipo_dados": "list"
+  }
+}

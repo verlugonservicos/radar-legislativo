@@ -1,0 +1,481 @@
+{
+  "dados": {
+    "idTipoOrgao": [
+      {
+        "cod": "1",
+        "sigla": "",
+        "nome": "Comissão Diretora",
+        "descricao": ""
+      },
+      {
+        "cod": "2",
+        "sigla": "",
+        "nome": "Comissão Permanente",
+        "descricao": ""
+      },
+      {
+        "cod": "3",
+        "sigla": "",
+        "nome": "Comissão Especial",
+        "descricao": ""
+      },
+      {
+        "cod": "4",
+        "sigla": "",
+        "nome": "Comissão Parlamentar de Inquérito",
+        "descricao": ""
+      },
+      {
+        "cod": "5",
+        "sigla": "",
+        "nome": "Comissão Externa",
+        "descricao": ""
+      },
+      {
+        "cod": "6",
+        "sigla": "",
+        "nome": "Comissão Mista Permanente",
+        "descricao": ""
+      },
+      {
+        "cod": "7",
+        "sigla": "",
+        "nome": "Comissão de Sindicância",
+        "descricao": ""
+      },
+      {
+        "cod": "8",
+        "sigla": "",
+        "nome": "Comissão Representativa do CN",
+        "descricao": ""
+      },
+      {
+        "cod": "9",
+        "sigla": "",
+        "nome": "Comissão Medida Provisória",
+        "descricao": ""
+      },
+      {
+        "cod": "10",
+        "sigla": "",
+        "nome": "Grupo de Trabalho",
+        "descricao": ""
+      },
+      {
+        "cod": "11",
+        "sigla": "",
+        "nome": "Conselho",
+        "descricao": ""
+      },
+      {
+        "cod": "12",
+        "sigla": "",
+        "nome": "Procuradoria Parlamentar",
+        "descricao": ""
+      },
+      {
+        "cod": "13",
+        "sigla": "",
+        "nome": "Corregedoria",
+        "descricao": ""
+      },
+      {
+        "cod": "14",
+        "sigla": "",
+        "nome": "Ouvidoria",
+        "descricao": ""
+      },
+      {
+        "cod": "15",
+        "sigla": "",
+        "nome": "COORDENADORIA DA MULHER",
+        "descricao": ""
+      },
+      {
+        "cod": "20",
+        "sigla": "",
+        "nome": "Comissão Parlamentar Mista de Inquérito",
+        "descricao": ""
+      },
+      {
+        "cod": "21",
+        "sigla": "",
+        "nome": "Comissão Mista Especial",
+        "descricao": ""
+      },
+      {
+        "cod": "22",
+        "sigla": "",
+        "nome": "Conferência",
+        "descricao": ""
+      },
+      {
+        "cod": "25",
+        "sigla": "",
+        "nome": "Subcomissão",
+        "descricao": ""
+      },
+      {
+        "cod": "26",
+        "sigla": "",
+        "nome": "Plenário Virtual",
+        "descricao": ""
+      },
+      {
+        "cod": "27",
+        "sigla": "",
+        "nome": "Plenário Virtual CD",
+        "descricao": ""
+      },
+      {
+        "cod": "28",
+        "sigla": "",
+        "nome": "GRUPO DE TRABALHO DE COMISSÕES",
+        "descricao": ""
+      },
+      {
+        "cod": "101",
+        "sigla": "",
+        "nome": "Partido Político",
+        "descricao": ""
+      },
+      {
+        "cod": "102",
+        "sigla": "",
+        "nome": "Bloco Parlamentar",
+        "descricao": ""
+      },
+      {
+        "cod": "103",
+        "sigla": "",
+        "nome": "Governo na CD",
+        "descricao": ""
+      },
+      {
+        "cod": "104",
+        "sigla": "",
+        "nome": "Minoria na CD",
+        "descricao": ""
+      },
+      {
+        "cod": "105",
+        "sigla": "",
+        "nome": "Governo no CN",
+        "descricao": ""
+      },
+      {
+        "cod": "106",
+        "sigla": "",
+        "nome": "Minoria no CN",
+        "descricao": ""
+      },
+      {
+        "cod": "110",
+        "sigla": "",
+        "nome": "Comissão da Câmara dos Deputados",
+        "descricao": ""
+      },
+      {
+        "cod": "121",
+        "sigla": "",
+        "nome": "Maioria na CD",
+        "descricao": ""
+      },
+      {
+        "cod": "122",
+        "sigla": "",
+        "nome": "Oposição na CD",
+        "descricao": ""
+      },
+      {
+        "cod": "123",
+        "sigla": "",
+        "nome": "Maioria no CN",
+        "descricao": ""
+      },
+      {
+        "cod": "124",
+        "sigla": "",
+        "nome": "Oposição no CN",
+        "descricao": ""
+      },
+      {
+        "cod": "200",
+        "sigla": "",
+        "nome": "TEMPORÁRIA",
+        "descricao": ""
+      },
+      {
+        "cod": "1000",
+        "sigla": "",
+        "nome": "Importação das proposições inativas",
+        "descricao": ""
+      },
+      {
+        "cod": "12000",
+        "sigla": "",
+        "nome": "Órgão da Câmara dos Deputados",
+        "descricao": ""
+      },
+      {
+        "cod": "12500",
+        "sigla": "",
+        "nome": "Órgão Legislativo da CD",
+        "descricao": ""
+      },
+      {
+        "cod": "13000",
+        "sigla": "",
+        "nome": "Comissão Temporária da CD",
+        "descricao": ""
+      },
+      {
+        "cod": "21000",
+        "sigla": "",
+        "nome": "Comissão do Senado Federal",
+        "descricao": ""
+      },
+      {
+        "cod": "22000",
+        "sigla": "",
+        "nome": "Órgão do Senado Federal",
+        "descricao": ""
+      },
+      {
+        "cod": "30000",
+        "sigla": "",
+        "nome": "Órgão do Poder Executivo",
+        "descricao": ""
+      },
+      {
+        "cod": "40000",
+        "sigla": "",
+        "nome": "Órgão do Poder Legislativo",
+        "descricao": ""
+      },
+      {
+        "cod": "50000",
+        "sigla": "",
+        "nome": "Órgão do Poder Judiciário",
+        "descricao": ""
+      },
+      {
+        "cod": "70000",
+        "sigla": "",
+        "nome": "Sociedade Civil",
+        "descricao": ""
+      },
+      {
+        "cod": "80000",
+        "sigla": "",
+        "nome": "Liderança",
+        "descricao": ""
+      },
+      {
+        "cod": "81000",
+        "sigla": "",
+        "nome": "Bancada",
+        "descricao": ""
+      },
+      {
+        "cod": "81001",
+        "sigla": "",
+        "nome": "Órgão do Congresso Nacional",
+        "descricao": ""
+      },
+      {
+        "cod": "81002",
+        "sigla": "",
+        "nome": "Comissão Mista",
+        "descricao": ""
+      },
+      {
+        "cod": "81003",
+        "sigla": "",
+        "nome": "Comissão Permanente do Senado Federal",
+        "descricao": ""
+      },
+      {
+        "cod": "81004",
+        "sigla": "",
+        "nome": "Comissão Temporária do Senado Federal",
+        "descricao": ""
+      },
+      {
+        "cod": "81005",
+        "sigla": "",
+        "nome": "Gabinete Parlamentar",
+        "descricao": ""
+      },
+      {
+        "cod": "81006",
+        "sigla": "",
+        "nome": "Órgão Remessa Requerimento de Informação",
+        "descricao": ""
+      },
+      {
+        "cod": "81007",
+        "sigla": "",
+        "nome": "MPU - Ministério Público da União",
+        "descricao": ""
+      },
+      {
+        "cod": "81008",
+        "sigla": "",
+        "nome": "DPU - Defensoria Pública da União",
+        "descricao": ""
+      },
+      {
+        "cod": "81009",
+        "sigla": "",
+        "nome": "Partido Político",
+        "descricao": ""
+      }
+    ],
+    "idSituacao": [
+      {
+        "cod": "2",
+        "sigla": "",
+        "nome": "Pronta para criação",
+        "descricao": ""
+      },
+      {
+        "cod": "3",
+        "sigla": "",
+        "nome": "Aguardando indicações dos Líderes",
+        "descricao": ""
+      },
+      {
+        "cod": "4",
+        "sigla": "",
+        "nome": "Completa aguardando constituição",
+        "descricao": ""
+      },
+      {
+        "cod": "5",
+        "sigla": "",
+        "nome": "Aguardando definição de Presidente e/ou relator",
+        "descricao": ""
+      },
+      {
+        "cod": "6",
+        "sigla": "",
+        "nome": "Pronta para instalação",
+        "descricao": ""
+      },
+      {
+        "cod": "7",
+        "sigla": "",
+        "nome": "Em funcionamento",
+        "descricao": ""
+      },
+      {
+        "cod": "8",
+        "sigla": "",
+        "nome": "Com parecer aprovado",
+        "descricao": ""
+      },
+      {
+        "cod": "9",
+        "sigla": "",
+        "nome": "Em tramitação no Senado Federal",
+        "descricao": ""
+      },
+      {
+        "cod": "10",
+        "sigla": "",
+        "nome": "Extinta",
+        "descricao": ""
+      },
+      {
+        "cod": "15",
+        "sigla": "",
+        "nome": "Aguardando admissibilidade na CCJC",
+        "descricao": ""
+      },
+      {
+        "cod": "16",
+        "sigla": "",
+        "nome": "Aguardando análise de apensação",
+        "descricao": ""
+      },
+      {
+        "cod": "17",
+        "sigla": "",
+        "nome": "Aguardando decisão do Presidente",
+        "descricao": ""
+      },
+      {
+        "cod": "18",
+        "sigla": "",
+        "nome": "Aguardando despacho do Presidente",
+        "descricao": ""
+      },
+      {
+        "cod": "19",
+        "sigla": "",
+        "nome": "Apensada",
+        "descricao": ""
+      },
+      {
+        "cod": "20",
+        "sigla": "",
+        "nome": "Devolvida ao Autor",
+        "descricao": ""
+      },
+      {
+        "cod": "21",
+        "sigla": "",
+        "nome": "Em tramitação nas Comissões",
+        "descricao": ""
+      },
+      {
+        "cod": "22",
+        "sigla": "",
+        "nome": "Não criada",
+        "descricao": ""
+      },
+      {
+        "cod": "23",
+        "sigla": "",
+        "nome": "PRC pronto para a pauta",
+        "descricao": ""
+      },
+      {
+        "cod": "24",
+        "sigla": "",
+        "nome": "Requerimento pronto para pauta",
+        "descricao": ""
+      },
+      {
+        "cod": "25",
+        "sigla": "",
+        "nome": "Criada",
+        "descricao": ""
+      }
+    ]
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos"
+    },
+    {
+      "rel": "item",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos/idTipoOrgao"
+    },
+    {
+      "rel": "item",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos/idSituacao"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_orgaos",
+    "path": "/referencias/orgaos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

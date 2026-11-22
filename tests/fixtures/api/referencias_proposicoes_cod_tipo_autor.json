@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "1",
+      "sigla": "",
+      "nome": "COMISSÃO DIRETORA",
+      "descricao": ""
+    },
+    {
+      "cod": "2",
+      "sigla": "",
+      "nome": "COMISSÃO PERMANENTE",
+      "descricao": ""
+    },
+    {
+      "cod": "3",
+      "sigla": "",
+      "nome": "COMISSÃO ESPECIAL",
+      "descricao": ""
+    },
+    {
+      "cod": "4",
+      "sigla": "",
+      "nome": "COMISSÃO PARLAMENTAR DE INQUÉRITO",
+      "descricao": ""
+    },
+    {
+      "cod": "5",
+      "sigla": "",
+      "nome": "COMISSÃO EXTERNA",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/codTipoAutor"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_proposicoes_cod_tipo_autor",
+    "path": "/referencias/proposicoes/codTipoAutor",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/codTipoAutor",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 58,
+    "tipo_dados": "list"
+  }
+}

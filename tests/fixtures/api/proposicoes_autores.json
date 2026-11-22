@@ -1,0 +1,27 @@
+{
+  "dados": [
+    {
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/2008",
+      "nome": "Comissão de Desenvolvimento Econômico",
+      "codTipo": 2,
+      "tipo": "COMISSÃO PERMANENTE",
+      "ordemAssinatura": 1,
+      "proponente": 1
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962/autores"
+    }
+  ],
+  "_meta": {
+    "endpoint": "proposicoes_autores",
+    "path": "/proposicoes/{id}/autores",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653962/autores",
+    "id_pai": 2653962,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "list"
+  }
+}

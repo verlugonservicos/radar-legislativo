@@ -1,0 +1,136 @@
+{
+  "dados": [
+    {
+      "parlamentar": {
+        "id": 133439,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/133439",
+        "nome": "André Figueiredo",
+        "siglaPartido": "PDT",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36786",
+        "siglaUf": "CE",
+        "idLegislatura": 57,
+        "email": "dep.andrefigueiredo@camara.leg.br",
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/133439.jpgmaior.jpg"
+      },
+      "titulo": "Presidente",
+      "bancada": {
+        "tipo": "Partido Político",
+        "nome": "PDT",
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36786"
+      },
+      "dataInicio": "2023-01-31",
+      "dataFim": "2025-09-17"
+    },
+    {
+      "parlamentar": {
+        "id": 178975,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178975",
+        "nome": "Baleia Rossi",
+        "siglaPartido": "MDB",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36899",
+        "siglaUf": "SP",
+        "idLegislatura": 57,
+        "email": "dep.baleiarossi@camara.leg.br",
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178975.jpgmaior.jpg"
+      },
+      "titulo": "Presidente",
+      "bancada": {
+        "tipo": "Partido Político",
+        "nome": "MDB",
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36899"
+      },
+      "dataInicio": "2023-02-01",
+      "dataFim": null
+    },
+    {
+      "parlamentar": {
+        "id": 107283,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/107283",
+        "nome": "Gleisi Hoffmann",
+        "siglaPartido": "PT",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36844",
+        "siglaUf": "PR",
+        "idLegislatura": 57,
+        "email": "dep.gleisihoffmann@camara.leg.br",
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/107283.jpgmaior.jpg"
+      },
+      "titulo": "Presidente",
+      "bancada": {
+        "tipo": "Partido Político",
+        "nome": "PT",
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36844"
+      },
+      "dataInicio": "2023-02-01",
+      "dataFim": "2025-03-10"
+    },
+    {
+      "parlamentar": {
+        "id": 160510,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/160510",
+        "nome": "Luis Tibé",
+        "siglaPartido": "AVANTE",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898",
+        "siglaUf": "MG",
+        "idLegislatura": 57,
+        "email": "dep.luistibe@camara.leg.br",
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/160510.jpgmaior.jpg"
+      },
+      "titulo": "Presidente",
+      "bancada": {
+        "tipo": "Partido Político",
+        "nome": "AVANTE",
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/36898"
+      },
+      "dataInicio": "2023-02-01",
+      "dataFim": "2026-03-31"
+    },
+    {
+      "parlamentar": {
+        "id": 204506,
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204506",
+        "nome": "Marcos Pereira",
+        "siglaPartido": "REPUBLICANOS",
+        "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/37908",
+        "siglaUf": "SP",
+        "idLegislatura": 57,
+        "email": "dep.marcospereira@camara.leg.br",
+        "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204506.jpgmaior.jpg"
+      },
+      "titulo": "Presidente",
+      "bancada": {
+        "tipo": "Partido Político",
+        "nome": "REPUBLICANOS",
+        "uri": "https://dadosabertos.camara.leg.br/api/v2/partidos/37908"
+      },
+      "dataInicio": "2023-02-01",
+      "dataFim": null
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/lideres?itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/lideres?pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/lideres?pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/lideres?pagina=617&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "legislaturas_lideres",
+    "path": "/legislaturas/{id}/lideres",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57/lideres?itens=5",
+    "id_pai": 57,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

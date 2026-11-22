@@ -1,0 +1,60 @@
+{
+  "dados": [
+    {
+      "titulo": "Conselheira - Membro do Conselho Curador",
+      "entidade": "Fundação Julita",
+      "entidadeUF": "SP",
+      "entidadePais": "BRASIL",
+      "anoInicio": 2016,
+      "anoFim": null
+    },
+    {
+      "titulo": "Vice-Presidente",
+      "entidade": "Fundação Julita",
+      "entidadeUF": "SP",
+      "entidadePais": "BRASIL",
+      "anoInicio": 2010,
+      "anoFim": 2016
+    },
+    {
+      "titulo": "Professora",
+      "entidade": "B.I. International",
+      "entidadeUF": "SP",
+      "entidadePais": "BRASIL",
+      "anoInicio": 2007,
+      "anoFim": 2010
+    },
+    {
+      "titulo": "Diretora Tesoureira",
+      "entidade": "Alene Associação Latino Americana de Ética, Negócios e Economia",
+      "entidadeUF": "SP",
+      "entidadePais": "BRASIL",
+      "anoInicio": 2005,
+      "anoFim": 2007
+    },
+    {
+      "titulo": "Professora",
+      "entidade": "Fundação Getúlio Vargas - Escola de Administração de Empresas de São Paulo",
+      "entidadeUF": "SP",
+      "entidadePais": "BRASIL",
+      "anoInicio": 2005,
+      "anoFim": null
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/deputados/204528/ocupacoes"
+    }
+  ],
+  "_meta": {
+    "endpoint": "deputados_ocupacoes",
+    "path": "/deputados/{id}/ocupacoes",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/deputados/204528/ocupacoes",
+    "id_pai": "204528",
+    "coletado_em": "2026-11-22",
+    "janela_dias": 7,
+    "registros_originais": 7,
+    "tipo_dados": "list"
+  }
+}

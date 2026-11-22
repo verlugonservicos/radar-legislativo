@@ -1,0 +1,131 @@
+{
+  "dados": [
+    {
+      "id": 1,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/grupos/1",
+      "nome": "Brasil/África",
+      "anoCriacao": "2004",
+      "resolucaoTitulo": "21/2004",
+      "resolucaoUri": null,
+      "subvencionado": "0",
+      "grupoMisto": "1",
+      "ativo": "1",
+      "observacoes": "",
+      "ultimoStatus": {
+        "idLegislatura": "55",
+        "dataStatus": "2017-08-18T00:00:00",
+        "presidenteNome": "TAKAYAMA",
+        "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74385",
+        "oficioTitulo": null,
+        "oficioUri": null
+      }
+    },
+    {
+      "id": 2,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/grupos/2",
+      "nome": "Brasil/África do Sul",
+      "anoCriacao": "1993",
+      "resolucaoTitulo": "27/1993",
+      "resolucaoUri": null,
+      "subvencionado": "0",
+      "grupoMisto": "1",
+      "ativo": "1",
+      "observacoes": "",
+      "ultimoStatus": {
+        "idLegislatura": "57",
+        "dataStatus": "2023-02-02T00:00:00",
+        "presidenteNome": "MARCELO CRIVELLA",
+        "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/220599",
+        "oficioTitulo": null,
+        "oficioUri": null
+      }
+    },
+    {
+      "id": 3,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/grupos/3",
+      "nome": "Brasil/Albânia",
+      "anoCriacao": "2013",
+      "resolucaoTitulo": "40/2013",
+      "resolucaoUri": null,
+      "subvencionado": "0",
+      "grupoMisto": "1",
+      "ativo": "1",
+      "observacoes": "",
+      "ultimoStatus": {
+        "idLegislatura": "54",
+        "dataStatus": "2013-10-24T00:00:00",
+        "presidenteNome": "PAES LANDIM",
+        "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74319",
+        "oficioTitulo": null,
+        "oficioUri": null
+      }
+    },
+    {
+      "id": 4,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/grupos/4",
+      "nome": "Brasil/Alemanha",
+      "anoCriacao": null,
+      "resolucaoTitulo": null,
+      "resolucaoUri": null,
+      "subvencionado": "0",
+      "grupoMisto": "1",
+      "ativo": "1",
+      "observacoes": "Grupo criado por Publicação no Diário do Congresso Nacional. Não há Resolução.",
+      "ultimoStatus": {
+        "idLegislatura": "57",
+        "dataStatus": "2023-02-02T00:00:00",
+        "presidenteNome": "JULIO CESAR RIBEIRO",
+        "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204372",
+        "oficioTitulo": null,
+        "oficioUri": null
+      }
+    },
+    {
+      "id": 5,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/grupos/5",
+      "nome": "Brasil/Angola",
+      "anoCriacao": "1989",
+      "resolucaoTitulo": "8/1989",
+      "resolucaoUri": null,
+      "subvencionado": "0",
+      "grupoMisto": "1",
+      "ativo": "1",
+      "observacoes": "",
+      "ultimoStatus": {
+        "idLegislatura": "57",
+        "dataStatus": "2023-02-02T00:00:00",
+        "presidenteNome": "MÁRCIO MARINHO",
+        "presidenteUri": "https://dadosabertos.camara.leg.br/api/v2/deputados/150418",
+        "oficioTitulo": null,
+        "oficioUri": null
+      }
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos?itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos?pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos?pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/grupos?pagina=24&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "grupos",
+    "path": "/grupos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/grupos?itens=5",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

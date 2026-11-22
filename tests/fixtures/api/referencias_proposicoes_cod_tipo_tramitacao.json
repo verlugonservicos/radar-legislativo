@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "5",
+      "sigla": "",
+      "nome": "Não Informado",
+      "descricao": ""
+    },
+    {
+      "cod": "100",
+      "sigla": "",
+      "nome": "Apresentação de Proposição",
+      "descricao": ""
+    },
+    {
+      "cod": "104",
+      "sigla": "",
+      "nome": "Desapensação",
+      "descricao": ""
+    },
+    {
+      "cod": "105",
+      "sigla": "",
+      "nome": "Leitura e publicação",
+      "descricao": ""
+    },
+    {
+      "cod": "106",
+      "sigla": "",
+      "nome": "Apensação",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/codTipoTramitacao"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_proposicoes_cod_tipo_tramitacao",
+    "path": "/referencias/proposicoes/codTipoTramitacao",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/proposicoes/codTipoTramitacao",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 235,
+    "tipo_dados": "list"
+  }
+}

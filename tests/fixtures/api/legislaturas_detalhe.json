@@ -1,0 +1,23 @@
+{
+  "dados": {
+    "id": 57,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57",
+    "dataInicio": "2023-02-01",
+    "dataFim": "2027-01-31"
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57"
+    }
+  ],
+  "_meta": {
+    "endpoint": "legislaturas_detalhe",
+    "path": "/legislaturas/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/legislaturas/57",
+    "id_pai": 57,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}

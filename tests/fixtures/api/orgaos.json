@@ -1,0 +1,86 @@
+{
+  "dados": [
+    {
+      "id": 539056,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056",
+      "sigla": "TESTECOM",
+      "nome": "TESTE PARA GERAÇÃO DO ESPELHO DA COMISSÃO (COMISSÃO FICTÍCIA)",
+      "apelido": "TESTE COMISSÃO",
+      "codTipoOrgao": 3,
+      "tipoOrgao": "Comissão Especial",
+      "nomePublicacao": "COMISSÃO ESPECIAL - TESTE COMISSÃO",
+      "nomeResumido": null
+    },
+    {
+      "id": 539147,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539147",
+      "sigla": "PEC13215",
+      "nome": "Comissão Especial destinada a proferir parecer à Proposta de Emenda à Constituição nº 132, de 2015, do Senado Federal, que \"altera o § 6º do art. 231 da Constituição Federal e acrescenta art. 67-A ao Ato das Disposições Constitucionais Transitórias, para permitir a indenização de possuidores de títulos dominiais relativos a áreas declaradas como indígenas e homologadas a partir de 5 de outubro de 2013\", e apensadas",
+      "apelido": "PEC 132/15 - Indenização a Ocupantes de Áreas Indígenas",
+      "codTipoOrgao": 3,
+      "tipoOrgao": "Comissão Especial",
+      "nomePublicacao": "Comissão Especial sobre Indenização em Áreas Indígenas (PEC 132/15)",
+      "nomeResumido": null
+    },
+    {
+      "id": 539151,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539151",
+      "sigla": "PEC01422",
+      "nome": "Comissão Especial destinada a proferir parecer à Proposta de Emenda à Constituição nº 14, de 2022, do Sr. Cacá Leão e outros, que \"altera o § 9º do art. 195 da Constituição Federal para reduzir pela metade a alíquota das contribuições sociais de que trata o inciso I quando se tratar de municípios",
+      "apelido": "PEC 014/22 - Alíquota de Contribuições Sociais de Municípios",
+      "codTipoOrgao": 3,
+      "tipoOrgao": "Comissão Especial",
+      "nomePublicacao": "Comissão Especial sobre Contribuições Sociais de Municípios (PEC 014/22)",
+      "nomeResumido": null
+    },
+    {
+      "id": 539158,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539158",
+      "sigla": "PEC01621",
+      "nome": "Comissão Especial destinada a proferir parecer à Proposta de Emenda à Constituição nº 16, de 2021, Fase 1, do Senado Federal, que \"altera o art. 12 da Constituição Federal para suprimir a perda da nacionalidade brasileira em razão da mera aquisição de outra nacionalidade, incluir a exceção para situações de apatridia e acrescentar a possibilidade de a pessoa requerer a perda da própria nacionalidade\", e apensada",
+      "apelido": "PEC 016/21 Fase 1 - Perda de Nacionalidade",
+      "codTipoOrgao": 3,
+      "tipoOrgao": "Comissão Especial",
+      "nomePublicacao": "Comissão Especial sobre a Perda da Nacionalidade (PEC 016/2021 Fase 1)",
+      "nomeResumido": "Perda de Nacionalidade"
+    },
+    {
+      "id": 539161,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539161",
+      "sigla": "PEC16919",
+      "nome": "Comissão Especial destinada a proferir parecer à Proposta de Emenda à Constituição nº 169, de 2019, do Sr. Capitão Alberto Neto e outros, que \"altera o art. 37 da Constituição Federal, para permitir a acumulação remunerada de um cargo de professor com outro de qualquer natureza\"",
+      "apelido": "PEC 169/19 - Acumulação de Cargo de Professor",
+      "codTipoOrgao": 3,
+      "tipoOrgao": "Comissão Especial",
+      "nomePublicacao": "Comissão Especial sobre Acumulação de Cargo de Professor (PEC 169/19)",
+      "nomeResumido": "Cargos de Professor"
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=37&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "orgaos",
+    "path": "/orgaos",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/orgaos?dataInicio=2023-02-01&dataFim=2026-11-22&itens=5",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

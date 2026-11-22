@@ -1,0 +1,29 @@
+{
+  "dados": [
+    {
+      "codTema": 46,
+      "tema": "Educação",
+      "relevancia": 0
+    },
+    {
+      "codTema": 70,
+      "tema": "Finanças Públicas e Orçamento",
+      "relevancia": 0
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653970/temas"
+    }
+  ],
+  "_meta": {
+    "endpoint": "proposicoes_temas",
+    "path": "/proposicoes/{id}/temas",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2653970/temas",
+    "id_pai": 2653970,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 2,
+    "tipo_dados": "list"
+  }
+}

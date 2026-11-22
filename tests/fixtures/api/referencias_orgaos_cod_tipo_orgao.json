@@ -1,0 +1,53 @@
+{
+  "dados": [
+    {
+      "cod": "1",
+      "sigla": "",
+      "nome": "Comissão Diretora",
+      "descricao": ""
+    },
+    {
+      "cod": "2",
+      "sigla": "",
+      "nome": "Comissão Permanente",
+      "descricao": ""
+    },
+    {
+      "cod": "3",
+      "sigla": "",
+      "nome": "Comissão Especial",
+      "descricao": ""
+    },
+    {
+      "cod": "4",
+      "sigla": "",
+      "nome": "Comissão Parlamentar de Inquérito",
+      "descricao": ""
+    },
+    {
+      "cod": "5",
+      "sigla": "",
+      "nome": "Comissão Externa",
+      "descricao": ""
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos/codTipoOrgao"
+    },
+    {
+      "rel": "collection",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos/"
+    }
+  ],
+  "_meta": {
+    "endpoint": "referencias_orgaos_cod_tipo_orgao",
+    "path": "/referencias/orgaos/codTipoOrgao",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/referencias/orgaos/codTipoOrgao",
+    "id_pai": null,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 55,
+    "tipo_dados": "list"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "dados": [
+    {
+      "id": 73701,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/73701",
+      "nome": "Benedita da Silva",
+      "siglaPartido": "PT",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/134",
+      "siglaUf": "RJ",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/73701.jpg",
+      "email": "dep.beneditadasilva@camara.leg.br",
+      "titulo": "Titular",
+      "codTitulo": 101,
+      "dataInicio": "2025-02-21",
+      "dataFim": null
+    },
+    {
+      "id": 74374,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/74374",
+      "nome": "Geraldo Resende",
+      "siglaPartido": "UNIÃO",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/76868",
+      "siglaUf": "MS",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/74374.jpg",
+      "email": "dep.geraldoresende@camara.leg.br",
+      "titulo": "Titular",
+      "codTitulo": 101,
+      "dataInicio": "2025-02-21",
+      "dataFim": null
+    },
+    {
+      "id": 156190,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/156190",
+      "nome": "Marcel van Hattem",
+      "siglaPartido": "NOVO",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/33734",
+      "siglaUf": "RS",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/156190.jpg",
+      "email": "dep.marcelvanhattem@camara.leg.br",
+      "titulo": "Titular",
+      "codTitulo": 101,
+      "dataInicio": "2025-02-21",
+      "dataFim": null
+    },
+    {
+      "id": 204462,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204462",
+      "nome": "Chris Tonietto",
+      "siglaPartido": "PL",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/110",
+      "siglaUf": "RJ",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204462.jpg",
+      "email": "dep.christonietto@camara.leg.br",
+      "titulo": "Titular",
+      "codTitulo": 101,
+      "dataInicio": "2025-02-21",
+      "dataFim": null
+    },
+    {
+      "id": 204378,
+      "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/204378",
+      "nome": "Coronel Chrisóstomo",
+      "siglaPartido": "PL",
+      "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/110",
+      "siglaUf": "RO",
+      "idLegislatura": 57,
+      "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/204378.jpg",
+      "email": "dep.coronelchrisostomo@camara.leg.br",
+      "titulo": "Titular",
+      "codTitulo": 101,
+      "dataInicio": "2025-02-21",
+      "dataFim": null
+    }
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056/membros?dataInicio=2023-02-01&dataFim=2026-11-22&itens=5"
+    },
+    {
+      "rel": "next",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056/membros?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=2&itens=5"
+    },
+    {
+      "rel": "first",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056/membros?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=1&itens=5"
+    },
+    {
+      "rel": "last",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056/membros?dataInicio=2023-02-01&dataFim=2026-11-22&pagina=3&itens=5"
+    }
+  ],
+  "_meta": {
+    "endpoint": "orgaos_membros",
+    "path": "/orgaos/{id}/membros",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056/membros?dataInicio=2023-02-01&dataFim=2026-11-22&itens=5",
+    "id_pai": 539056,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 5,
+    "tipo_dados": "list"
+  }
+}

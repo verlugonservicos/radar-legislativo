@@ -1,0 +1,35 @@
+{
+  "dados": {
+    "id": 539056,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056",
+    "sigla": "TESTECOM",
+    "nome": "TESTE PARA GERAÇÃO DO ESPELHO DA COMISSÃO (COMISSÃO FICTÍCIA)",
+    "apelido": "TESTE COMISSÃO",
+    "codTipoOrgao": 3,
+    "tipoOrgao": "Comissão Especial",
+    "nomePublicacao": "COMISSÃO ESPECIAL - TESTE COMISSÃO",
+    "nomeResumido": null,
+    "dataInicio": "2024-02-27T00:00",
+    "dataInstalacao": "2025-02-22T00:00",
+    "dataFim": null,
+    "dataFimOriginal": null,
+    "casa": "",
+    "sala": null,
+    "urlWebsite": null
+  },
+  "links": [
+    {
+      "rel": "self",
+      "href": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056"
+    }
+  ],
+  "_meta": {
+    "endpoint": "orgaos_detalhe",
+    "path": "/orgaos/{id}",
+    "url": "https://dadosabertos.camara.leg.br/api/v2/orgaos/539056",
+    "id_pai": 539056,
+    "coletado_em": "2026-11-22",
+    "registros_originais": 1,
+    "tipo_dados": "dict"
+  }
+}
