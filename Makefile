@@ -9,7 +9,7 @@ VPS_DB_DESTINO     ?= 127.0.0.1:5433
 TUNNEL_PORTA_LOCAL ?= 5433
 VPS_DIR            ?= /opt/portfolio/radar-legislativo
 
-.PHONY: setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync
+.PHONY: catalog catalog-check amostras dicionario setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync
 
 setup:            ## cria o ambiente, instala dependências e os hooks do pre-commit
 	$(PYTHON) -m venv $(VENV)
@@ -38,6 +38,18 @@ vps-diag:         ## diagnóstico somente leitura da VPS (saída bruta fica loca
 vps-sync:         ## copia infra/vps para a VPS (não executa nada lá)
 	ssh $(VPS_SSH) 'mkdir -p $(VPS_DIR)/infra/vps'
 	rsync -av --exclude '*.raw.txt' infra/vps/ $(VPS_SSH):$(VPS_DIR)/infra/vps/
+
+catalog:          ## sincroniza config/endpoints.yaml com o OpenAPI oficial
+	$(PY) -m radar catalog sync
+
+catalog-check:    ## cobertura 78/78 do catálogo contra o OpenAPI
+	$(PY) -m radar catalog check
+
+amostras:         ## grava uma resposta real de cada endpoint em tests/fixtures/api
+	$(PY) -m radar catalog amostras
+
+dicionario:       ## gera docs/dicionario_de_dados.md
+	$(PY) -m radar catalog dicionario
 
 test:             ## testes unitários com cobertura
 	$(VENV)/bin/pytest -m "not integration" --cov=radar --cov-report=term-missing

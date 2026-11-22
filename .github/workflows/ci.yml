@@ -33,7 +33,8 @@ jobs:
         run: ruff format --check .
       - name: Pytest (sem integração)
         run: pytest -m "not integration" --cov=radar --cov-report=term-missing
-      # A partir do M1: python -m radar catalog check --offline
+      - name: Cobertura do catálogo (78/78, offline)
+        run: python -m radar catalog check --offline
 
   banco:
     name: db init em PostgreSQL + pgvector

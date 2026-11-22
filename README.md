@@ -10,7 +10,9 @@ Pipeline de ETL e análise de dados sobre a API de Dados Abertos da Câmara dos 
 | `docs/decisoes.md` | Registros de decisões de arquitetura (ADRs) | Sim |
 | `docs/infra/`, `infra/vps/` | Diagnóstico da VPS e scripts do portfólio (banco por projeto, gateway, backup) | Sim |
 | `docs/historico/` | Histórico das sessões de trabalho | Sim |
-| `notebooks/` | Análise exploratória | Sim |
+| `notebooks/` | Análise exploratória (`01_exploracao_api.ipynb`) | Sim |
+| `config/` | Catálogo dos 78 endpoints, OpenAPI oficial e mapa Bronze → Silver | Sim |
+| `docs/dicionario_de_dados.md` | Campos de cada endpoint e destino na Silver (gerado) | Sim |
 | `src/radar/` | Código do pipeline (CLI `python -m radar`) | Sim |
 | `sql/` | DDL das camadas (`000_schemas.sql`, `ops/`) | Sim |
 | `tests/` | Testes unitários e de integração | Sim |
@@ -31,6 +33,8 @@ make db-init          # cria os schemas bronze, silver, gold e ops
 make test             # testes unitários
 ```
 
+Catálogo: `python -m radar catalog check` (cobertura 78/78 contra o OpenAPI), `catalog sync`, `catalog amostras` e `catalog dicionario`.
+
 O banco fica no Supabase self-hosted da VPS do autor, num banco dedicado ao projeto, sem porta pública.
 Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md).
 
@@ -40,7 +44,7 @@ Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md
 |---|---|
 | M0 Setup | ✅ |
 | M0.A Infra VPS | ✅ |
-| M1 Catálogo dos 78 endpoints | ⏳ |
+| M1 Catálogo dos 78 endpoints | ✅ |
 | M2 Landing + Bronze | ⏳ |
 | M3 Silver + Gold | ⏳ |
 | M4 IA | ⏳ |
