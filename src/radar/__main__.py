@@ -113,6 +113,88 @@ def _cmd_catalog_dicionario(_: argparse.Namespace) -> int:
     return 0
 
 
+def _datas(args: argparse.Namespace) -> tuple:
+    from datetime import date
+
+    inicio = date.fromisoformat(args.start) if getattr(args, "start", None) else None
+    fim = date.fromisoformat(args.end) if getattr(args, "end", None) else None
+    return inicio, fim
+
+
+def _executar_pipeline(args: argparse.Namespace, steps: frozenset[str]) -> int:
+    from radar.pipeline import run_pipeline
+
+    inicio, fim = _datas(args)
+    modo = getattr(args, "mode", None) or "backfill"
+    endpoints = set(args.endpoints.split(",")) if getattr(args, "endpoints", None) else None
+    r = run_pipeline(modo, inicio, fim, steps=steps, endpoints=endpoints, force=args.force)
+    log.info(
+        "execução %s: %s · %d endpoints · %s a %s · %.0f s",
+        r["id_execucao"],
+        r["status"],
+        r["endpoints"],
+        r["start"],
+        r["end"],
+        r["duracao_s"],
+    )
+    if r["falhas"]:
+        log.warning("endpoints com erro: %s", ", ".join(r["falhas"]))
+    return {"success": 0, "partial": 0}.get(r["status"], 1)
+
+
+def _cmd_extract(args: argparse.Namespace) -> int:
+    return _executar_pipeline(args, frozenset({"extract"}))
+
+
+def _cmd_bronze(args: argparse.Namespace) -> int:
+    return _executar_pipeline(args, frozenset({"bronze"}))
+
+
+def _cmd_run(args: argparse.Namespace) -> int:
+    if args.mode == "backfill" and not (args.start and args.end):
+        log.error("--mode backfill exige --start e --end")
+        return 2
+    return _executar_pipeline(args, frozenset({"extract", "bronze"}))
+
+
+def _cmd_status(_: argparse.Namespace) -> int:
+    from sqlalchemy import text
+
+    from radar import db
+
+    with db.get_engine().connect() as conn:
+        execs = conn.execute(
+            text(
+                "SELECT id_execucao, modo, status, iniciado_em::timestamp(0), "
+                "extract(epoch FROM finalizado_em - iniciado_em)::int "
+                "FROM ops.pipeline_execucoes ORDER BY id_execucao DESC LIMIT 5"
+            )
+        ).all()
+        cob = conn.execute(
+            text("SELECT status, count(*) FROM ops.vw_cobertura_atual GROUP BY 1 ORDER BY 1")
+        ).all()
+        tam = conn.execute(
+            text("SELECT schema, tabelas, tamanho_mb FROM ops.vw_tamanho_schemas ORDER BY 1")
+        ).all()
+        banco = conn.execute(text("SELECT tamanho_mb FROM ops.vw_tamanho_banco")).scalar_one()
+    log.info("últimas execuções:")
+    for e in execs:
+        log.info("  #%s %-11s %-8s %s (%s s)", *e)
+    log.info("cobertura: %s", ", ".join(f"{s}={n}" for s, n in cob) or "sem dados")
+    for schema, tabelas, mb in tam:
+        log.info("  schema %-6s %3d tabelas %8.2f MB", schema, tabelas, mb)
+    limite = get_settings().db_limite_mb
+    log.info("banco: %.2f MB de %d MB (%.1f%%)", banco, limite, 100 * float(banco) / limite)
+    return 0
+
+
+def _args_periodo(p: argparse.ArgumentParser, obrigatorio: bool) -> None:
+    p.add_argument("--start", required=obrigatorio, help="AAAA-MM-DD")
+    p.add_argument("--end", required=obrigatorio, help="AAAA-MM-DD")
+    p.add_argument("--endpoints", help="lista separada por vírgula (padrão: todos)")
+    p.add_argument("--force", action="store_true", help="ignora a frequência dos endpoints")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="radar", description="Radar Legislativo — pipeline ETL")
     parser.add_argument("--version", action="version", version=f"radar {__version__}")
@@ -144,6 +226,20 @@ def build_parser() -> argparse.ArgumentParser:
     p_amo.set_defaults(func=_cmd_catalog_amostras)
     sub_cat.add_parser("dicionario", help="Gera docs/dicionario_de_dados.md").set_defaults(
         func=_cmd_catalog_dicionario
+    )
+
+    p_ext = sub.add_parser("extract", help="Só Landing (API → JSON em disco)")
+    _args_periodo(p_ext, obrigatorio=True)
+    p_ext.set_defaults(func=_cmd_extract)
+    p_bro = sub.add_parser("bronze", help="Landing → Bronze (partições do período)")
+    _args_periodo(p_bro, obrigatorio=True)
+    p_bro.set_defaults(func=_cmd_bronze)
+    p_run = sub.add_parser("run", help="Pipeline (no M2: extração + Bronze)")
+    p_run.add_argument("--mode", choices=["incremental", "backfill"], required=True)
+    _args_periodo(p_run, obrigatorio=False)
+    p_run.set_defaults(func=_cmd_run)
+    sub.add_parser("status", help="Execuções, cobertura e tamanho do banco").set_defaults(
+        func=_cmd_status
     )
     return parser
 

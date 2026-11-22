@@ -76,8 +76,34 @@ def executar_script(engine: Engine, caminho: Path) -> list[str]:
     return avisos
 
 
-def db_init(engine: Engine, arquivos: tuple[str, ...] = SQL_INIT) -> None:
-    """Cria schemas e objetos de controle. Idempotente."""
+# Executados depois da Bronze (dependem das tabelas bronze.* e de ops.catalogo_endpoints).
+SQL_POS_BRONZE: tuple[str, ...] = ("ops/004_views_cobertura.sql",)
+
+
+def db_init(
+    engine: Engine,
+    arquivos: tuple[str, ...] = SQL_INIT,
+    bronze: bool = True,
+    bronze_engine: Engine | None = None,
+) -> None:
+    """Cria schemas, objetos de controle e as tabelas Bronze do catálogo. Idempotente."""
+    _executar(engine, arquivos)
+    if bronze:
+        from radar.bronze.ddl import criar_tabelas, sincronizar_catalogo
+        from radar.catalog.loader import load_catalog
+
+        specs = load_catalog()
+        destino = bronze_engine or engine
+        if destino is not engine:
+            _executar(destino, ("000_schemas.sql",))
+        criar_tabelas(destino, specs)
+        sincronizar_catalogo(engine, specs)
+        _executar(engine, SQL_POS_BRONZE)
+        _executar(engine, ("ops/003_roles.sql",))  # reaplica permissões nas tabelas novas
+    log.info("db init concluído")
+
+
+def _executar(engine: Engine, arquivos: tuple[str, ...]) -> None:
     for nome in arquivos:
         caminho = SQL_DIR / nome
         log.info("executando %s", nome)
@@ -85,7 +111,6 @@ def db_init(engine: Engine, arquivos: tuple[str, ...] = SQL_INIT) -> None:
             # "already exists, skipping" é o esperado de IF NOT EXISTS: não é problema.
             nivel = logging.DEBUG if "already exists, skipping" in aviso else logging.WARNING
             log.log(nivel, "aviso do banco em %s: %s", nome, aviso)
-    log.info("db init concluído")
 
 
 def dica_conexao(erro: Exception, settings: Settings | None = None) -> str | None:
