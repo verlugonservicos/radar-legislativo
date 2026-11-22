@@ -3,7 +3,13 @@ PYTHON ?= python3.12
 VENV   := .venv
 PY     := $(VENV)/bin/python
 
-.PHONY: setup lock db-init db-check test test-integration lint format precommit
+# VPS (SPEC V3, seção 23). Sobrescreva na linha de comando se precisar: make tunnel VPS_SSH=outro
+VPS_SSH            ?= vps-portfolio
+VPS_DB_DESTINO     ?= 127.0.0.1:5433
+TUNNEL_PORTA_LOCAL ?= 5433
+VPS_DIR            ?= /opt/portfolio/radar-legislativo
+
+.PHONY: setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync
 
 setup:            ## cria o ambiente, instala dependências e os hooks do pre-commit
 	$(PYTHON) -m venv $(VENV)
@@ -20,6 +26,17 @@ db-init:          ## cria schemas bronze/silver/gold/ops e tabelas de controle
 
 db-check:         ## testa a conexão e lista as camadas
 	$(PY) -m radar db check
+
+tunnel:           ## túnel SSH até o pg-gateway da VPS (deixe aberto em outro terminal)
+	@echo "Túnel localhost:$(TUNNEL_PORTA_LOCAL) -> $(VPS_SSH):$(VPS_DB_DESTINO)  (Ctrl+C encerra)"
+	ssh -N -o ExitOnForwardFailure=yes -L $(TUNNEL_PORTA_LOCAL):$(VPS_DB_DESTINO) $(VPS_SSH)
+
+vps-diag:         ## diagnóstico somente leitura da VPS (saída bruta fica local)
+	ssh $(VPS_SSH) 'bash -s' < infra/vps/diagnostico.sh > docs/infra/diagnostico_vps.raw.txt
+	@echo "Saída em docs/infra/diagnostico_vps.raw.txt (não versionada)"
+
+vps-sync:         ## copia infra/vps para a VPS (não executa nada lá)
+	rsync -av --exclude '*.raw.txt' infra/vps/ $(VPS_SSH):$(VPS_DIR)/infra/vps/
 
 test:             ## testes unitários com cobertura
 	$(VENV)/bin/pytest -m "not integration" --cov=radar --cov-report=term-missing

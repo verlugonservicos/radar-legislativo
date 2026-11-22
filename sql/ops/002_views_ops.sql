@@ -13,3 +13,8 @@ LEFT JOIN pg_class c
        ON c.relnamespace = n.oid AND c.relkind IN ('r', 'm', 'p')
 WHERE n.nspname IN ('bronze', 'silver', 'gold', 'ops')
 GROUP BY n.nspname;
+
+-- Tamanho total do banco do projeto em MB (base do alerta de 80% de DB_LIMITE_MB).
+CREATE OR REPLACE VIEW ops.vw_tamanho_banco AS
+SELECT current_database()                                        AS banco,
+       round(pg_database_size(current_database()) / 1024.0 / 1024.0, 2) AS tamanho_mb;

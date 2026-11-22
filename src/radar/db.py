@@ -88,6 +88,18 @@ def db_init(engine: Engine, arquivos: tuple[str, ...] = SQL_INIT) -> None:
     log.info("db init concluído")
 
 
+def dica_conexao(erro: Exception, settings: Settings | None = None) -> str | None:
+    """Sugestão amigável quando a conexão pelo túnel SSH falha."""
+    settings = settings or get_settings()
+    texto = str(erro).lower()
+    porta = str(settings.tunnel_porta_local)
+    if ("connection refused" in texto or "conexão recusada" in texto) and porta in texto:
+        return (
+            f"Nada escutando em localhost:{porta}. Abra o túnel SSH em outro terminal: make tunnel"
+        )
+    return None
+
+
 def verificar_conexao(engine: Engine) -> dict[str, object]:
     """Testa a conexão e informa versão do servidor e quais camadas já existem."""
     with engine.connect() as conn:

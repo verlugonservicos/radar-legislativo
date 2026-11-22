@@ -11,7 +11,7 @@ from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 RAIZ_PROJETO = Path(__file__).resolve().parents[2]
-PLACEHOLDER_MARCAS = ("<senha>", "<ref>", "sk-...", "troque-por")
+PLACEHOLDER_MARCAS = ("<senha>", "<ref>", "<usuario>", "sk-...", "troque-por")
 
 
 class ConfiguracaoAusente(RuntimeError):
@@ -36,7 +36,12 @@ class Settings(BaseSettings):
     database_url: SecretStr | None = None
     bronze_database_url_raw: SecretStr | None = Field(default=None, alias="BRONZE_DATABASE_URL")
     database_url_readonly: SecretStr | None = None
-    db_limite_mb: int = 500
+    db_limite_mb: int = Field(default=10240, ge=1)
+
+    # --- VPS / túnel SSH ---
+    vps_ssh: str = "vps-portfolio"
+    vps_db_destino: str = "127.0.0.1:5433"
+    tunnel_porta_local: int = 5433
 
     # --- API Câmara ---
     camara_base_url: str = "https://dadosabertos.camara.leg.br/api/v2"
@@ -59,6 +64,7 @@ class Settings(BaseSettings):
     despesas_meses_reprocessar: int = Field(default=3, ge=0)
     bronze_retencao_versoes_dias: int = Field(default=0, ge=0)
     tipos_relevantes: Annotated[list[str], NoDecode] = ["PL", "PLP", "PEC", "MPV", "PDL"]
+    landing_compactar_apos_dias: int = Field(default=7, ge=1)
 
     # --- OpenAI ---
     openai_api_key: SecretStr | None = None
@@ -83,10 +89,12 @@ class Settings(BaseSettings):
     dashboard_out_dir: Path = Path("site")
     dashboard_base_url: str = ""
     dashboard_janela_dias: int = Field(default=90, ge=1)
+    gh_pages_remote: str = ""
+    gh_pages_branch: str = "gh-pages"
+    gh_deploy_key_path: Path = Path("/run/secrets/gh_deploy_key")
 
     # --- Runner / n8n ---
     runner_token: SecretStr | None = None
-    n8n_encryption_key: SecretStr | None = None
     generic_timezone: str = "America/Sao_Paulo"
 
     # --- Logging ---
@@ -106,7 +114,6 @@ class Settings(BaseSettings):
         "openai_api_key",
         "telegram_bot_token",
         "runner_token",
-        "n8n_encryption_key",
         mode="before",
     )
     @classmethod

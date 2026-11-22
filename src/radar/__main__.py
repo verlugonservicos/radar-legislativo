@@ -10,6 +10,8 @@ import argparse
 import logging
 import sys
 
+from sqlalchemy.exc import OperationalError
+
 from radar import __version__
 from radar.config import ConfiguracaoAusente, get_settings
 from radar.logging_setup import setup_logging
@@ -67,6 +69,13 @@ def main(argv: list[str] | None = None) -> int:
     except ConfiguracaoAusente as erro:
         log.error("%s", erro)
         return 2
+    except OperationalError as erro:
+        from radar.db import dica_conexao
+
+        log.error("falha de conexão com o banco: %s", erro.orig or erro)
+        if dica := dica_conexao(erro):
+            log.error("%s", dica)
+        return 3
     except Exception as erro:  # erro inesperado: registra sem segredos e sai com código 1
         log.exception("falha: %s", erro)
         return 1

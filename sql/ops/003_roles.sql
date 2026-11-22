@@ -1,19 +1,18 @@
 -- =====================================================================
 -- ops/003_roles.sql — papel somente leitura para dashboards e GitHub Actions
--- A senha NUNCA fica neste arquivo. Crie o papel no SQL Editor do Supabase:
---   CREATE ROLE dashboard_leitura LOGIN PASSWORD '<definir no painel>';
--- Enquanto o papel não existir, este script só emite um aviso.
+-- O papel radar_leitura é criado por infra/vps/novo_projeto.sh (a senha nunca fica em arquivo).
+-- Este script roda como radar_app (dono dos schemas). Enquanto o papel não existir, só avisa.
 -- =====================================================================
 
 DO $$
 BEGIN
-    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'dashboard_leitura') THEN
-        GRANT USAGE ON SCHEMA gold, ops TO dashboard_leitura;
-        GRANT SELECT ON ALL TABLES IN SCHEMA gold, ops TO dashboard_leitura;
-        ALTER DEFAULT PRIVILEGES IN SCHEMA gold GRANT SELECT ON TABLES TO dashboard_leitura;
-        ALTER DEFAULT PRIVILEGES IN SCHEMA ops  GRANT SELECT ON TABLES TO dashboard_leitura;
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'radar_leitura') THEN
+        GRANT USAGE ON SCHEMA gold, ops TO radar_leitura;
+        GRANT SELECT ON ALL TABLES IN SCHEMA gold, ops TO radar_leitura;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA gold GRANT SELECT ON TABLES TO radar_leitura;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA ops  GRANT SELECT ON TABLES TO radar_leitura;
     ELSE
-        RAISE NOTICE 'Papel dashboard_leitura ainda não existe — permissões não aplicadas (ver docs/operacao.md).';
+        RAISE NOTICE 'Papel radar_leitura ainda não existe — permissões não aplicadas (rode infra/vps/novo_projeto.sh).';
     END IF;
 END
 $$;
