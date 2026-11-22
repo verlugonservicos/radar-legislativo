@@ -47,7 +47,7 @@ def test_tabelas_e_views_ops(engine):
         )
         camadas = set(conn.execute(text("SELECT schema FROM ops.vw_tamanho_schemas")).scalars())
     assert tabelas >= TABELAS_OPS
-    assert "vw_tamanho_schemas" in tabelas
+    assert {"vw_tamanho_schemas", "vw_tamanho_banco"} <= tabelas
     assert camadas == {"bronze", "silver", "gold", "ops"}
 
 

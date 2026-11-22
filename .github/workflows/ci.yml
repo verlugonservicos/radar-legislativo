@@ -68,6 +68,16 @@ jobs:
       - name: Testes de integração
         run: pytest -m integration
 
+  infra:
+    name: Scripts da VPS (shellcheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n e shellcheck
+        run: |
+          for f in infra/vps/*.sh; do bash -n "$f"; done
+          shellcheck --severity=warning infra/vps/*.sh
+
   segredos:
     name: Gitleaks
     runs-on: ubuntu-latest

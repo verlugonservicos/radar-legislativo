@@ -29,3 +29,14 @@ def test_nenhuma_senha_em_sql():
     for caminho in SQL_DIR.rglob("*.sql"):
         sql = re.sub(r"--[^\n]*", "", caminho.read_text(encoding="utf-8"))
         assert "PASSWORD" not in sql.upper(), caminho.name
+
+
+def test_permissoes_usam_papel_da_v3():
+    sql = (SQL_DIR / "ops" / "003_roles.sql").read_text(encoding="utf-8")
+    assert "radar_leitura" in sql
+    assert "dashboard_leitura" not in sql
+
+
+def test_views_de_tamanho():
+    sql = (SQL_DIR / "ops" / "002_views_ops.sql").read_text(encoding="utf-8")
+    assert "ops.vw_tamanho_schemas" in sql and "ops.vw_tamanho_banco" in sql
