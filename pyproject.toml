@@ -27,6 +27,9 @@ extend-exclude = ["negocio", "data", "site"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "PD"]
+# O formatador (ruff format, line-length=100) controla o código; E501 só sobrava para
+# strings longas (SQL, mensagens), que ficam mais legíveis inteiras.
+ignore = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["radar"]
