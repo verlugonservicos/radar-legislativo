@@ -165,7 +165,8 @@ def _cmd_status(_: argparse.Namespace) -> int:
     with db.get_engine().connect() as conn:
         execs = conn.execute(
             text(
-                "SELECT id_execucao, modo, status, iniciado_em::timestamp(0), "
+                "SELECT id_execucao, modo, status, "
+                "(iniciado_em AT TIME ZONE 'America/Sao_Paulo')::timestamp(0), "
                 "extract(epoch FROM finalizado_em - iniciado_em)::int "
                 "FROM ops.pipeline_execucoes ORDER BY id_execucao DESC LIMIT 5"
             )
