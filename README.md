@@ -7,7 +7,8 @@ Pipeline de ETL e análise de dados sobre a API de Dados Abertos da Câmara dos 
 | Pasta | Conteúdo | No Git? |
 |---|---|---|
 | `docs/especificacao/` | Plano de Projeto, PRD e SPEC (V1 e V2 congeladas, V3 vigente) | Sim |
-| `docs/adr/` | Registros de decisões de arquitetura | Sim |
+| `docs/decisoes.md` | Registros de decisões de arquitetura (ADRs) | Sim |
+| `docs/infra/`, `infra/vps/` | Diagnóstico da VPS e scripts do portfólio (banco por projeto, gateway, backup) | Sim |
 | `docs/historico/` | Histórico das sessões de trabalho | Sim |
 | `notebooks/` | Análise exploratória | Sim |
 | `src/radar/` | Código do pipeline (CLI `python -m radar`) | Sim |
@@ -25,17 +26,20 @@ Requer Python 3.12.
 ```bash
 make setup            # ambiente, dependências e hooks do pre-commit
 cp .env.example .env  # preencha as credenciais (o .env nunca vai para o Git)
+make tunnel           # em outro terminal: túnel SSH até o banco na VPS
 make db-init          # cria os schemas bronze, silver, gold e ops
 make test             # testes unitários
 ```
 
-Detalhes de configuração do Supabase e do papel somente leitura: [`docs/operacao.md`](docs/operacao.md).
+O banco fica no Supabase self-hosted da VPS do autor, num banco dedicado ao projeto, sem porta pública.
+Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md).
 
 ## Andamento
 
 | Marco | Status |
 |---|---|
 | M0 Setup | ✅ |
+| M0.A Infra VPS | ⏳ |
 | M1 Catálogo dos 78 endpoints | ⏳ |
 | M2 Landing + Bronze | ⏳ |
 | M3 Silver + Gold | ⏳ |
