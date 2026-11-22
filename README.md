@@ -6,7 +6,7 @@ Pipeline de ETL e análise de dados sobre a API de Dados Abertos da Câmara dos 
 
 | Pasta | Conteúdo | No Git? |
 |---|---|---|
-| `docs/especificacao/` | Plano de Projeto, PRD e SPEC (V1 congelada, V2 vigente) | Sim |
+| `docs/especificacao/` | Plano de Projeto, PRD e SPEC (V1 e V2 congeladas, V3 vigente) | Sim |
 | `docs/adr/` | Registros de decisões de arquitetura | Sim |
 | `docs/historico/` | Histórico das sessões de trabalho | Sim |
 | `notebooks/` | Análise exploratória | Sim |
@@ -16,7 +16,7 @@ Pipeline de ETL e análise de dados sobre a API de Dados Abertos da Câmara dos 
 | `negocio/` | Material do desafio, áudio do DataCast, rascunhos | Não |
 | `data/` | Dados extraídos (landing JSON, dumps) | Não |
 
-A especificação vigente para implementação é a **V2**: `docs/especificacao/*_V2.*`.
+A especificação vigente para implementação é a **V3** (Supabase self-hosted na VPS, um banco por projeto): `docs/especificacao/*_V3.*`.
 
 ## Como rodar
 
