@@ -157,6 +157,41 @@ def _cmd_run(args: argparse.Namespace) -> int:
     return _executar_pipeline(args, frozenset({"extract", "bronze"}))
 
 
+def _cmd_silver(args: argparse.Namespace) -> int:
+    from radar import db
+    from radar.silver.runner import run_silver
+
+    nomes = set(args.entidades.split(",")) if args.entidades else None
+    r = run_silver(db.get_engine(), None, nomes, completa=args.completa)
+    falhas = [n for n, c in r.items() if "falha" in c]
+    nao_reconc = [n for n, c in r.items() if "falha" not in c and not c.get("reconciliado")]
+    total = {
+        k: sum(c.get(k, 0) for c in r.values() if "falha" not in c)
+        for k in ("lidos", "gravados", "rejeitados", "duplicados")
+    }
+    log.info(
+        "silver: %d entidades · %s · falhas: %s · não reconciliadas: %s",
+        len(r),
+        total,
+        falhas or "nenhuma",
+        nao_reconc or "nenhuma",
+    )
+    return 1 if falhas else 0
+
+
+def _cmd_gold(_: argparse.Namespace) -> int:
+    from radar import db
+    from radar.gold.builder import build
+
+    r = build(db.get_engine())
+    falhas = [a for a, c in r["arquivos"].items() if "falha" in c]
+    log.info("gold: %s", ", ".join(f"{t}={n}" for t, n in r["contagens"].items()))
+    log.info("integridade (órfãos): %s", r["integridade"])
+    if falhas:
+        log.error("arquivos com falha: %s", falhas)
+    return 1 if falhas else 0
+
+
 def _cmd_status(_: argparse.Namespace) -> int:
     from sqlalchemy import text
 
@@ -239,6 +274,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--mode", choices=["incremental", "backfill"], required=True)
     _args_periodo(p_run, obrigatorio=False)
     p_run.set_defaults(func=_cmd_run)
+    p_sil = sub.add_parser("silver", help="Bronze → Silver (incremental por entidade)")
+    p_sil.add_argument("--entidades", help="lista separada por vírgula (padrão: todas)")
+    p_sil.add_argument(
+        "--completa", action="store_true", help="relê toda a Bronze (ignora watermark)"
+    )
+    p_sil.set_defaults(func=_cmd_silver)
+    p_gold = sub.add_parser("gold", help="Silver → Gold")
+    p_gold.add_argument("acao", choices=["build"])
+    p_gold.set_defaults(func=_cmd_gold)
     sub.add_parser("status", help="Execuções, cobertura e tamanho do banco").set_defaults(
         func=_cmd_status
     )

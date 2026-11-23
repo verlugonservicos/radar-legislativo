@@ -77,7 +77,7 @@ def executar_script(engine: Engine, caminho: Path) -> list[str]:
 
 
 # Executados depois da Bronze (dependem das tabelas bronze.* e de ops.catalogo_endpoints).
-SQL_POS_BRONZE: tuple[str, ...] = ("ops/004_views_cobertura.sql",)
+SQL_POS_BRONZE: tuple[str, ...] = ("ops/004_views_cobertura.sql", "ops/005_silver_watermark.sql")
 
 
 def db_init(
@@ -99,6 +99,12 @@ def db_init(
         criar_tabelas(destino, specs)
         sincronizar_catalogo(engine, specs)
         _executar(engine, SQL_POS_BRONZE)
+        from radar.silver.runner import criar_tabelas as criar_silver
+
+        criar_silver(engine)
+        from radar.gold.builder import criar_tabelas as criar_gold
+
+        criar_gold(engine)
         _executar(engine, ("ops/003_roles.sql",))  # reaplica permissões nas tabelas novas
     log.info("db init concluído")
 

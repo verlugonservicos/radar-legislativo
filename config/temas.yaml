@@ -1,0 +1,55 @@
+# Temas internos do Radar Legislativo (SPEC V3, seção 3.3).
+# Carregados em gold.dim_tema pelo `radar gold build`; os embeddings entram no M4.
+# `cor`: cor fixa do tema em todos os gráficos (paleta segura para daltonismo).
+versao: 1
+temas:
+  - nome: Saúde
+    critico: false
+    cor: "#0F766E"
+    descricao: "Saúde pública, SUS, hospitais, medicamentos, vacinas, planos de saúde, vigilância sanitária, ANVISA, profissionais de saúde, saúde mental."
+  - nome: Tributário e Fiscal
+    critico: true
+    cor: "#B45309"
+    descricao: "Impostos, tributos, reforma tributária, IBS, CBS, IR, ICMS, isenções, benefícios fiscais, orçamento público, arrecadação, dívida pública."
+  - nome: Trabalho e Previdência
+    critico: false
+    cor: "#7C3AED"
+    descricao: "Relações de trabalho, CLT, emprego, salário mínimo, sindicatos, previdência social, INSS, aposentadoria, benefícios trabalhistas."
+  - nome: Tecnologia e Inovação
+    critico: true
+    cor: "#2563EB"
+    descricao: "Inteligência artificial, proteção de dados, LGPD, internet, telecomunicações, plataformas digitais, cibersegurança, criptoativos, ciência e inovação."
+  - nome: Meio Ambiente e Energia
+    critico: false
+    cor: "#15803D"
+    descricao: "Meio ambiente, clima, desmatamento, licenciamento ambiental, saneamento, recursos hídricos, energia elétrica, petróleo, gás, renováveis."
+  - nome: Educação
+    critico: false
+    cor: "#DB2777"
+    descricao: "Ensino básico e superior, escolas, universidades, professores, FUNDEB, MEC, bolsas, educação profissional."
+  - nome: Segurança Pública e Justiça
+    critico: false
+    cor: "#475569"
+    descricao: "Crimes, código penal, polícia, sistema prisional, armas, processo penal e civil, Judiciário, Ministério Público."
+  - nome: Agronegócio
+    critico: false
+    cor: "#A16207"
+    descricao: "Agricultura, pecuária, crédito rural, defensivos agrícolas, terras, reforma agrária, abastecimento, pesca."
+  - nome: Infraestrutura e Transportes
+    critico: false
+    cor: "#0369A1"
+    descricao: "Rodovias, ferrovias, portos, aeroportos, mobilidade urbana, trânsito, concessões, obras públicas, habitação."
+  - nome: Economia e Sistema Financeiro
+    critico: true
+    cor: "#C2410C"
+    descricao: "Bancos, crédito, juros, mercado de capitais, Banco Central, câmbio, comércio exterior, defesa do consumidor, concorrência, empresas."
+  - nome: Direitos Sociais e Cidadania
+    critico: false
+    cor: "#9333EA"
+    descricao: "Direitos humanos, assistência social, Bolsa Família, pessoas com deficiência, mulheres, crianças, idosos, igualdade racial, cultura, esporte."
+  - nome: Administração Pública
+    critico: false
+    cor: "#64748B"
+    descricao: "Servidores públicos, organização do Estado, licitações, eleições, partidos, transparência, homenagens, datas comemorativas."
+tema_fallback: Outros
+cor_fallback: "#94A3B8"

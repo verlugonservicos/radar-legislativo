@@ -31,6 +31,7 @@ from radar.run_context import (
 log = logging.getLogger("radar.pipeline")
 
 ETAPAS_M2 = frozenset({"extract", "bronze"})
+ETAPAS_M3 = frozenset({"extract", "bronze", "silver", "gold"})
 
 
 def janela_incremental(hoje: date, watermarks: dict[str, date]) -> tuple[date, date]:
@@ -124,7 +125,8 @@ def run_pipeline(
     falhas: list[str] = []
     t0 = time.monotonic()
     try:
-        for nivel, grupo in enumerate(topological_levels(specs)):
+        niveis = topological_levels(specs) if steps & ETAPAS_M2 else []
+        for nivel, grupo in enumerate(niveis):
             inicio_nivel = time.monotonic()
             for spec in grupo:
                 try:
@@ -138,6 +140,22 @@ def run_pipeline(
             ctx.etapas[f"nivel_{nivel}"] = {
                 "endpoints": len(grupo), "duracao_s": round(time.monotonic() - inicio_nivel, 1),
             }  # fmt: skip
+        if "silver" in steps:
+            from radar.silver.runner import run_silver
+
+            inicio_etapa = time.monotonic()
+            silver = run_silver(engine, ctx.id_execucao, completa=force)
+            ctx.contagens["silver"] = silver
+            ctx.etapas["silver"] = {"duracao_s": round(time.monotonic() - inicio_etapa, 1)}
+            falhas += [f"silver.{n}" for n, c in silver.items() if "falha" in c]
+        if "gold" in steps:
+            from radar.gold.builder import build
+
+            inicio_etapa = time.monotonic()
+            gold = build(engine)
+            ctx.contagens["gold"] = gold
+            ctx.etapas["gold"] = {"duracao_s": round(time.monotonic() - inicio_etapa, 1)}
+            falhas += [f"gold.{n}" for n, c in gold.get("arquivos", {}).items() if "falha" in c]
         status = "partial" if falhas else "success"
         erro_txt = f"endpoints com erro: {', '.join(falhas)}" if falhas else None
     except Exception as erro:
