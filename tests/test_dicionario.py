@@ -1,13 +1,16 @@
-"""O dicionário de dados versionado está em dia com o catálogo e as fixtures."""
+"""O dicionário de dados (docs/, só local) está em dia com o catálogo e as fixtures."""
 
+import pytest
 import yaml
 
 from radar.catalog.dicionario import DESTINO, SAIDA, gerar, perfil_campos
 from radar.catalog.loader import load_catalog
 
 
-def test_dicionario_versionado_esta_atualizado(tmp_path):
-    novo = gerar(tmp_path / "dicionario.md")
+def test_dicionario_local_esta_atualizado(tmp_path):
+    novo = gerar(tmp_path / "dicionario.md")  # a geração roda sempre (CI inclusive)
+    if not SAIDA.exists():
+        pytest.skip("docs/ não é versionada (fica só na máquina do autor)")
     assert novo.read_text(encoding="utf-8") == SAIDA.read_text(encoding="utf-8"), (
         "docs/dicionario_de_dados.md desatualizado: rode `python -m radar catalog dicionario`"
     )

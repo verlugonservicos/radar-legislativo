@@ -46,3 +46,6 @@ Thumbs.db
 
 # configurações locais do Claude Code
 .claude/
+
+# documentação do projeto: fica só na máquina do autor, não vai para o GitHub
+docs/
