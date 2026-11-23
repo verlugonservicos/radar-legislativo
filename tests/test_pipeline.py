@@ -39,6 +39,7 @@ def ambiente(monkeypatch, tmp_path):
 
 @responses.activate
 def test_backfill_duas_vezes(ambiente):
+    responses.get(f"{BASE}/referencias/uf", json={"dados": [{"sigla": "SP"}], "links": []})
     responses.get(
         f"{BASE}/partidos",
         json={"dados": [{"id": 1, "sigla": "A"}, {"id": 2, "sigla": "B"}], "links": []},
@@ -61,12 +62,26 @@ def test_backfill_duas_vezes(ambiente):
             "SELECT ultima_data_ref FROM ops.controle_ingestao WHERE endpoint='partidos_detalhe' AND camada='bronze'")).scalar_one()  # fmt: skip
     assert cob == {"partidos": 0, "partidos_detalhe": 0}  # 2ª execução: nada novo
     assert status == "success" and wm == date(2026, 11, 7)
-    assert "idLegislatura=57" in responses.calls[0].request.url
+    assert "idLegislatura=57" in responses.calls[1].request.url  # [0] = checagem prévia
 
 
 @responses.activate
 def test_falha_num_endpoint_vira_partial(ambiente):
+    responses.get(f"{BASE}/referencias/uf", json={"dados": [{"sigla": "SP"}], "links": []})
     responses.get(f"{BASE}/partidos", json={"dados": [{"id": 1}], "links": []})
     responses.get(f"{BASE}/partidos/1", status=500)
     r = pipeline.run_pipeline("backfill", date(2026, 11, 1), date(2026, 11, 7), force=True)
     assert r["status"] == "partial" and r["falhas"] == ["partidos_detalhe"]
+
+
+@responses.activate
+def test_api_fora_do_ar_falha_rapido(ambiente):
+    responses.get(f"{BASE}/referencias/uf", status=504, body="upstream request timeout")
+    r = pipeline.run_pipeline("backfill", date(2026, 11, 1), date(2026, 11, 7), force=True)
+    assert r["status"] == "failed"
+    # só a checagem prévia (com as repetições do cliente); nenhum endpoint do catálogo foi tentado
+    assert {c.request.url.split("?")[0] for c in responses.calls} == {f"{BASE}/referencias/uf"}
+    with ambiente.connect() as conn:
+        erro = conn.execute(text("SELECT erro FROM ops.pipeline_execucoes WHERE id_execucao = :i"),
+                            {"i": r["id_execucao"]}).scalar_one()  # fmt: skip
+    assert "indisponível" in erro

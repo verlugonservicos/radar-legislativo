@@ -17,7 +17,7 @@ from radar.catalog.models import EndpointSpec
 from radar.config import get_settings
 from radar.db import get_engine
 from radar.extract import landing
-from radar.extract.client import CamaraClient
+from radar.extract.client import CamaraAPIError, CamaraClient
 from radar.extract.generic import GenericExtractor
 from radar.run_context import (
     RunContext,
@@ -32,6 +32,19 @@ log = logging.getLogger("radar.pipeline")
 
 ETAPAS_M2 = frozenset({"extract", "bronze"})
 ETAPAS_M3 = frozenset({"extract", "bronze", "silver", "gold"})
+
+
+class APIIndisponivel(RuntimeError):
+    """A API da Câmara não respondeu à checagem prévia."""
+
+
+def api_disponivel(client: CamaraClient, path: str = "/referencias/uf") -> None:
+    """Uma chamada leve antes de começar: evita minutos de retry endpoint a endpoint."""
+    try:
+        if client.get(path) is None:
+            raise APIIndisponivel(f"API da Câmara indisponível: {path} retornou 404")
+    except CamaraAPIError as erro:
+        raise APIIndisponivel(f"API da Câmara indisponível: {erro}") from erro
 
 
 def janela_incremental(hoje: date, watermarks: dict[str, date]) -> tuple[date, date]:
@@ -125,6 +138,8 @@ def run_pipeline(
     falhas: list[str] = []
     t0 = time.monotonic()
     try:
+        if extrator is not None:
+            api_disponivel(extrator.client)  # falha rápida se a API estiver fora do ar
         niveis = topological_levels(specs) if steps & ETAPAS_M2 else []
         for nivel, grupo in enumerate(niveis):
             inicio_nivel = time.monotonic()
@@ -158,6 +173,12 @@ def run_pipeline(
             falhas += [f"gold.{n}" for n, c in gold.get("arquivos", {}).items() if "falha" in c]
         status = "partial" if falhas else "success"
         erro_txt = f"endpoints com erro: {', '.join(falhas)}" if falhas else None
+    except APIIndisponivel as erro:
+        status, erro_txt = "failed", str(erro)
+        log.error("%s", erro)
+    except KeyboardInterrupt:
+        status, erro_txt = "failed", "interrompido pelo usuário (Ctrl+C)"
+        log.warning("execução interrompida pelo usuário")
     except Exception as erro:
         status, erro_txt = "failed", str(erro)[:500]
         log.exception("pipeline falhou")
