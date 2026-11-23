@@ -34,14 +34,20 @@ ON CONFLICT (id_partido) DO UPDATE SET
 -- 1) histórico: uma versão a cada mudança do hash dos atributos rastreados
 -- 2) deputados sem histórico: versão única desde 1900-01-01
 -- Merge por (id_deputado, valido_de): fecha/atualiza versões sem truncar (preserva as sk).
-WITH hist AS (
+WITH hist_bruto AS (                         -- o mesmo instante pode aparecer em 2 legislaturas:
+    SELECT h.*, row_number() OVER (           -- fica a linha da legislatura mais recente
+               PARTITION BY h.id_deputado, h.data_hora ORDER BY h.id_legislatura DESC NULLS LAST) AS rn
+    FROM silver.deputados_historico h
+    WHERE h.data_hora IS NOT NULL
+),
+hist AS (
     SELECT h.id_deputado, h.data_hora,
            coalesce(h.nome, d.nome) AS nome, h.nome_eleitoral, h.sigla_partido, h.sigla_uf,
            h.situacao, h.condicao_eleitoral,
            md5(concat_ws('|', h.sigla_partido, h.situacao, h.condicao_eleitoral, h.sigla_uf, h.nome_eleitoral)) AS hash
-    FROM silver.deputados_historico h
+    FROM hist_bruto h
     LEFT JOIN silver.deputados d USING (id_deputado)
-    WHERE h.data_hora IS NOT NULL
+    WHERE h.rn = 1
 ),
 marcado AS (
     SELECT *, lag(hash) OVER (PARTITION BY id_deputado ORDER BY data_hora) AS hash_anterior

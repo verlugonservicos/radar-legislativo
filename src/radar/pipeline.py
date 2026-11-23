@@ -152,7 +152,7 @@ def run_pipeline(
             from radar.gold.builder import build
 
             inicio_etapa = time.monotonic()
-            gold = build(engine)
+            gold = build(engine, ctx.id_execucao)
             ctx.contagens["gold"] = gold
             ctx.etapas["gold"] = {"duracao_s": round(time.monotonic() - inicio_etapa, 1)}
             falhas += [f"gold.{n}" for n, c in gold.get("arquivos", {}).items() if "falha" in c]

@@ -93,6 +93,38 @@ def _pauta_sem_proposicao(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _despesas(df: pd.DataFrame) -> pd.DataFrame:
+    """Chave da despesa + correção do sinal do valor líquido (ADR-024).
+
+    A API devolve `valorLiquido` com sinal trocado em ~89% dos lançamentos: o módulo bate com
+    `valorDocumento - valorGlosa`. Quando o documento é positivo e o módulo bate, o sinal é
+    corrigido e a linha fica marcada (`_liquido_corrigido`) para a regra de aviso.
+    """
+    df = com_chave("chave_despesa", [
+        "id_deputado", "ano", "mes", "cod_documento", "num_documento", "data_documento",
+        "valor_documento", "cnpj_cpf_fornecedor", "parcela"], funcao=_sha256)(df)  # fmt: skip
+    doc = pd.to_numeric(df["valor_documento"], errors="coerce")
+    liq = pd.to_numeric(df["valor_liquido"], errors="coerce")
+    glosa = pd.to_numeric(df["valor_glosa"], errors="coerce").fillna(0)
+    trocado = ((doc >= 0) & (liq < 0) & ((liq.abs() - (doc - glosa)).abs() < 0.01)).fillna(False)
+    df["valor_liquido"] = liq.where(~trocado, liq.abs())
+    df["_liquido_corrigido"] = trocado
+    return df
+
+
+def _sinal_corrigido() -> Rule:
+    return Rule(
+        "sinal_valor_liquido_corrigido",
+        "valor líquido negativo com módulo = documento - glosa (sinal corrigido; ADR-024)",
+        lambda df: (
+            df["_liquido_corrigido"]
+            if "_liquido_corrigido" in df
+            else pd.Series(False, index=df.index)
+        ),
+        rejeita=False,
+    )
+
+
 def _registro_vazio(*cols: str) -> Rule:
     return Rule(
         "registro_vazio",
@@ -382,10 +414,8 @@ def entidades() -> list[Entidade]:
                 "nome_fornecedor": "nomeFornecedor", "cnpj_cpf_fornecedor": "cnpjCpfFornecedor",
                 "url_documento": "urlDocumento", "parcela": "parcela", "num_ressarcimento": "numRessarcimento",
                 "cod_lote": "codLote"})],
-            transformar=com_chave("chave_despesa", [
-                "id_deputado", "ano", "mes", "cod_documento", "num_documento", "data_documento",
-                "valor_documento", "cnpj_cpf_fornecedor", "parcela"], funcao=_sha256),
-            regras=[non_negative("valor_documento"), between("mes", 1, 12),
+            transformar=_despesas,
+            regras=[non_negative("valor_documento"), _sinal_corrigido(), between("mes", 1, 12),
                     date_between("data_documento", date(2000, 1, 1), HOJE + timedelta(days=1))],
         ),
         # ---------------------------------------------------------- órgãos e eventos

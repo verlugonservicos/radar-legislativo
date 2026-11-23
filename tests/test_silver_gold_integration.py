@@ -90,7 +90,9 @@ def test_scd2_e_fidelidade_partidaria(engine):
             INSERT INTO silver.deputados_historico (id_deputado, data_hora, id_legislatura, nome, sigla_partido, sigla_uf, situacao)
             VALUES (999001, '2025-01-01 10:00-03', 57, 'Teste', 'AAA', 'SP', 'Exercício'),
                    (999001, '2025-06-01 10:00-03', 57, 'Teste', 'AAA', 'SP', 'Exercício'),
-                   (999001, '2026-03-01 10:00-03', 57, 'Teste', 'BBB', 'SP', 'Exercício')
+                   (999001, '2026-03-01 10:00-03', 57, 'Teste', 'BBB', 'SP', 'Exercício'),
+                   -- mesmo instante em outra legislatura (caso real da API): não pode gerar versão duplicada
+                   (999001, '2026-03-01 10:00-03', 56, 'Teste', 'CCC', 'SP', 'Exercício')
             ON CONFLICT DO NOTHING;
             INSERT INTO silver.votacoes (id_votacao, data, data_hora_registro) VALUES
                 ('T-1', '2025-08-01', '2025-08-01 15:00-03'), ('T-2', '2026-09-01', '2026-09-01 15:00-03')

@@ -121,3 +121,16 @@ def test_despesa_negativa_vai_para_quarentena():
                                   "votacoes_proposicoes"])  # fmt: skip
 def test_relacoes_espelhadas_sao_conformadas(nome):
     assert ENTIDADES[nome].conformada and len({f.bronze for f in ENTIDADES[nome].fontes}) >= 2
+
+
+def test_sinal_do_valor_liquido_corrigido_sem_rejeitar():
+    """ADR-024: módulo = documento - glosa → sinal corrigido e contado como aviso."""
+    ent = ENTIDADES["despesas"]
+    base_linha = {c: None for c in ent.colunas} | {"id_deputado": 1, "ano": 2026, "mes": 10}
+    df = pd.DataFrame([base_linha | {"valor_documento": 100.0, "valor_liquido": -90.0, "valor_glosa": 10.0},
+                       base_linha | {"valor_documento": 50.0, "valor_liquido": -7.0, "valor_glosa": 0.0},
+                       base_linha | {"valor_documento": 30.0, "valor_liquido": 30.0, "valor_glosa": 0.0}])  # fmt: skip
+    df = ent.transformar(base.tipar(df, ent.tipos))
+    r = validate(df, [not_null(*ent.pk), *ent.regras], "despesas")
+    assert df["valor_liquido"].tolist() == [90.0, -7.0, 30.0]  # só corrige quando o módulo bate
+    assert len(r.validos) == 3 and r.avisos == {"sinal_valor_liquido_corrigido": 1}

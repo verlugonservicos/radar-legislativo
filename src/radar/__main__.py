@@ -154,7 +154,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
     if args.mode == "backfill" and not (args.start and args.end):
         log.error("--mode backfill exige --start e --end")
         return 2
-    return _executar_pipeline(args, frozenset({"extract", "bronze"}))
+    return _executar_pipeline(args, frozenset({"extract", "bronze", "silver", "gold"}))
 
 
 def _cmd_silver(args: argparse.Namespace) -> int:
