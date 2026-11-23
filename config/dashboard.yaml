@@ -7,11 +7,12 @@ repositorio: https://github.com/verlugonservicos/radar-legislativo
 fonte: "API de Dados Abertos da Câmara dos Deputados"
 paginas:
   - {slug: index,       titulo: "Visão Executiva",      icone: layout-dashboard, descricao: "O que aconteceu na Câmara na última semana e o que vem por aí."}
-  - {slug: proposicoes, titulo: "Proposições & Temas",  icone: file-text,        descricao: "Proposições classificadas por tema com IA, resumos e tempo de tramitação."}
-  - {slug: votacoes,    titulo: "Votações & Partidos",  icone: vote,             descricao: "Resultado das votações, participação, fidelidade e governismo por partido."}
+  - {slug: proposicoes, titulo: "Proposições e Temas",  icone: file-text,        descricao: "Proposições classificadas por tema com IA, resumos e tempo de tramitação."}
+  - {slug: votacoes,    titulo: "Votações e Partidos",  icone: vote,             descricao: "Resultado das votações, participação, fidelidade e governismo por partido."}
   - {slug: deputados,   titulo: "Deputados",            icone: users,            descricao: "Atividade, presença e gastos dos 513 deputados em exercício."}
   - {slug: despesas,    titulo: "Despesas da Cota",     icone: wallet,           descricao: "Cota parlamentar por mês, tipo, partido, UF e fornecedor."}
-  - {slug: agenda,      titulo: "Agenda & Órgãos",      icone: calendar-days,    descricao: "Eventos das comissões e do Plenário, pautas e presença."}
+  - {slug: agenda,      titulo: "Agenda e Órgãos",      icone: calendar-days,    descricao: "Eventos das comissões e do Plenário, pautas e presença."}
   - {slug: articulacao, titulo: "Articulação Política", icone: network,          descricao: "Frentes parlamentares, blocos partidários e lideranças."}
-  - {slug: operacao,    titulo: "Operação & Qualidade", icone: activity,         descricao: "Execuções do pipeline, cobertura dos 78 endpoints, qualidade e custos de IA."}
+  - {slug: operacao,    titulo: "Operação e Qualidade", icone: activity,         descricao: "Execuções do pipeline, cobertura dos 78 endpoints, qualidade e custos de IA."}
+  - {slug: glossario,   titulo: "Glossário",            icone: book-open,        sem_graficos: true, descricao: "O que significa cada termo usado nos painéis: do Legislativo, dos indicadores, da IA e do pipeline."}
 limite_json_bytes: 1000000

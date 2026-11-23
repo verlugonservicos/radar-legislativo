@@ -7,14 +7,14 @@
   <button class="btn" type="button" id="limpar-temas">Limpar</button>
 </div>
 <div class="grid">
-  {% call card("area", "Proposições relevantes por tema e semana", "Últimas 26 semanas", "span-8") %}{{ grafico("graf-area", "Área empilhada de proposições por tema e semana", "chart--lg") }}{% endcall %}
-  {% call card("acuracia", "Acurácia da classificação por IA", "Contra os temas oficiais da Câmara", "span-4") %}
+  {% call card("area", "Proposições relevantes por tema e semana", "Últimas 26 semanas", "span-8", termo="tema-ia") %}{{ grafico("graf-area", "Área empilhada de proposições por tema e semana", "chart--lg") }}{% endcall %}
+  {% call card("acuracia", "Acurácia da classificação por IA", "Contra os temas oficiais da Câmara", "span-4", termo="acuracia") %}
     {{ grafico("graf-gauge", "Acurácia da IA", "chart--sm") }}
     <dl class="kv" id="kv-ia"></dl>
   {% endcall %}
   {% call card("treemap", "Tema → tipo de proposição", "Últimas 26 semanas", "span-6") %}{{ grafico("graf-treemap", "Treemap de temas e tipos de proposição") }}{% endcall %}
-  {% call card("tramitacao", "Tempo de tramitação por tema", "Mediana e percentil 90, em dias", "span-6") %}{{ grafico("graf-tramitacao", "Barras de mediana de dias de tramitação por tema") }}{% endcall %}
-  {% call card("setores", "Setores econômicos citados pela IA", "Menções nos resumos executivos (um resumo cita até 4 setores)", "span-12") %}{{ grafico("graf-setores", "Barras de setores mais citados", "chart--xl") }}{% endcall %}
+  {% call card("tramitacao", "Tempo de tramitação por tema", "Mediana e percentil 90, em dias", "span-6", termo="tramitacao-dias") %}{{ grafico("graf-tramitacao", "Barras de mediana de dias de tramitação por tema") }}{% endcall %}
+  {% call card("setores", "Setores econômicos citados pela IA", "Menções nos resumos executivos (um resumo cita até 4 setores)", "span-12", termo="resumo") %}{{ grafico("graf-setores", "Barras de setores mais citados", "chart--xl") }}{% endcall %}
   {% call card("tabela", "Proposições relevantes recentes", "Apresentadas nos últimos 90 dias · clique para ver o detalhe", "span-12") %}<div id="tabela-proposicoes"></div>{% endcall %}
 </div>
 {% endblock %}

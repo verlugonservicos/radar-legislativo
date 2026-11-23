@@ -2,10 +2,10 @@
 {% from "partials/componentes.html.j2" import card, grafico %}
 {% block conteudo %}
 <div class="grid">
-  {% call card("calendario", "Eventos por dia", "De 30 dias antes a 7 dias depois da data de referência", "span-12") %}{{ grafico("graf-calendario", "Calendário de calor com a quantidade de eventos por dia", "chart--sm") }}{% endcall %}
+  {% call card("calendario", "Eventos por dia", "De 30 dias antes a 7 dias depois da data de referência", "span-12", termo="eventos-por-dia") %}{{ grafico("graf-calendario", "Calendário de calor com a quantidade de eventos por dia", "chart--sm") }}{% endcall %}
   {% call card("orgaos", "Eventos por órgão", "Top 15", "span-6") %}{{ grafico("graf-orgaos", "Barras de eventos por órgão", "chart--lg") }}{% endcall %}
   {% call card("tipos", "Eventos por tipo e presença média", "Quantidade de eventos e deputados presentes em média", "span-6") %}{{ grafico("graf-tipos", "Barras de eventos por tipo com presença média", "chart--lg") }}{% endcall %}
-  {% call card("pauta", "Itens críticos em pauta", "Proposições de temas críticos nos próximos 7 dias", "span-12") %}<div class="stack" id="lista-pauta"></div>{% endcall %}
+  {% call card("pauta", "Itens críticos em pauta", "Proposições de temas críticos nos próximos 7 dias", "span-12", termo="pauta") %}<div class="stack" id="lista-pauta"></div>{% endcall %}
   {% call card("tabela", "Eventos", "Eventos com itens de tema crítico aparecem destacados", "span-12") %}<div id="tabela-agenda"></div>{% endcall %}
 </div>
 {% endblock %}

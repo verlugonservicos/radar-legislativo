@@ -1,8 +1,9 @@
 {# Macros de componentes (SPEC V3 12.2). #}
-{% macro card(id, titulo, sub="", span="span-6", classe="") -%}
+{% macro card(id, titulo, sub="", span="span-6", classe="", termo="") -%}
 <section class="card {{ span }} {{ classe }}" aria-labelledby="{{ id }}-t">
   <header class="card__head">
     <div><h2 class="card__title" id="{{ id }}-t">{{ titulo }}</h2>{% if sub %}<p class="card__sub">{{ sub }}</p>{% endif %}</div>
+    {% if termo %}<div class="card__actions"><a class="btn" href="glossario.html#{{ termo }}" title="Ver no glossário">O que é?<span class="sr-only"> {{ titulo }} no glossário</span></a></div>{% endif %}
   </header>
   {{ caller() }}
 </section>

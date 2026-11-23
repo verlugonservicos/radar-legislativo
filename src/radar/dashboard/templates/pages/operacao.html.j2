@@ -2,12 +2,12 @@
 {% from "partials/componentes.html.j2" import card, grafico %}
 {% block conteudo %}
 <div class="grid">
-  {% call card("execucoes", "Execuções do pipeline", "Duração e status das últimas execuções", "span-8") %}{{ grafico("graf-execucoes", "Barras de duração das execuções coloridas pelo status") }}{% endcall %}
+  {% call card("execucoes", "Execuções do pipeline", "Duração e status das últimas execuções", "span-8", termo="execucao") %}{{ grafico("graf-execucoes", "Barras de duração das execuções coloridas pelo status") }}{% endcall %}
   {% call card("banco", "Uso do banco", "Tamanho por camada no PostgreSQL da VPS", "span-4") %}{{ grafico("graf-banco", "Rosca do tamanho do banco por schema") }}{% endcall %}
-  {% call card("cobertura", "Cobertura dos 78 endpoints", "Um quadrado por endpoint: verde = ok", "span-6") %}<div id="grade-cobertura"></div>{% endcall %}
-  {% call card("funil", "Funil Bronze → Silver → Gold", "Linhas por camada nas entidades principais", "span-6") %}{{ grafico("graf-funil", "Barras agrupadas de linhas por camada") }}{% endcall %}
+  {% call card("cobertura", "Cobertura dos 78 endpoints", "Um quadrado por endpoint: verde = ok", "span-6", termo="cobertura") %}<div id="grade-cobertura"></div>{% endcall %}
+  {% call card("funil", "Funil Bronze → Silver → Gold", "Linhas por camada nas entidades principais", "span-6", termo="funil") %}{{ grafico("graf-funil", "Barras agrupadas de linhas por camada") }}{% endcall %}
   {% call card("qualidade", "Rejeições por regra", "Registros em quarentena (ops.qualidade_rejeicoes)", "span-6") %}{{ grafico("graf-qualidade", "Barras de rejeições por regra de qualidade") }}{% endcall %}
-  {% call card("custos", "Custo de IA", "Acumulado em US$ por operação", "span-6") %}{{ grafico("graf-custos", "Barras do custo de IA por operação") }}<dl class="kv" id="kv-custos"></dl>{% endcall %}
+  {% call card("custos", "Custo de IA", "Acumulado em US$ por operação", "span-6", termo="custo-ia") %}{{ grafico("graf-custos", "Barras do custo de IA por operação") }}<dl class="kv" id="kv-custos"></dl>{% endcall %}
   {% call card("tabela", "Últimas execuções", "", "span-12") %}<div id="tabela-execucoes"></div>{% endcall %}
 </div>
 {% endblock %}

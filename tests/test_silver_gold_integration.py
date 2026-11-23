@@ -299,4 +299,4 @@ def test_marts_com_indice_unico_e_site_gerado_do_banco(engine, tmp_path):
     assert sem_indice == []
     assert refresh_marts(engine)["marts"] == r["marts"]  # idempotente
     site = build_site(tmp_path / "site", engine=engine)
-    assert site["paginas"] == 8 and (tmp_path / "site" / "data" / "meta.json").exists()
+    assert site["paginas"] == 9 and (tmp_path / "site" / "data" / "meta.json").exists()

@@ -1,4 +1,4 @@
-// Proposições & Temas: área por tema/semana, acurácia da IA, treemap, tramitação, setores e tabela.
+// Proposições e Temas: área por tema/semana, acurácia da IA, treemap, tramitação, setores e tabela.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, corTema, gauge, montar } from '../charts.js';

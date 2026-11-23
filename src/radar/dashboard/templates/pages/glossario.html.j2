@@ -1,0 +1,29 @@
+{% extends "base.html.j2" %}
+{% block conteudo %}
+<div class="filters" role="search">
+  <label class="sr-only" for="busca-glossario">Buscar termo</label>
+  <input class="input" type="search" id="busca-glossario" placeholder="Buscar termo… (ex.: PEC, fidelidade, embedding)" autocomplete="off" style="flex:1 1 320px">
+  <nav class="glossario__indice" aria-label="Seções do glossário">
+    {% for s in glossario.secoes %}<a class="btn" href="#{{ s.id }}">{{ s.titulo }}</a>{% endfor %}
+  </nav>
+</div>
+<p class="muted" id="glossario-info" role="status" aria-live="polite"></p>
+{% for s in glossario.secoes %}
+<section class="card glossario__secao" id="{{ s.id }}" aria-labelledby="{{ s.id }}-t">
+  <h2 class="card__title" id="{{ s.id }}-t">{{ s.titulo }}</h2>
+  <dl class="glossario">
+    {% for t in s.termos %}
+    <div class="glossario__item" id="{{ t.id }}" data-busca="{{ (t.termo ~ ' ' ~ t.definicao)|lower }}">
+      <dt><a href="#{{ t.id }}" class="glossario__ancora" aria-label="Link para {{ t.termo }}">#</a>{{ t.termo }}</dt>
+      <dd>
+        <p>{{ t.definicao }}</p>
+        {% if t.exemplo %}<p class="muted"><strong>Exemplo:</strong> {{ t.exemplo }}</p>{% endif %}
+        {% if t.veja %}<p class="muted">Veja também: <a href="#{{ t.veja }}">{{ termos_por_id[t.veja] }}</a></p>{% endif %}
+      </dd>
+    </div>
+    {% endfor %}
+  </dl>
+</section>
+{% endfor %}
+<div class="empty" id="glossario-vazio" hidden>Nenhum termo encontrado. Tente outra palavra.</div>
+{% endblock %}

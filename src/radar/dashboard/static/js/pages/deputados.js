@@ -37,9 +37,10 @@ function desenharMapa() {
   const vs = valores.map((v) => v.value);
   mapa = montar(limpa('graf-mapa'), (t) => ({
     tooltip: { trigger: 'item', formatter: (p) => `<b>${p.name}</b><br>${rotulo}: ${formatter(p.value)}` },
-    visualMap: { min: Math.min(...vs), max: Math.max(...vs), left: 8, bottom: 8, calculable: true, text: ['maior', 'menor'],
-      inRange: { color: [t.soft, t.accent] }, textStyle: { color: t.muted }, formatter },
+    visualMap: { min: Math.min(...vs), max: Math.max(...vs), left: 0, bottom: 0, itemHeight: 110, calculable: true, text: ['maior', 'menor'],
+      inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
     series: [{ type: 'map', map: 'BR', roam: false, nameProperty: 'sigla', data: valores, selectedMode: 'single',
+      layoutCenter: ['54%', '50%'], layoutSize: '104%',      // ocupa o card inteiro (o Brasil é quase quadrado)
       itemStyle: { borderColor: t.surface, borderWidth: 1, areaColor: t.grid },
       emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
       select: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },

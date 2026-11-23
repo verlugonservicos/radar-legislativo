@@ -1,7 +1,7 @@
 // Visão Executiva: KPIs da semana, série diária, temas, Top 5 e pautas críticas.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { corTema, linhas, montar, rosca } from '../charts.js';
+import { barras, corTema, linhas, montar } from '../charts.js';
 import { badgeImpacto, chipTema, kpi, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -40,11 +40,14 @@ await seguro(document.getElementById('graf-temas'), async () => {
   const semanas = [...new Set(ts.map((d) => d.inicio_semana))].sort().slice(-4);
   const porTema = {};
   for (const d of ts) if (semanas.includes(d.inicio_semana)) porTema[d.tema] = (porTema[d.tema] || 0) + d.qtd;
-  const itens = Object.entries(porTema).sort((a, b) => b[1] - a[1]).map(([name, value]) => ({ name, value, itemStyle: { color: corTema(name) } }));
+  const ordem = Object.entries(porTema).sort((a, b) => b[1] - a[1]);
   const el = document.getElementById('graf-temas');
   el.classList.remove('skeleton');
-  if (!itens.length) { el.innerHTML = vazio(); return; }
-  montar(el, rosca({ itens }), { tabela: { colunas: ['Tema', 'Proposições'], linhas: itens.map((i) => [i.name, i.value]) } });
+  if (!ordem.length) { el.innerHTML = vazio(); return; }
+  montar(el, barras({
+    categorias: ordem.map(([t]) => t), horizontal: true, rotulo: true,
+    series: [{ name: 'Proposições', data: ordem.map(([t, v]) => ({ value: v, itemStyle: { color: corTema(t) } })) }],
+  }), { tabela: { colunas: ['Tema', 'Proposições'], linhas: ordem } });
 });
 
 await seguro(document.getElementById('lista-top'), async () => {

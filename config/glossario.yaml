@@ -1,0 +1,287 @@
+# Glossário dos painéis (página glossario.html). Cada termo vira uma âncora: glossario.html#<id>.
+# Para acrescentar um termo, inclua {id, termo, definicao} na seção certa; `exemplo` e `veja` são opcionais.
+secoes:
+  - id: legislativo
+    titulo: O Legislativo
+    termos:
+      - id: proposicao
+        termo: Proposição
+        definicao: >-
+          Todo documento apresentado para deliberação da Câmara: projetos de lei, propostas de emenda à
+          Constituição, medidas provisórias, requerimentos, pareceres, entre outros. Cada proposição tem
+          tipo, número e ano (ex.: PL 5864/2026) e percorre um caminho até ser aprovada, rejeitada ou arquivada.
+        exemplo: "PL 3057/2026 — inclui medicamentos de alto custo na Relação Nacional de Medicamentos Essenciais."
+      - id: tipos
+        termo: Tipos de proposição (PL, PLP, PEC, MPV, PDL…)
+        definicao: >-
+          PL (Projeto de Lei) cria ou altera leis ordinárias. PLP (Projeto de Lei Complementar) trata de
+          temas que a Constituição exige por lei complementar e precisa de maioria absoluta (257 votos).
+          PEC (Proposta de Emenda à Constituição) altera a Constituição: dois turnos de votação e 3/5 dos
+          votos (308). MPV (Medida Provisória) é editada pelo Presidente da República, vale de imediato e
+          precisa ser aprovada pelo Congresso. PDL (Projeto de Decreto Legislativo) trata de assuntos só do
+          Congresso, como aprovar tratados e renovar concessões de rádio e TV. REQ e RIC são requerimentos
+          (o RIC pede informações a ministros).
+      - id: relevantes
+        termo: Proposição relevante
+        definicao: >-
+          Nos painéis, são as proposições dos tipos que mudam regras para empresas e cidadãos — PL, PLP,
+          PEC, MPV e PDL. Só elas recebem tema, resumo e score da IA. No KPI "Proposições relevantes",
+          entram as que têm score de relevância de 0,50 ou mais.
+        veja: relevancia
+      - id: ementa
+        termo: Ementa
+        definicao: >-
+          Resumo oficial, em uma ou duas frases, do que a proposição faz. A ementa detalhada e as
+          palavras-chave (quando existem) complementam o texto.
+      - id: temas-oficiais
+        termo: Temas oficiais
+        definicao: >-
+          Classificação temática que a própria Câmara atribui às proposições (32 temas, como "Saúde" ou
+          "Finanças Públicas e Orçamento"). Servem para avaliar a classificação feita pela IA.
+        veja: tema-ia
+      - id: tramitacao
+        termo: Tramitação
+        definicao: >-
+          O caminho da proposição dentro da Câmara: apresentação, despacho às comissões, pareceres,
+          votações e envio ao Senado ou à sanção. Cada passo fica registrado com data, órgão e situação.
+      - id: despacho
+        termo: Despacho
+        definicao: >-
+          Decisão que encaminha a proposição — por exemplo, "às Comissões de Saúde e de Constituição e
+          Justiça". O último despacho mostra onde ela está agora.
+      - id: regime
+        termo: Regime de tramitação
+        definicao: >-
+          Velocidade com que a proposição anda. Ordinário é o ritmo normal; prioridade encurta prazos;
+          urgência dispensa formalidades e permite votar logo no Plenário.
+      - id: orgao
+        termo: Órgão (comissão)
+        definicao: >-
+          Colegiado da Câmara que analisa as proposições de um assunto: comissões permanentes (ex.: CCJC,
+          Constituição e Justiça e de Cidadania), comissões especiais, CPIs e o próprio Plenário (PLEN).
+      - id: plenario
+        termo: Plenário
+        definicao: >-
+          Reunião de todos os 513 deputados, onde acontecem as votações finais na Câmara.
+      - id: evento
+        termo: Evento
+        definicao: >-
+          Qualquer atividade com data e hora registrada pela Câmara: sessões do Plenário (deliberativas ou
+          não), reuniões de comissão, audiências públicas, seminários, reuniões técnicas e solenidades.
+          Um evento pode ter pauta (lista de proposições a discutir ou votar) e lista de presença.
+      - id: eventos-por-dia
+        termo: Eventos por dia
+        definicao: >-
+          Quantos eventos aconteceram, ou estão marcados, em cada data. No calendário da página Agenda e
+          Órgãos cada quadrado é um dia e a cor mais forte indica mais eventos; dias em cinza não têm
+          eventos registrados. A janela vai de 30 dias antes a 7 dias depois da data de referência.
+        veja: data-referencia
+      - id: pauta
+        termo: Pauta e item de pauta
+        definicao: >-
+          A pauta é a lista do que será tratado num evento. Cada item de pauta normalmente é uma
+          proposição; um item é crítico quando a proposição é de um tema crítico para a Bússola Pública.
+        veja: tema-critico
+      - id: votacao
+        termo: Votação nominal e simbólica
+        definicao: >-
+          Na votação nominal cada deputado registra o voto no painel eletrônico (Sim, Não, Abstenção,
+          Obstrução), e o voto individual fica público. Na simbólica, o presidente da sessão pergunta e
+          proclama o resultado sem contagem individual — por isso só as nominais entram nos indicadores
+          de fidelidade, governismo e presença.
+      - id: orientacao
+        termo: Orientação de bancada
+        definicao: >-
+          Recomendação do líder do partido, do bloco ou do governo sobre como votar. "Liberado" significa
+          que a bancada não orientou; esses casos ficam fora dos cálculos de fidelidade e governismo.
+        veja: fidelidade
+      - id: obstrucao
+        termo: Obstrução e "Artigo 17"
+        definicao: >-
+          Obstrução é a estratégia de não votar para dificultar o quórum. "Artigo 17" aparece no voto do
+          presidente da sessão, que pelo Regimento só vota em situações específicas.
+      - id: partido-bloco
+        termo: Bloco parlamentar e federação
+        definicao: >-
+          Bloco parlamentar é uma aliança de partidos dentro da Câmara, que passa a atuar com uma liderança
+          comum. Federação partidária é a união de partidos que funcionam como um só por pelo menos quatro
+          anos, inclusive nas eleições.
+      - id: lideranca
+        termo: Lideranças
+        definicao: >-
+          Deputados escolhidos para falar e orientar votos em nome de um partido ou bloco, além dos líderes
+          do Governo, da Oposição, da Maioria e da Minoria.
+      - id: mesa
+        termo: Mesa Diretora
+        definicao: >-
+          Grupo que dirige os trabalhos da Câmara: presidente, vice-presidentes, secretários e suplentes,
+          eleitos para mandatos de dois anos.
+      - id: frente
+        termo: Frente parlamentar
+        definicao: >-
+          Associação de deputados (e às vezes senadores) de vários partidos em torno de um tema, como
+          agropecuária ou saúde. Ajuda a ver alianças que cruzam as linhas partidárias.
+      - id: cota
+        termo: Cota parlamentar (CEAP)
+        definicao: >-
+          Cota para o Exercício da Atividade Parlamentar: verba mensal, que varia por UF, para despesas do
+          mandato como passagens, combustível, aluguel de escritório e divulgação. Os gastos são públicos.
+      - id: valores-despesa
+        termo: Valor do documento, glosa e valor líquido
+        definicao: >-
+          Valor do documento é o total da nota fiscal. Glosa é a parte que a Câmara não reembolsa. Valor
+          líquido é o que foi efetivamente pago (documento menos glosa) — é o valor usado nos painéis.
+      - id: discurso
+        termo: Discurso
+        definicao: >-
+          Pronunciamento de um deputado registrado pela Câmara, com data, fase da sessão e sumário.
+
+  - id: indicadores
+    titulo: Indicadores dos painéis
+    termos:
+      - id: data-referencia
+        termo: Data de referência e período
+        definicao: >-
+          A data do dado mais recente carregado (proposição, votação ou evento), limitada a hoje. Todas as
+          janelas — "últimos 7 dias", "últimos 90 dias" — contam a partir dela. O período no rodapé mostra
+          o intervalo coberto pelos indicadores diários.
+      - id: kpi
+        termo: KPI e variação
+        definicao: >-
+          Os cartões do topo da Visão Executiva somam os últimos 7 dias e comparam com os 7 dias
+          anteriores (▲ subiu, ▼ caiu). A linha pequena (sparkline) mostra os últimos 30 dias, dia a dia.
+      - id: participacao
+        termo: Participação e presença em votações
+        definicao: >-
+          Presença de um deputado = votos dele ÷ votações nominais do Plenário no período. Participação de
+          um partido = média da presença dos seus deputados em exercício.
+      - id: fidelidade
+        termo: Fidelidade partidária
+        definicao: >-
+          Percentual dos votos em que o deputado votou como o seu partido (ou bloco) orientou. Orientação
+          "Liberado" fica de fora da conta.
+      - id: governismo
+        termo: Governismo
+        definicao: >-
+          Percentual dos votos em que o deputado votou como o líder do Governo orientou.
+      - id: concordancia
+        termo: Concordância entre partidos
+        definicao: >-
+          Para cada votação nominal, toma-se o voto da maioria de cada partido (Sim ou Não). Concordância é
+          o percentual das votações em comum em que dois partidos votaram igual. Só partidos com cinco ou
+          mais deputados.
+      - id: score-atividade
+        termo: Score de atividade
+        definicao: >-
+          Nota de 0 a 100 que resume a atividade do deputado: média das posições (percentis) dele entre os
+          513 em autorias de proposições, presença em votações, presenças em eventos e discursos. Um score
+          90 significa que ele está à frente de cerca de 90% dos colegas nesses quesitos.
+      - id: tramitacao-dias
+        termo: Tempo de tramitação (mediana e P90)
+        definicao: >-
+          Dias desde a apresentação. A mediana é o tempo típico (metade das proposições levou menos, metade
+          mais); o P90 mostra o tempo das mais demoradas (90% levaram menos que isso).
+      - id: gasto-deputado
+        termo: Gasto por deputado
+        definicao: >-
+          Valor líquido da cota parlamentar dividido pelo número de deputados em exercício do partido ou da
+          UF, para comparar grupos de tamanhos diferentes.
+      - id: outlier
+        termo: Gasto fora da curva (z-score)
+        definicao: >-
+          Quantos desvios-padrão o gasto de um deputado num tipo de despesa está acima da média dos colegas
+          naquele tipo. Acima de 2 é incomum e merece um olhar — não significa irregularidade.
+      - id: quarentena
+        termo: Quarentena de qualidade
+        definicao: >-
+          Registros que não passaram nas regras de validação (ex.: despesa com valor negativo, que costuma
+          ser estorno) e por isso ficam fora dos totais, guardados para análise.
+
+  - id: ia
+    titulo: Inteligência artificial
+    termos:
+      - id: tema-ia
+        termo: Tema (IA)
+        definicao: >-
+          Um dos 12 temas de interesse da Bússola Pública (como Tributário e Fiscal ou Tecnologia e
+          Inovação), escolhido automaticamente pela semelhança entre o texto da proposição e a descrição
+          de cada tema. Quando nenhum tema é parecido o bastante, a proposição fica em "Outros".
+      - id: tema-critico
+        termo: Tema crítico
+        definicao: >-
+          Tema de maior impacto para os clientes: Tributário e Fiscal, Tecnologia e Inovação e Economia e
+          Sistema Financeiro. Pesa no score de relevância e destaca itens na pauta.
+      - id: embedding
+        termo: Embedding e similaridade
+        definicao: >-
+          A IA transforma cada texto num vetor de 1.536 números (embedding) que representa o seu
+          significado. Textos com sentido parecido ficam próximos; a similaridade (0 a 100%) mede essa
+          proximidade. A proposição recebe o tema com maior similaridade.
+      - id: limiar
+        termo: Limiar
+        definicao: >-
+          Similaridade mínima para aceitar um tema (hoje 30%). Abaixo disso a proposição vai para "Outros",
+          porque nessas faixas a IA mais erra do que acerta.
+      - id: busca-semantica
+        termo: Proposições parecidas (busca semântica)
+        definicao: >-
+          No detalhe de uma proposição, as cinco com embedding mais próximo — parecidas no assunto, mesmo
+          quando usam palavras diferentes.
+      - id: resumo
+        termo: Resumo executivo, nível de impacto e setores
+        definicao: >-
+          Texto de até três linhas escrito pela IA (modelo gpt-4o-mini) a partir da ementa, dizendo o que
+          muda e quem é afetado; o nível de impacto (baixo, médio ou alto) para empresas e mercado; e até
+          quatro setores econômicos afetados. A IA usa só o texto oficial e não acrescenta fatos.
+      - id: relevancia
+        termo: Score de relevância
+        definicao: >-
+          Nota de 0 a 100 que ordena o que merece atenção primeiro: 30% peso do tipo (PEC pesa mais que PL),
+          25% tema crítico, 20% nível de impacto, 10% regime de urgência e 15% estar em pauta nos próximos
+          7 dias.
+      - id: acuracia
+        termo: Acurácia e "sem vazamento"
+        definicao: >-
+          Percentual de proposições em que o tema da IA bate com os temas oficiais da Câmara. "Sem
+          vazamento" é a medida honesta: a IA classifica sem ver os temas oficiais (81% na última avaliação).
+      - id: custo-ia
+        termo: Custo de IA
+        definicao: >-
+          Valor pago à OpenAI pelas chamadas, registrado a cada execução. Só se paga o que mudou: um resumo
+          é refeito apenas quando a ementa muda.
+
+  - id: dados
+    titulo: Dados e pipeline
+    termos:
+      - id: api
+        termo: API de Dados Abertos e endpoints
+        definicao: >-
+          Serviço público da Câmara que entrega os dados em formato aberto. Cada endereço de consulta é um
+          endpoint (ex.: lista de deputados, votos de uma votação). O Radar coleta todos os 78.
+      - id: cobertura
+        termo: Cobertura 78/78
+        definicao: >-
+          Quantos dos 78 endpoints da API foram coletados com sucesso na última execução. 78/78 significa
+          cobertura completa.
+      - id: medalhao
+        termo: Arquitetura medalhão (Landing, Bronze, Silver, Gold)
+        definicao: >-
+          As camadas por onde o dado passa. Landing guarda a resposta da API como veio. Bronze guarda cada
+          versão no banco, sem alterar nada. Silver limpa, valida e padroniza. Gold organiza para análise
+          (fatos, dimensões e IA). Os marts são tabelas-resumo da Gold feitas para estes painéis.
+      - id: funil
+        termo: Funil Bronze → Silver → Gold
+        definicao: >-
+          Quantas linhas de cada entidade existem em cada camada. A Bronze costuma ter mais, porque guarda
+          versões repetidas e registros que a validação recusou.
+      - id: execucao
+        termo: Execução do pipeline e status
+        definicao: >-
+          Cada rodada de coleta e processamento. Incremental busca só o que é novo; backfill recarrega um
+          período. Status: success (tudo certo), partial (algum endpoint ou etapa falhou, o resto foi
+          gravado) e failed (a execução não terminou).
+      - id: atualizado
+        termo: "Atualizado há…"
+        definicao: >-
+          Tempo desde o fim da última execução do pipeline que trouxe dados. Os painéis mostram o que
+          estava no banco naquele momento.

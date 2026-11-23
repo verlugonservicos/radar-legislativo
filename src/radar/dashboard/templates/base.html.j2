@@ -54,12 +54,12 @@
       {% block conteudo %}{% endblock %}
     </main>
     <footer class="footer">
-      Fonte: {{ cfg.fonte }} · período <span data-meta="periodo">—</span> · atualizado em <span data-meta="atualizado">—</span> ·
+      <a href="glossario.html">Glossário de termos</a> · Fonte: {{ cfg.fonte }} · período <span data-meta="periodo">—</span> · atualizado em <span data-meta="atualizado">—</span> ·
       {{ cfg.titulo }} para {{ cfg.subtitulo }} · {{ ano }}
     </footer>
   </div>
 </div>
-<script src="{{ echarts.src }}" integrity="{{ echarts.integrity }}" crossorigin="anonymous" defer></script>
+{% if not pagina.sem_graficos %}<script src="{{ echarts.src }}" integrity="{{ echarts.integrity }}" crossorigin="anonymous" defer></script>{% endif %}
 <script type="module" src="{{ asset('js/pages/' ~ pagina.slug ~ '.js') }}"></script>
 </body>
 </html>

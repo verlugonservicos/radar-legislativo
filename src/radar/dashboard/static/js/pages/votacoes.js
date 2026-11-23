@@ -1,4 +1,4 @@
-// Votações & Partidos: votações por dia, participação, fidelidade × governismo e concordância.
+// Votações e Partidos: votações por dia, participação, fidelidade × governismo e concordância.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, montar } from '../charts.js';

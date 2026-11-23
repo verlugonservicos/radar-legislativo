@@ -1,4 +1,4 @@
-// Operação & Qualidade: execuções, banco, cobertura, funil, rejeições e custos de IA.
+// Operação e Qualidade: execuções, banco, cobertura, funil, rejeições e custos de IA.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, montar, rosca } from '../charts.js';

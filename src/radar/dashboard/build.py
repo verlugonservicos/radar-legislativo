@@ -31,6 +31,7 @@ AQUI = Path(__file__).parent
 TEMPLATES = AQUI / "templates"
 STATIC = AQUI / "static"
 CONFIG = RAIZ_PROJETO / "config" / "dashboard.yaml"
+GLOSSARIO = RAIZ_PROJETO / "config" / "glossario.yaml"
 ECHARTS = {
     "src": "https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js",
     "integrity": "sha384-Mx5lkUEQPM1pOJCwFtUICyX45KNojXbkWdYhkKUKsbv391mavbfoAmONbzkgYPzR",
@@ -39,6 +40,21 @@ ECHARTS = {
 
 def carregar_config() -> dict:
     return yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+
+
+def carregar_glossario() -> dict:
+    """Termos do glossário; valida que todo `veja` aponta para um termo existente."""
+    g = yaml.safe_load(GLOSSARIO.read_text(encoding="utf-8"))
+    ids = {t["id"]: t["termo"] for s in g["secoes"] for t in s["termos"]}
+    quebrados = [
+        t["veja"]
+        for s in g["secoes"]
+        for t in s["termos"]
+        if t.get("veja") and t["veja"] not in ids
+    ]
+    if quebrados:
+        raise ValueError(f"glossário: 'veja' sem termo correspondente: {quebrados}")
+    return {"glossario": g, "termos_por_id": ids}
 
 
 # ------------------------------------------------------------------ JSON
@@ -164,7 +180,7 @@ def renderizar(out_dir: Path, cfg: dict, assets: dict[str, str]) -> list[str]:
         trim_blocks=True, lstrip_blocks=True,
     )  # fmt: skip
     env.globals.update(cfg=cfg, asset=lambda rel: assets[rel], echarts=ECHARTS,
-                       ano=datetime.now().year)  # fmt: skip
+                       ano=datetime.now().year, **carregar_glossario())  # fmt: skip
     geradas = []
     for pagina in cfg["paginas"]:
         tpl = env.get_template(f"pages/{pagina['slug']}.html.j2")

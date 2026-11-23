@@ -35,20 +35,24 @@ def site(tmp_path_factory):
     return out, r
 
 
-def test_gera_as_8_paginas_com_titulo_idioma_e_navegacao(site):
+def test_gera_as_9_paginas_com_titulo_idioma_e_navegacao(site):
     out, r = site
-    assert r["paginas"] == 8 and len(PAGINAS) == 8
+    assert r["paginas"] == 9 and len(PAGINAS) == 9  # 8 painéis + glossário
     for slug in PAGINAS:
         html = (out / f"{slug}.html").read_text(encoding="utf-8")
         assert '<html lang="pt-BR">' in html and re.search(r"<title>[^<]+</title>", html)
         assert '<meta name="viewport"' in html and '<meta name="description"' in html
         assert len(re.findall(r'<nav class="nav">.*?</nav>', html, re.S)) == 1
-        assert all(f'href="{p}.html"' in html for p in PAGINAS)  # navegação com os 8 links
+        assert all(f'href="{p}.html"' in html for p in PAGINAS)  # navegação com os 9 links
+        assert (
+            "&amp;" not in re.sub(r"<script.*?</script>", "", html, flags=re.S).split("<main")[0]
+        )  # sem "&" nos títulos
         assert html.count('aria-current="page"') == 1
         assert re.search(
             rf'src="static/js/pages/{slug}\.[0-9a-f]{{10}}\.js"', html
         )  # módulo da página (com hash)
-        assert 'integrity="sha384-' in html  # ECharts da CDN com SRI
+        if slug != "glossario":
+            assert 'integrity="sha384-' in html  # ECharts da CDN com SRI
 
 
 def test_datasets_no_formato_meta_dados_e_dentro_do_limite(site):
@@ -102,3 +106,24 @@ def test_publicacao_recusa_site_incompleto(tmp_path):
 
     with pytest.raises(RuntimeError):
         validar_site(tmp_path)
+
+
+def test_glossario_tem_os_termos_pedidos_e_links_validos(site):
+    out, _ = site
+    g = b.carregar_glossario()
+    ids = set(g["termos_por_id"])
+    assert {
+        "proposicao",
+        "evento",
+        "eventos-por-dia",
+        "tipos",
+        "score-atividade",
+        "acuracia",
+    } <= ids
+    html = (out / "glossario.html").read_text(encoding="utf-8")
+    assert all(f'id="{i}"' in html for i in ids)
+    for slug in PAGINAS:  # todo "O que é?" aponta para um termo que existe
+        for termo in re.findall(
+            r'href="glossario\.html#([a-z-]+)"', (out / f"{slug}.html").read_text(encoding="utf-8")
+        ):
+            assert termo in ids, (slug, termo)

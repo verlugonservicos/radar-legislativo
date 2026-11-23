@@ -1,4 +1,4 @@
-// Agenda & Órgãos: calendário de eventos, órgãos, tipos/presença, pauta crítica e tabela.
+// Agenda e Órgãos: calendário de eventos, órgãos, tipos/presença, pauta crítica e tabela.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, montar } from '../charts.js';
@@ -16,7 +16,7 @@ await seguro(document.getElementById('graf-calendario'), async () => {
   if (!datas.length) { limpa('graf-calendario').innerHTML = vazio(); return; }
   montar(limpa('graf-calendario'), (t) => ({
     tooltip: { formatter: (p) => `${fmt.data(p.data[0])}: <b>${fmt.num(p.data[1])}</b> eventos` },
-    visualMap: { min: 0, max: Math.max(...porDia.map((d) => d[1])), show: false, inRange: { color: [t.soft, t.accent] } },
+    visualMap: { min: 0, max: Math.max(...porDia.map((d) => d[1])), show: false, inRange: { color: [t.grid, t.accent] } },
     calendar: {
       range: [datas[0], datas[datas.length - 1]], cellSize: ['auto', 18], top: 30, left: 40, right: 16, bottom: 8,
       orient: 'horizontal', splitLine: { show: false }, itemStyle: { borderColor: t.surface, borderWidth: 3, color: t.grid },

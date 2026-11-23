@@ -29,7 +29,8 @@
 
 /* gráfico */
 .chart { width: 100%; height: 320px; }
-.chart--lg { height: 420px; } .chart--sm { height: 240px; } .chart--xl { height: 520px; }
+.chart--lg { height: 420px; } .chart--sm { height: 240px; } .chart--xl { height: 520px; } .chart--mapa { height: 600px; }
+@media (max-width: 768px) { .chart--mapa { height: 420px; } }
 .chart-alt { margin-top: var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); }
 .chart-alt summary { cursor: pointer; width: fit-content; }
 .chart-alt table { margin-top: var(--space-2); }
@@ -127,3 +128,16 @@ table.data tr:last-child td { border-bottom: 0; }
   .kpi__delta { white-space: normal; }
   .strip { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
 }
+
+/* glossário */
+.glossario__indice { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.glossario__secao { margin-bottom: var(--space-6); scroll-margin-top: calc(var(--header) + var(--space-4)); }
+.glossario { margin: var(--space-4) 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: var(--space-3); }
+.glossario__item { border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); scroll-margin-top: calc(var(--header) + var(--space-4)); transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.glossario__item.is-alvo { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.glossario dt { font-weight: 700; margin-bottom: var(--space-2); display: flex; gap: var(--space-2); align-items: baseline; }
+.glossario dd { margin: 0; font-size: var(--fs-sm); }
+.glossario dd p { margin: 0 0 var(--space-2); }
+.glossario dd p:last-child { margin-bottom: 0; }
+.glossario__ancora { color: var(--text-muted); text-decoration: none; font-weight: 400; }
+.glossario__ancora:hover { color: var(--accent); }
