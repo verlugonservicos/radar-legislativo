@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+{% from "partials/componentes.html.j2" import card, grafico, kpi %}
+{% block conteudo %}
+<div class="strip" role="note">
+  <span>Cobertura da API: <strong data-meta="cobertura">78/78</strong> endpoints</span>
+  <span>Período: <strong data-meta="periodo">—</strong></span>
+  <span>Acurácia da IA: <strong id="acuracia-ia">—</strong></span>
+  <span>Custo de IA acumulado: <strong id="custo-ia">—</strong></span>
+</div>
+<div class="kpi-row" style="margin-top:var(--space-6)">
+  {{ kpi("kpi-proposicoes", "Proposições apresentadas", "Últimos 7 dias") }}
+  {{ kpi("kpi-relevantes", "Proposições relevantes", "Relevância ≥ 0,50 · 7 dias") }}
+  {{ kpi("kpi-votacoes", "Votações", "Plenário e comissões · 7 dias") }}
+  {{ kpi("kpi-eventos", "Eventos", "Sessões e reuniões · 7 dias") }}
+  {{ kpi("kpi-despesas", "Despesas da cota", "Valor líquido · 7 dias (notas chegam com atraso)") }}
+</div>
+<div class="grid" style="margin-top:var(--space-6)">
+  {% call card("serie", "Proposições × votações por dia", "Últimos 90 dias", "span-8") %}{{ grafico("graf-serie", "Linha diária de proposições apresentadas e votações") }}{% endcall %}
+  {% call card("temas", "Proposições relevantes por tema", "Classificação por IA · últimas 4 semanas", "span-4") %}{{ grafico("graf-temas", "Distribuição das proposições por tema") }}{% endcall %}
+  {% call card("top", "Top 5 da semana", "Maior score de relevância nos últimos 7 dias", "span-7") %}<div class="stack" id="lista-top"><div class="skeleton" style="height:240px"></div></div>{% endcall %}
+  {% call card("pauta", "Próximas pautas críticas", "Temas críticos em pauta nos próximos 7 dias", "span-5") %}<div class="stack" id="lista-pauta"><div class="skeleton" style="height:240px"></div></div>{% endcall %}
+</div>
+{% endblock %}

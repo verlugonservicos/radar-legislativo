@@ -1,0 +1,20 @@
+{% extends "base.html.j2" %}
+{% from "partials/componentes.html.j2" import card, grafico %}
+{% block conteudo %}
+<div class="filters" role="group" aria-label="Filtro de temas">
+  <span class="filters__label">Temas:</span>
+  <div id="filtro-temas" class="filters" style="margin:0"></div>
+  <button class="btn" type="button" id="limpar-temas">Limpar</button>
+</div>
+<div class="grid">
+  {% call card("area", "Proposições relevantes por tema e semana", "Últimas 26 semanas", "span-8") %}{{ grafico("graf-area", "Área empilhada de proposições por tema e semana", "chart--lg") }}{% endcall %}
+  {% call card("acuracia", "Acurácia da classificação por IA", "Contra os temas oficiais da Câmara", "span-4") %}
+    {{ grafico("graf-gauge", "Acurácia da IA", "chart--sm") }}
+    <dl class="kv" id="kv-ia"></dl>
+  {% endcall %}
+  {% call card("treemap", "Tema → tipo de proposição", "Últimas 26 semanas", "span-6") %}{{ grafico("graf-treemap", "Treemap de temas e tipos de proposição") }}{% endcall %}
+  {% call card("tramitacao", "Tempo de tramitação por tema", "Mediana e percentil 90, em dias", "span-6") %}{{ grafico("graf-tramitacao", "Barras de mediana de dias de tramitação por tema") }}{% endcall %}
+  {% call card("setores", "Setores econômicos citados pela IA", "Menções nos resumos executivos (um resumo cita até 4 setores)", "span-12") %}{{ grafico("graf-setores", "Barras de setores mais citados", "chart--xl") }}{% endcall %}
+  {% call card("tabela", "Proposições relevantes recentes", "Apresentadas nos últimos 90 dias · clique para ver o detalhe", "span-12") %}<div id="tabela-proposicoes"></div>{% endcall %}
+</div>
+{% endblock %}

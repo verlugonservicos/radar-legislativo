@@ -1,0 +1,72 @@
+// Visão Executiva: KPIs da semana, série diária, temas, Top 5 e pautas críticas.
+import { iniciar, seguro } from '../app.js';
+import { dados } from '../data.js';
+import { corTema, linhas, montar, rosca } from '../charts.js';
+import { badgeImpacto, chipTema, kpi, vazio } from '../ui.js';
+import * as fmt from '../format.js';
+
+const m = await iniciar();
+document.getElementById('acuracia-ia').textContent = m.ia?.acuracia_sem_vazamento ? fmt.pctFrac(m.ia.acuracia_sem_vazamento) : '—';
+document.getElementById('custo-ia').textContent = m.ia ? `US$ ${fmt.num1(m.ia.custo_total_usd)}` : '—';
+
+const soma = (ls, k) => ls.reduce((a, l) => a + (l[k] || 0), 0);
+
+await seguro(document.querySelector('.kpi-row'), async () => {
+  const k = await dados('kpis_diarios');
+  const sem = k.slice(-7); const ant = k.slice(-14, -7); const ult30 = k.slice(-30);
+  const def = [
+    ['kpi-proposicoes', 'proposicoes'], ['kpi-relevantes', 'proposicoes_relevantes'],
+    ['kpi-votacoes', 'votacoes'], ['kpi-eventos', 'eventos'], ['kpi-despesas', 'valor_despesas', fmt.brl],
+  ];
+  for (const [id, campo, formatter] of def) {
+    kpi(document.getElementById(id), {
+      valor: soma(sem, campo), anterior: soma(ant, campo), serie: ult30.map((d) => d[campo]), formatter: formatter || fmt.num,
+    });
+  }
+  const el = document.getElementById('graf-serie');
+  el.classList.remove('skeleton');
+  montar(el, linhas({
+    x: k.map((d) => d.data),
+    series: [
+      { name: 'Proposições', data: k.map((d) => d.proposicoes) },
+      { name: 'Votações', data: k.map((d) => d.votacoes) },
+    ],
+    area: true,
+  }), { tabela: { colunas: ['Data', 'Proposições', 'Votações'], linhas: k.map((d) => [fmt.data(d.data), d.proposicoes, d.votacoes]) } });
+});
+
+await seguro(document.getElementById('graf-temas'), async () => {
+  const ts = await dados('proposicoes_tema_semana');
+  const semanas = [...new Set(ts.map((d) => d.inicio_semana))].sort().slice(-4);
+  const porTema = {};
+  for (const d of ts) if (semanas.includes(d.inicio_semana)) porTema[d.tema] = (porTema[d.tema] || 0) + d.qtd;
+  const itens = Object.entries(porTema).sort((a, b) => b[1] - a[1]).map(([name, value]) => ({ name, value, itemStyle: { color: corTema(name) } }));
+  const el = document.getElementById('graf-temas');
+  el.classList.remove('skeleton');
+  if (!itens.length) { el.innerHTML = vazio(); return; }
+  montar(el, rosca({ itens }), { tabela: { colunas: ['Tema', 'Proposições'], linhas: itens.map((i) => [i.name, i.value]) } });
+});
+
+await seguro(document.getElementById('lista-top'), async () => {
+  const top = await dados('top_relevantes');
+  const el = document.getElementById('lista-top');
+  el.innerHTML = top.length ? top.map((p) => `
+    <article class="item">
+      <div class="item__head"><span class="item__title">${fmt.escapar(fmt.proposicao(p))}</span>${chipTema(p.tema_ia)}${badgeImpacto(p.nivel_impacto)}</div>
+      <p class="item__text">${fmt.escapar(p.resumo_executivo)}</p>
+      <div class="item__foot"><span>Relevância ${fmt.num1(p.relevancia_score * 100)}</span><span>Apresentada em ${fmt.data(p.data_apresentacao)}</span>
+        <a href="${fmt.escapar(p.link_camara)}" rel="noopener" target="_blank">Ver na Câmara<span class="sr-only"> (abre em nova aba)</span></a></div>
+    </article>`).join('') : vazio('Nenhuma proposição relevante nos últimos 7 dias.');
+});
+
+await seguro(document.getElementById('lista-pauta'), async () => {
+  const pauta = await dados('pauta_critica');
+  const el = document.getElementById('lista-pauta');
+  el.innerHTML = pauta.length ? pauta.slice(0, 8).map((p) => `
+    <article class="item">
+      <div class="item__head"><span class="item__title">${fmt.escapar(p.proposicao)}</span>${chipTema(p.tema)}</div>
+      <p class="item__text">${fmt.escapar(p.resumo || '')}</p>
+      <div class="item__foot"><span>${fmt.data(p.data)} · ${fmt.escapar(p.orgao || '')}</span>
+        <a href="${fmt.escapar(p.link_camara)}" rel="noopener" target="_blank">Ver na Câmara<span class="sr-only"> (abre em nova aba)</span></a></div>
+    </article>`).join('') : vazio('Nenhum item de tema crítico na pauta dos próximos 7 dias.');
+});

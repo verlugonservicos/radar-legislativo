@@ -156,9 +156,9 @@ def _cmd_run(args: argparse.Namespace) -> int:
     if args.mode == "backfill" and not (args.start and args.end):
         log.error("--mode backfill exige --start e --end")
         return 2
-    from radar.pipeline import ETAPAS_M3, ETAPAS_M4
+    from radar.pipeline import ETAPAS_M5
 
-    return _executar_pipeline(args, ETAPAS_M3 if args.skip_ai else ETAPAS_M4)
+    return _executar_pipeline(args, ETAPAS_M5 - {"ai"} if args.skip_ai else ETAPAS_M5)
 
 
 def _cmd_silver(args: argparse.Namespace) -> int:
@@ -183,10 +183,13 @@ def _cmd_silver(args: argparse.Namespace) -> int:
     return 1 if falhas else 0
 
 
-def _cmd_gold(_: argparse.Namespace) -> int:
+def _cmd_gold(args: argparse.Namespace) -> int:
     from radar import db
-    from radar.gold.builder import build
+    from radar.gold.builder import build, refresh_marts
 
+    if args.acao == "marts":
+        refresh_marts(db.get_engine())
+        return 0
     r = build(db.get_engine())
     falhas = [a for a, c in r["arquivos"].items() if "falha" in c]
     log.info("gold: %s", ", ".join(f"{t}={n}" for t, n in r["contagens"].items()))
@@ -233,6 +236,23 @@ def _cmd_ai(args: argparse.Namespace) -> int:
     log.info("ia: execução %s %s · %s", r["id_execucao"], r["status"],
              {k: v for k, v in r.items() if k not in ("id_execucao", "status", "custos")})  # fmt: skip
     return 0 if r["status"] in ("success", "partial") else 1
+
+
+def _cmd_dashboard(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    out = Path(args.out) if args.out else get_settings().dashboard_out_dir
+    if args.acao == "build":
+        from radar.dashboard.build import build
+
+        r = build(out, readonly=args.readonly)
+        log.info("site gerado em %s · %s", out, r)
+        return 0
+    from radar.dashboard.publish import publish
+
+    r = publish(out, dry_run=args.dry_run)
+    log.info("publicação: %s", r)
+    return 0
 
 
 def _cmd_status(_: argparse.Namespace) -> int:
@@ -333,7 +353,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_sil.set_defaults(func=_cmd_silver)
     p_gold = sub.add_parser("gold", help="Silver → Gold")
-    p_gold.add_argument("acao", choices=["build"])
+    p_gold.add_argument("acao", choices=["build", "marts"], help="build (dimensões/fatos) · marts")
     p_gold.set_defaults(func=_cmd_gold)
     p_ai = sub.add_parser("ai", help="IA: embeddings, classificação, resumos e relevância")
     p_ai.add_argument(
@@ -350,6 +370,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_ai.add_argument("--amostra", type=int, default=300, help="avaliar: amostra sem vazamento")
     p_ai.set_defaults(func=_cmd_ai)
+    p_dash = sub.add_parser("dashboard", help="Dashboards HTML: build (site/) e publish (gh-pages)")
+    p_dash.add_argument("acao", choices=["build", "publish"])
+    p_dash.add_argument("--out", help="pasta de saída (padrão: DASHBOARD_OUT_DIR)")
+    p_dash.add_argument("--readonly", action="store_true", help="build com DATABASE_URL_READONLY")
+    p_dash.add_argument(
+        "--dry-run", action="store_true", help="publish: mostra o que mudaria, sem enviar"
+    )
+    p_dash.set_defaults(func=_cmd_dashboard)
     sub.add_parser("status", help="Execuções, cobertura e tamanho do banco").set_defaults(
         func=_cmd_status
     )

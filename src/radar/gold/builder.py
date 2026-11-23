@@ -63,6 +63,27 @@ def carregar_temas(engine: Engine) -> int:
     return len(temas)
 
 
+MARTS = "gold/100_marts.sql"
+
+
+def refresh_marts(engine: Engine, id_execucao: int | None = None) -> dict:
+    """Recria os marts (SPEC 9.6) numa transação, depois da IA. Devolve linhas por mart."""
+    t0 = time.monotonic()
+    with log_contexto(run=id_execucao or "-", camada="gold", endpoint="marts"):
+        executar_script(engine, SQL_DIR / MARTS)
+        with engine.connect() as conn:
+            nomes = conn.execute(text(
+                "SELECT matviewname FROM pg_matviews WHERE schemaname = 'gold' AND matviewname LIKE 'mart_%' ORDER BY 1"
+            )).scalars().all()  # fmt: skip
+            linhas = {
+                n: conn.execute(text(f"SELECT count(*) FROM gold.{n}")).scalar_one() for n in nomes
+            }
+        duracao = round(time.monotonic() - t0, 1)
+        log.info("marts: %d recriados em %.1f s · %s", len(linhas), duracao,
+                 ", ".join(f"{n.removeprefix('mart_')}={q}" for n, q in linhas.items()))  # fmt: skip
+    return {"marts": linhas, "duracao_s": duracao}
+
+
 def check_integrity(engine: Engine) -> dict[str, int]:
     with engine.connect() as conn:
         return {nome: conn.execute(text(sql)).scalar_one() for nome, sql in INTEGRIDADE.items()}

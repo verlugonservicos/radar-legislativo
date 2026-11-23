@@ -2,6 +2,10 @@
 
 Pipeline de ETL e análise de dados sobre a API de Dados Abertos da Câmara dos Deputados, com arquitetura medalhão (landing → bronze → silver → gold), classificação e resumos com IA, automação com n8n e dashboards HTML.
 
+**Dashboards:** https://verlugonservicos.github.io/radar-legislativo/ — 8 painéis (visão executiva,
+proposições e temas com IA, votações e partidos, deputados, despesas, agenda, articulação e operação).
+Detalhes em [`docs/dashboards.md`](docs/dashboards.md).
+
 ## Organização
 
 | Pasta | Conteúdo | No Git? |
@@ -48,6 +52,6 @@ Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md
 | M2 Landing + Bronze | ✅ |
 | M3 Silver + Gold | ✅ |
 | M4 IA | ✅ |
-| M5 Dashboards | ⏳ |
+| M5 Dashboards | ⏳ validação |
 | M6 Automação | ⏳ |
 | M7 Docs e pitch | ⏳ |

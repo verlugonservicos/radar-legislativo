@@ -1,0 +1,153 @@
+// Proposições & Temas: área por tema/semana, acurácia da IA, treemap, tramitação, setores e tabela.
+import { iniciar, seguro } from '../app.js';
+import { dados } from '../data.js';
+import { barras, corTema, gauge, montar } from '../charts.js';
+import { abrirDrawer, badgeImpacto, chipTema, Tabela, vazio } from '../ui.js';
+import * as estado from '../state.js';
+import * as fmt from '../format.js';
+
+const m = await iniciar();
+const nomesTemas = m.temas.map((t) => t.nome);
+let filtro = estado.ler();
+const passa = (tema) => !filtro.temas.length || filtro.temas.includes(tema);
+
+// ------------------------------------------------------------------ filtro de temas (chips)
+const caixa = document.getElementById('filtro-temas');
+function desenharFiltro() {
+  caixa.innerHTML = nomesTemas.map((t) => `<button type="button" class="btn" aria-pressed="${filtro.temas.includes(t)}" data-tema="${fmt.escapar(t)}">
+    <span class="chip__dot" style="background:${corTema(t)}"></span>${fmt.escapar(t)}</button>`).join('');
+  caixa.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+    const t = b.dataset.tema;
+    const temas = filtro.temas.includes(t) ? filtro.temas.filter((x) => x !== t) : [...filtro.temas, t];
+    filtro = estado.gravar({ temas });
+  }));
+}
+document.getElementById('limpar-temas').addEventListener('click', () => { filtro = estado.gravar({ temas: [] }); });
+desenharFiltro();
+
+const ts = await dados('proposicoes_tema_semana');
+const props = await dados('proposicoes_recentes');
+const graficos = {};
+
+function desenharArea() {
+  const semanas = [...new Set(ts.map((d) => d.inicio_semana))].sort();
+  const temas = nomesTemas.filter((t) => passa(t) && ts.some((d) => d.tema === t));
+  const el = document.getElementById('graf-area');
+  el.classList.remove('skeleton');
+  graficos.area?.instancia.dispose();
+  if (!temas.length) { el.innerHTML = vazio(); return; }
+  const serie = (t) => semanas.map((s) => ts.filter((d) => d.tema === t && d.inicio_semana === s).reduce((a, d) => a + d.qtd, 0));
+  graficos.area = montar(el, () => ({
+    grid: { left: 8, right: 16, top: 64, bottom: 8, containLabel: true }, tooltip: { trigger: 'axis' },
+    legend: { type: 'scroll', top: 0, left: 0 },
+    xAxis: { type: 'category', data: semanas, boundaryGap: false, axisLabel: { formatter: fmt.dataCurta } },
+    yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
+    series: temas.map((t) => ({ name: t, type: 'line', stack: 'total', areaStyle: { opacity: 0.85 }, showSymbol: false, lineStyle: { width: 0 }, color: corTema(t), data: serie(t) })),
+  }));
+}
+
+function desenharTreemap() {
+  const el = document.getElementById('graf-treemap');
+  el.classList.remove('skeleton');
+  graficos.treemap?.instancia.dispose();
+  const arvore = {};
+  for (const d of ts) if (passa(d.tema)) { arvore[d.tema] ??= {}; arvore[d.tema][d.sigla_tipo] = (arvore[d.tema][d.sigla_tipo] || 0) + d.qtd; }
+  const data = Object.entries(arvore).map(([tema, tipos]) => ({
+    name: tema, itemStyle: { color: corTema(tema) },
+    children: Object.entries(tipos).map(([tipo, v]) => ({ name: tipo, value: v })),
+  }));
+  if (!data.length) { el.innerHTML = vazio(); return; }
+  graficos.treemap = montar(el, (t) => ({
+    tooltip: { formatter: (p) => `${fmt.escapar(p.treePathInfo.map((x) => x.name).filter(Boolean).join(' › '))}: <b>${fmt.num(p.value)}</b>` },
+    series: [{
+      type: 'treemap', roam: false, nodeClick: false, breadcrumb: { show: false }, width: '100%', height: '100%',
+      label: { show: true, formatter: '{b}', fontSize: 11 }, upperLabel: { show: true, height: 22, color: '#fff', fontWeight: 600 },
+      itemStyle: { borderColor: t.surface, borderWidth: 2, gapWidth: 2 },
+      levels: [{ itemStyle: { borderWidth: 0, gapWidth: 3 } }, { colorSaturation: [0.35, 0.6], itemStyle: { gapWidth: 1, borderColorSaturation: 0.6 } }],
+      data,
+    }],
+  }));
+}
+
+function desenharTabela() {
+  if (graficos.tabela) { graficos.tabela.atualizar(); return; }
+  graficos.tabela = new Tabela(document.getElementById('tabela-proposicoes'), {
+    linhas: props, nomeCsv: 'proposicoes_recentes', filtroExtra: (p) => passa(p.tema_ia),
+    colunas: [
+      { chave: 'rotulo', titulo: 'Proposição', valor: (p) => fmt.proposicao(p), render: (p) => `<strong>${fmt.escapar(fmt.proposicao(p))}</strong>` },
+      { chave: 'data_apresentacao', titulo: 'Apresentação', render: (p) => fmt.data(p.data_apresentacao) },
+      { chave: 'tema_ia', titulo: 'Tema (IA)', render: (p) => chipTema(p.tema_ia) },
+      { chave: 'nivel_impacto', titulo: 'Impacto', render: (p) => badgeImpacto(p.nivel_impacto) },
+      { chave: 'resumo_executivo', titulo: 'Resumo da IA', clip: true, valor: (p) => p.resumo_executivo || p.ementa },
+      { chave: 'relevancia_score', titulo: 'Relevância', num: true, render: (p) => fmt.num1((p.relevancia_score || 0) * 100) },
+    ],
+    aoClicar: detalhe,
+  });
+}
+
+async function detalhe(p) {
+  const corpo = abrirDrawer(`<p class="muted">${fmt.escapar(p.sigla_tipo)} · apresentada em ${fmt.data(p.data_apresentacao)}</p>
+    <h2>${fmt.escapar(fmt.proposicao(p))}</h2>
+    <div class="item__head">${chipTema(p.tema_ia)}${badgeImpacto(p.nivel_impacto)}${p.em_pauta ? '<span class="badge badge--medio">em pauta</span>' : ''}</div>
+    <h3>Resumo executivo (IA)</h3><p>${fmt.escapar(p.resumo_executivo || '—')}</p>
+    <h3>Ementa</h3><p>${fmt.escapar(p.ementa)}</p>
+    <h3>Setores afetados</h3><p>${(p.setores_afetados || []).map((s) => `<span class="chip">${fmt.escapar(s)}</span>`).join(' ') || '—'}</p>
+    <h3>Classificação</h3>
+    <dl class="kv">
+      <dt>Tema da IA</dt><dd>${fmt.escapar(p.tema_ia)} (similaridade ${fmt.num1((p.tema_ia_score || 0) * 100)}%)</dd>
+      <dt>Segundo tema</dt><dd>${fmt.escapar(p.tema_ia_segundo || '—')}</dd>
+      <dt>Temas oficiais</dt><dd>${fmt.escapar((p.temas_oficiais || []).join(', ') || '—')}</dd>
+      <dt>Situação</dt><dd>${fmt.escapar(p.situacao || '—')}</dd>
+      <dt>Órgão</dt><dd>${fmt.escapar(p.orgao || '—')}</dd>
+      <dt>Regime</dt><dd>${fmt.escapar(p.regime || '—')}</dd>
+      <dt>Relevância</dt><dd>${fmt.num1((p.relevancia_score || 0) * 100)} / 100</dd>
+    </dl>
+    <p><a href="${fmt.escapar(p.link_camara)}" target="_blank" rel="noopener">Abrir na Câmara dos Deputados<span class="sr-only"> (abre em nova aba)</span></a></p>
+    <h3>Proposições parecidas (busca semântica)</h3><div id="similares" class="stack"><div class="skeleton" style="height:120px"></div></div>`, fmt.proposicao(p));
+  const sim = (await dados('similares'))[String(p.id_proposicao)] || [];
+  corpo.querySelector('#similares').innerHTML = sim.length ? sim.map((s) => `<div class="item"><div class="item__head"><span class="item__title">${fmt.escapar(s.rotulo)}</span>
+    <span class="muted">${fmt.num1(s.similaridade * 100)}% parecida</span></div><p class="item__text">${fmt.escapar(s.ementa)}</p></div>`).join('') : vazio('Sem vizinhas calculadas.');
+}
+
+await seguro(document.getElementById('graf-area'), desenharArea);
+await seguro(document.getElementById('graf-treemap'), desenharTreemap);
+await seguro(document.getElementById('tabela-proposicoes'), desenharTabela);
+
+await seguro(document.getElementById('graf-gauge'), async () => {
+  const el = document.getElementById('graf-gauge');
+  el.classList.remove('skeleton');
+  const ia = m.ia || {};
+  montar(el, gauge({ valor: Math.round((ia.acuracia_sem_vazamento || 0) * 1000) / 10, rotulo: 'sem vazamento' }));
+  document.getElementById('kv-ia').innerHTML = `
+    <dt>Base inteira</dt><dd>${fmt.pctFrac(ia.acuracia)} de ${fmt.num(ia.avaliadas)} proposições</dd>
+    <dt>Classificadas</dt><dd>${fmt.pctFrac(ia.cobertura)} (limiar ${fmt.num1((ia.limiar || 0) * 100)}%)</dd>
+    <dt>Custo de IA</dt><dd>US$ ${fmt.num1(ia.custo_total_usd)} no total</dd>`;
+});
+
+await seguro(document.getElementById('graf-tramitacao'), async () => {
+  const tr = (await dados('tramitacao_tema')).filter((d) => d.tema !== 'Outros');
+  const el = document.getElementById('graf-tramitacao');
+  el.classList.remove('skeleton');
+  montar(el, barras({
+    categorias: tr.map((d) => d.tema), horizontal: true, formatter: (v) => `${fmt.num(v)} dias`,
+    series: [
+      { name: 'Mediana', data: tr.map((d) => ({ value: d.mediana_dias, itemStyle: { color: corTema(d.tema) } })) },
+      { name: 'Percentil 90', data: tr.map((d) => d.p90_dias), itemStyle: { color: 'rgba(148,163,184,.55)' } },
+    ],
+  }), { tabela: { colunas: ['Tema', 'Proposições', 'Mediana (dias)', 'P90 (dias)'], linhas: tr.map((d) => [d.tema, d.qtd, d.mediana_dias, d.p90_dias]) } });
+});
+
+await seguro(document.getElementById('graf-setores'), async () => {
+  const set = await dados('setores');
+  const porSetor = {};
+  for (const d of set) if (passa(d.tema)) porSetor[d.setor] = (porSetor[d.setor] || 0) + d.qtd;
+  const ordem = Object.entries(porSetor).sort((a, b) => b[1] - a[1]);
+  const el = document.getElementById('graf-setores');
+  el.classList.remove('skeleton');
+  montar(el, barras({ categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true }),
+    { tabela: { colunas: ['Setor', 'Menções'], linhas: ordem } });
+});
+
+estado.aoMudar((novo) => {
+  filtro = novo; desenharFiltro(); desenharArea(); desenharTreemap(); desenharTabela();
+});

@@ -280,3 +280,23 @@ def test_avaliacao_grava_acuracia(props_ia):
     )
     assert r["avaliadas"] == 3 and 0 <= r["acuracia"] <= 1 and r["sem_vazamento"]["n"] == 3
     assert _um(props_ia, "SELECT count(*) FROM ops.avaliacao_ia") >= 1
+
+
+# ------------------------------------------------------------------ marts e dashboards (M5)
+def test_marts_com_indice_unico_e_site_gerado_do_banco(engine, tmp_path):
+    from radar.dashboard.build import build as build_site
+    from radar.gold.builder import refresh_marts
+
+    run_silver(engine, None)
+    build(engine)
+    r = refresh_marts(engine)
+    assert len(r["marts"]) == 24
+    with engine.connect() as conn:
+        sem_indice = conn.execute(text(
+            "SELECT m.matviewname FROM pg_matviews m WHERE m.schemaname = 'gold' AND NOT EXISTS ("
+            " SELECT 1 FROM pg_indexes i JOIN pg_class c ON c.relname = i.indexname JOIN pg_index x ON x.indexrelid = c.oid"
+            " WHERE i.schemaname = 'gold' AND i.tablename = m.matviewname AND x.indisunique)")).scalars().all()  # fmt: skip
+    assert sem_indice == []
+    assert refresh_marts(engine)["marts"] == r["marts"]  # idempotente
+    site = build_site(tmp_path / "site", engine=engine)
+    assert site["paginas"] == 8 and (tmp_path / "site" / "data" / "meta.json").exists()

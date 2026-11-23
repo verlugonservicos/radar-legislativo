@@ -1,0 +1,20 @@
+{% extends "base.html.j2" %}
+{% from "partials/componentes.html.j2" import card, grafico %}
+{% block conteudo %}
+<div class="filters" role="group" aria-label="Filtros de deputados">
+  <label class="filters__label" for="f-partido">Partido</label><select class="select" id="f-partido"><option value="">Todos</option></select>
+  <label class="filters__label" for="f-uf">UF</label><select class="select" id="f-uf"><option value="">Todas</option></select>
+  <label class="filters__label" for="f-metrica">Mapa</label>
+  <select class="select" id="f-metrica">
+    <option value="score_atividade_medio">Score de atividade médio</option>
+    <option value="gasto_por_deputado">Gasto por deputado</option>
+    <option value="presenca_votacoes_media">Presença média em votações</option>
+    <option value="deputados">Número de deputados</option>
+  </select>
+</div>
+<div class="grid">
+  {% call card("mapa", "Brasil por UF", "Métrica selecionada acima", "span-6") %}{{ grafico("graf-mapa", "Mapa do Brasil por unidade da federação", "chart--xl") }}{% endcall %}
+  {% call card("ranking", "Top 20 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6") %}{{ grafico("graf-ranking", "Ranking dos 20 deputados mais ativos", "chart--xl") }}{% endcall %}
+  {% call card("tabela", "Deputados em exercício", "Clique para ver o perfil", "span-12") %}<div id="tabela-deputados"></div>{% endcall %}
+</div>
+{% endblock %}

@@ -43,3 +43,6 @@ Thumbs.db
 
 # --- Saída bruta do diagnóstico da VPS (revisar antes de versionar) ---
 *.raw.txt
+
+# configurações locais do Claude Code
+.claude/

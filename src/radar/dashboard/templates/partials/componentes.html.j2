@@ -1,0 +1,23 @@
+{# Macros de componentes (SPEC V3 12.2). #}
+{% macro card(id, titulo, sub="", span="span-6", classe="") -%}
+<section class="card {{ span }} {{ classe }}" aria-labelledby="{{ id }}-t">
+  <header class="card__head">
+    <div><h2 class="card__title" id="{{ id }}-t">{{ titulo }}</h2>{% if sub %}<p class="card__sub">{{ sub }}</p>{% endif %}</div>
+  </header>
+  {{ caller() }}
+</section>
+{%- endmacro %}
+
+{% macro grafico(id, rotulo, tamanho="") -%}
+<div class="chart {{ tamanho }} skeleton" id="{{ id }}" aria-label="{{ rotulo }}"></div>
+{%- endmacro %}
+
+{% macro kpi(id, rotulo, dica) -%}
+<article class="card kpi" id="{{ id }}">
+  <div class="kpi__label" title="{{ dica }}">{{ rotulo }}</div>
+  <div class="kpi__value">—</div>
+  <div class="kpi__delta is-flat">&nbsp;</div>
+  <div class="kpi__spark skeleton"></div>
+  <div class="kpi__hint">{{ dica }}</div>
+</article>
+{%- endmacro %}

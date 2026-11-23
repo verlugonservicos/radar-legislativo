@@ -34,6 +34,7 @@ log = logging.getLogger("radar.pipeline")
 ETAPAS_M2 = frozenset({"extract", "bronze"})
 ETAPAS_M3 = frozenset({"extract", "bronze", "silver", "gold"})
 ETAPAS_M4 = ETAPAS_M3 | {"ai"}
+ETAPAS_M5 = ETAPAS_M4 | {"marts"}
 
 
 class APIIndisponivel(RuntimeError):
@@ -222,6 +223,17 @@ def run_pipeline(
             falhas += [f"gold.{n}" for n, c in gold.get("arquivos", {}).items() if "falha" in c]
         if "ai" in steps:
             falhas += _etapa_ia(engine, ctx, ai_limit, ai_orcamento_usd)
+        if "marts" in steps:  # depois da IA (SPEC 9.6): os marts leem as colunas de IA
+            from radar.gold.builder import refresh_marts
+
+            try:
+                marts = refresh_marts(engine, ctx.id_execucao)
+                ctx.contagens["marts"] = marts["marts"]
+                ctx.etapas["marts"] = {"duracao_s": marts["duracao_s"]}
+            except Exception as erro:
+                log.exception("marts: falha")
+                ctx.contagens["marts"] = {"falha": str(erro)[:300]}
+                falhas.append("marts")
         status = "partial" if falhas else "success"
         erro_txt = f"endpoints com erro: {', '.join(falhas)}" if falhas else None
     except APIIndisponivel as erro:
