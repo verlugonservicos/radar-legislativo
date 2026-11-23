@@ -46,7 +46,7 @@ Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md
 | M0.A Infra VPS | ✅ |
 | M1 Catálogo dos 78 endpoints | ✅ |
 | M2 Landing + Bronze | ✅ |
-| M3 Silver + Gold | ⏳ |
+| M3 Silver + Gold | ✅ |
 | M4 IA | ⏳ |
 | M5 Dashboards | ⏳ |
 | M6 Automação | ⏳ |
