@@ -188,8 +188,9 @@ def _ia(engine, i, col):
 
 
 def test_ia_classifica_resume_pontua_e_e_idempotente(props_ia):
+    from ai_fake import ClienteFalso
+
     from radar.ai.runner import run_ai
-    from tests.ai_fake import ClienteFalso
 
     cli = ClienteFalso()
     r = run_ai(props_ia, None, orcamento_usd=1.0, cliente=cli)
@@ -240,8 +241,9 @@ def test_ia_classifica_resume_pontua_e_e_idempotente(props_ia):
 
 
 def test_ia_para_no_teto_e_guarda_o_que_fez(props_ia):
+    from ai_fake import ClienteFalso
+
     from radar.ai.runner import run_ai
-    from tests.ai_fake import ClienteFalso
 
     with props_ia.begin() as conn:
         conn.execute(
@@ -253,18 +255,20 @@ def test_ia_para_no_teto_e_guarda_o_que_fez(props_ia):
 
 
 def test_falha_num_resumo_nao_derruba_os_demais(props_ia):
+    from ai_fake import ClienteFalso
+
     from radar.ai.runner import run_ai
-    from tests.ai_fake import ClienteFalso
 
     r = run_ai(props_ia, None, orcamento_usd=1.0, cliente=ClienteFalso(falhar_em={"Bordado"}))
     assert r["resumos"] == 2 and r["falhas_resumo"] == 1 and r["pendentes"] == 1
 
 
 def test_avaliacao_grava_acuracia(props_ia):
+    from ai_fake import ClienteFalso
+
     from radar.ai.cost import CostTracker
     from radar.ai.evaluation import avaliar
     from radar.ai.runner import run_ai
-    from tests.ai_fake import ClienteFalso
 
     run_ai(props_ia, None, orcamento_usd=1.0, cliente=ClienteFalso())
     r = avaliar(

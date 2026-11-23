@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import yaml
+from ai_fake import vetor
 
 from radar.ai import evaluation
 from radar.ai.classifier import cosine_matrix, escolher
@@ -12,7 +13,6 @@ from radar.ai.prompts import PROMPT_VERSAO, SCHEMA_RESUMO, SETORES, texto_propos
 from radar.ai.relevance import compute_relevance
 from radar.ai.summarizer import hash_resumo, montar_prompt
 from radar.config import RAIZ_PROJETO, Settings
-from tests.ai_fake import vetor
 
 TEMAS = yaml.safe_load((RAIZ_PROJETO / "config" / "temas.yaml").read_text(encoding="utf-8"))
 NOMES_TEMAS = {t["nome"] for t in TEMAS["temas"]} | {TEMAS["tema_fallback"]}
