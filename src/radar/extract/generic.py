@@ -26,6 +26,7 @@ class ExtractResult:
     registros: int = 0
     ids: int = 0
     erros: list[dict] = field(default_factory=list)
+    arquivos: set = field(default_factory=set, repr=False)  # páginas gravadas nesta execução
 
     @property
     def vazio(self) -> bool:
@@ -59,13 +60,14 @@ class GenericExtractor:
         try:
             for pagina in self.client.iter_pages(path, params, paginado=spec.paginado):
                 requisicoes += 1
-                landing.write_page(
+                arquivo = landing.write_page(
                     spec.nome, ref, pagina.payload, pagina.page_number,
                     url=pagina.url, params=params if pagina.page_number == 1 else None,
                     id_execucao=ctx.id_execucao, status_http=pagina.status,
                     id_pai=id_pai, passe=passe,
                 )  # fmt: skip
                 with self._lock:
+                    resultado.arquivos.add(arquivo)
                     resultado.paginas += 1
                     resultado.registros += _conta(pagina.payload.get("dados"))
         except CamaraAPIError as erro:
@@ -76,6 +78,19 @@ class GenericExtractor:
         finally:
             with self._lock:  # 404 ou erro também contam como uma chamada
                 resultado.chamadas += max(requisicoes, 1)
+
+    @staticmethod
+    def _limpar_sobras(spec, ctx: RunContext, ref, resultado: ExtractResult, erros: int) -> None:
+        """Limpeza segura da partição: só depois do download e só se não houve erro."""
+        if erros:
+            log.warning("%s: %d erro(s) — arquivos anteriores da partição dt=%s preservados",
+                        spec.nome, erros, ref)  # fmt: skip
+            return
+        if spec.nome in ctx.apenas_orfaos:  # extração parcial: não mexe no que já existia
+            return
+        removidos = landing.prune_partition(spec.nome, ref, resultado.arquivos)
+        if removidos:
+            log.info("%s: %d arquivo(s) antigos removidos de dt=%s", spec.nome, removidos, ref)
 
     def run(self, spec: EndpointSpec, ctx: RunContext) -> ExtractResult:
         resultado = ExtractResult(spec.nome)
@@ -92,7 +107,6 @@ class GenericExtractor:
                 base = render_params(spec.params, valores) | render_params(
                     spec.janela.params, valores
                 )
-                landing.clear_partition(spec.nome, ref)
                 antes = (
                     resultado.chamadas,
                     resultado.paginas,
@@ -126,6 +140,7 @@ class GenericExtractor:
                         ]
                         for futuro in as_completed(futuros):
                             futuro.result()
+                self._limpar_sobras(spec, ctx, ref, resultado, len(resultado.erros) - antes[3])
                 landing.write_manifest(spec.nome, ref, {
                     "endpoint": spec.nome, "path": spec.path, "id_execucao": ctx.id_execucao,
                     "params": base, "passes": len(passes), "ids": resultado.ids,

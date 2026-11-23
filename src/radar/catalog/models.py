@@ -58,6 +58,8 @@ class OrigemIds(_Base):
     de: list[str]
     campo: str = "id"
     filtro: FiltroIds = "ultima_execucao"
+    # soma os deputados órfãos da Silver (SPEC 9.5) aos IDs da origem
+    incluir_orfaos: bool = False
 
     @field_validator("de", mode="before")
     @classmethod

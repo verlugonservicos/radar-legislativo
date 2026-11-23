@@ -132,9 +132,10 @@ def test_landing_envelope_nome_e_filtro_por_execucao(ambiente):
     assert env["_meta"]["id_pai"] == "55" and env["resposta"] == {"dados": [1]}
     assert len(list(landing.iter_files("eventos_pauta", ref, ref))) == 2  # manifesto fica de fora
     assert len(list(landing.iter_files("eventos_pauta", ref, ref, id_execucao=7))) == 1
-    landing.clear_partition("eventos_pauta", ref, id_pai=55)
-    assert len(list(landing.iter_files("eventos_pauta", ref, ref))) == 1
-    assert not list(landing.partition_dir("eventos_pauta", ref).glob("*.tmp"))
+    (landing.partition_dir("eventos_pauta", ref) / "x_page_001.json.tmp").write_text("{}")
+    assert landing.prune_partition("eventos_pauta", ref, {arq}) == 2  # a outra página e o .tmp
+    assert [a for a, _ in landing.iter_files("eventos_pauta", ref, ref)] == [arq]
+    assert (landing.partition_dir("eventos_pauta", ref) / "_manifest.json").exists()
 
 
 # ------------------------------------------------------------------ ids e extrator
@@ -170,3 +171,83 @@ def test_extrator_lista_e_subrecurso_com_ids_da_landing(ambiente):
     )
     assert manifesto["ids"] == 2 and manifesto["registros"] == 1
     assert "dataInicio=2026-11-01" in responses.calls[0].request.url
+
+
+# ------------------------------------------------------------------ limpeza segura e órfãos
+def _sub():
+    return EndpointSpec(nome="eventos_pauta", path="/eventos/{id}/pauta", grupo="eventos",
+                        tipo="subrecurso", ids={"de": "eventos", "filtro": "janela"})  # fmt: skip
+
+
+def _lista_eventos(ctx, ids):
+    landing.write_page("eventos", ctx.hoje, {"dados": [{"id": i} for i in ids]}, 1, url="u",
+                       params=None, id_execucao=ctx.id_execucao)  # fmt: skip
+
+
+@responses.activate
+def test_falha_na_api_preserva_arquivos_da_execucao_anterior(ambiente):
+    """A partição não é apagada antes do download: com erro, o que já existia fica."""
+    ctx1, ctx2 = _ctx(1), _ctx(2)
+    _lista_eventos(ctx1, [10, 11])
+    responses.get(f"{BASE}/eventos/10/pauta", json={"dados": [{"ordem": 1}], "links": []})
+    responses.get(f"{BASE}/eventos/11/pauta", json={"dados": [{"ordem": 2}], "links": []})
+    GenericExtractor(CamaraClient()).run(_sub(), ctx1)
+
+    responses.replace(responses.GET, f"{BASE}/eventos/10/pauta", status=503)
+    responses.replace(responses.GET, f"{BASE}/eventos/11/pauta", status=503)
+    _lista_eventos(ctx2, [10, 11])
+    r = GenericExtractor(CamaraClient()).run(_sub(), ctx2)
+    assert len(r.erros) == 2
+    arquivos = list(landing.iter_files("eventos_pauta", ctx1.hoje, ctx1.hoje, id_execucao=1))
+    assert len(arquivos) == 2  # nada se perdeu
+
+
+@responses.activate
+def test_sucesso_remove_so_as_sobras_da_execucao_anterior(ambiente):
+    ctx1, ctx2 = _ctx(1), _ctx(2)
+    _lista_eventos(ctx1, [10, 11])
+    responses.get(f"{BASE}/eventos/10/pauta", json={"dados": [{"ordem": 1}], "links": []})
+    responses.get(f"{BASE}/eventos/11/pauta", json={"dados": [{"ordem": 2}], "links": []})
+    GenericExtractor(CamaraClient()).run(_sub(), ctx1)
+
+    _lista_eventos(ctx2, [10])  # o evento 11 saiu da origem
+    GenericExtractor(CamaraClient()).run(_sub(), ctx2)
+    nomes = sorted(a.name for a, _ in landing.iter_files("eventos_pauta", ctx2.hoje, ctx2.hoje))
+    assert nomes == ["pai_10_page_001.json"]  # regravado; o do 11 (sobra) foi removido
+
+
+def _detalhe_deputado():
+    return EndpointSpec(nome="deputados_detalhe", path="/deputados/{id}", grupo="deputados",
+                        tipo="detalhe", ids={"de": "deputados", "incluir_orfaos": True})  # fmt: skip
+
+
+def test_orfaos_somados_aos_ids_da_origem(ambiente):
+    ctx = _ctx()
+    landing.write_page("deputados", ctx.hoje, {"dados": [{"id": 1}, {"id": 2}]}, 1, url="u",
+                       params=None, id_execucao=1)  # fmt: skip
+    ctx.orfaos = ["2", "99"]
+    assert resolve_ids(_detalhe_deputado(), ctx) == ["1", "2", "99"]
+
+
+def test_endpoint_forcado_pelos_orfaos_busca_so_os_orfaos(ambiente):
+    ctx = _ctx()
+    ctx.orfaos, ctx.apenas_orfaos = ["99", "98"], {"deputados_detalhe"}
+    assert resolve_ids(_detalhe_deputado(), ctx) == ["99", "98"]
+
+
+def test_pipeline_forca_detalhe_do_deputado_quando_ha_orfaos(ambiente, monkeypatch):
+    from radar import pipeline
+
+    detalhe, lista = _detalhe_deputado(), _sub()
+    monkeypatch.setattr(pipeline, "deputados_orfaos", lambda engine: ["99"])
+    ctx = _ctx()
+    specs = pipeline._incluir_orfaos(ctx, [lista, detalhe], [lista], None)
+    assert [s.nome for s in specs] == ["eventos_pauta", "deputados_detalhe"]
+    assert ctx.apenas_orfaos == {"deputados_detalhe"} and ctx.etapas["orfaos"] == {"deputados": 1}
+    # já selecionado pela frequência → não é "só órfãos" (soma aos IDs normais)
+    ctx2 = _ctx()
+    pipeline._incluir_orfaos(ctx2, [detalhe], [detalhe], None)
+    assert ctx2.apenas_orfaos == set()
+    # filtro --endpoints respeitado
+    ctx3 = _ctx()
+    assert pipeline._incluir_orfaos(ctx3, [lista, detalhe], [lista], {"eventos_pauta"}) == [lista]

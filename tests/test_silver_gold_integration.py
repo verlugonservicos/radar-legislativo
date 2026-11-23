@@ -119,3 +119,32 @@ def test_scd2_e_fidelidade_partidaria(engine):
     assert [tuple(v) for v in versoes] == [("AAA", False), ("BBB", True)]  # 3 linhas → 2 versões
     assert [tuple(v) for v in votos] == [("T-1", "AAA", True, False), ("T-2", "BBB", None, None)]
     assert tuple(nominal) == (1, True)
+
+
+def test_deputados_orfaos_da_silver(engine):
+    """SPEC 9.5: IDs citados em votos/autorias/presenças sem cadastro em silver.deputados."""
+    from radar.extract.orfaos import deputados_orfaos
+
+    run_silver(engine, None)
+    antes = set(deputados_orfaos(engine))
+    with engine.begin() as conn:
+        conn.execute(
+            text("INSERT INTO silver.votos (id_votacao, id_deputado) VALUES ('orfao-1', 987654321)")
+        )
+        cadastrado = conn.execute(
+            text("SELECT id_deputado FROM silver.deputados LIMIT 1")
+        ).scalar_one()
+        conn.execute(text("INSERT INTO silver.votos (id_votacao, id_deputado) VALUES ('orfao-2', :d)"),
+                     {"d": cadastrado})  # fmt: skip
+    try:
+        orfaos = deputados_orfaos(engine)
+        assert "987654321" in orfaos and str(cadastrado) not in orfaos
+        assert set(orfaos) - antes == {"987654321"}
+        assert deputados_orfaos(engine, limite=1) == [
+            "987654321"
+        ]  # mais recentes (maior id) primeiro
+    finally:
+        with engine.begin() as conn:
+            conn.execute(
+                text("DELETE FROM silver.votos WHERE id_votacao IN ('orfao-1', 'orfao-2')")
+            )

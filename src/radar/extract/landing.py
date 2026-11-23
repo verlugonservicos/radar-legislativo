@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import shutil
 from collections.abc import Iterator
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -69,16 +68,22 @@ def write_manifest(endpoint: str, ref: date, manifest: dict) -> Path:
     return _gravar_atomico(partition_dir(endpoint, ref) / "_manifest.json", manifest)
 
 
-def clear_partition(endpoint: str, ref: date, id_pai: object | None = None) -> None:
-    """Remove a partição inteira (ou só os arquivos de um pai) antes de regravar."""
+def prune_partition(endpoint: str, ref: date, manter: set[Path]) -> int:
+    """Depois de um download **sem erros**, remove as páginas da partição que esta execução não
+    regravou (IDs ou páginas que deixaram de existir) e `.tmp` órfãos. Devolve quantos removeu.
+
+    Nunca é chamada antes do download: se a API falhar no meio, os arquivos anteriores ficam.
+    """
     pasta = partition_dir(endpoint, ref)
     if not pasta.exists():
-        return
-    if id_pai is None:
-        shutil.rmtree(pasta)
-    else:
-        for arquivo in pasta.glob(f"pai_{id_pai}_*page_*.json"):
+        return 0
+    manter_resolvidos = {m.resolve() for m in manter}
+    removidos = 0
+    for arquivo in [*pasta.glob("*page_*.json"), *pasta.glob("*.tmp")]:
+        if arquivo.resolve() not in manter_resolvidos:
             arquivo.unlink()
+            removidos += 1
+    return removidos
 
 
 def iter_files(

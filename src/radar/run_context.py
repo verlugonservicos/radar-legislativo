@@ -28,6 +28,9 @@ class RunContext:
     settings: Settings = field(default_factory=get_settings)
     etapas: dict[str, Any] = field(default_factory=dict)
     contagens: dict[str, Any] = field(default_factory=dict)
+    # deputados citados na Silver sem cadastro (SPEC 9.5) e endpoints que rodam só por causa deles
+    orfaos: list[str] = field(default_factory=list)
+    apenas_orfaos: set[str] = field(default_factory=set)
 
     def placeholders(self) -> dict[str, object]:
         """Valores fixos da execução para `{id_legislatura}`, `{inicio_legislatura}`, `{hoje}`."""

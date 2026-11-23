@@ -357,6 +357,7 @@ endpoints:
   ids:
     de: deputados
     campo: id
+    incluir_orfaos: true
     filtro: ultima_execucao
 - nome: deputados_despesas
   path: /deputados/{id}/despesas
@@ -450,6 +451,7 @@ endpoints:
   ids:
     de: deputados
     campo: id
+    incluir_orfaos: true
     filtro: ultima_execucao
   observacao: situacao pode vir nula (entra vazia na chave_registro).
 - nome: deputados_mandatos_externos

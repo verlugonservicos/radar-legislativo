@@ -59,6 +59,8 @@ def resolve_ids(spec: EndpointSpec, ctx: RunContext) -> list[str]:
     if spec.ids is None:
         return []
     vistos: dict[str, None] = {}
+    if spec.ids.incluir_orfaos and spec.nome in ctx.apenas_orfaos:
+        return list(ctx.orfaos)  # o endpoint só roda nesta execução por causa dos órfãos
     for origem in spec.ids.de:
         ids = None if spec.ids.filtro == "todos" else _da_landing(origem, spec.ids.campo, ctx)
         if ids is None:
@@ -66,6 +68,9 @@ def resolve_ids(spec: EndpointSpec, ctx: RunContext) -> list[str]:
             log.debug("%s: IDs de %s vindos da Bronze (%d)", spec.nome, origem, len(ids))
         for valor in ids:
             vistos.setdefault(str(valor), None)
+    if spec.ids.incluir_orfaos:
+        for valor in ctx.orfaos:
+            vistos.setdefault(valor, None)
     resultado = list(vistos)
     if spec.ids.filtro == "legislaturas_recentes":
         minimo = ctx.settings.id_legislatura - 2

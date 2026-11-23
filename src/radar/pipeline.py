@@ -19,6 +19,7 @@ from radar.db import get_engine
 from radar.extract import landing
 from radar.extract.client import CamaraAPIError, CamaraClient
 from radar.extract.generic import GenericExtractor
+from radar.extract.orfaos import deputados_orfaos
 from radar.run_context import (
     RunContext,
     atualizar_watermark,
@@ -68,6 +69,32 @@ def _selecionar(
         for s in escolhidos
         if due(s, hoje, primeira_execucao=s.nome not in ja_rodaram, force=force)
     ]
+
+
+def _incluir_orfaos(
+    ctx: RunContext,
+    catalogo: list[EndpointSpec],
+    specs: list[EndpointSpec],
+    endpoints: set[str] | None,
+) -> list[EndpointSpec]:
+    """SPEC 9.5: deputados órfãos forçam detalhe/histórico do deputado nesta execução."""
+    try:
+        ctx.orfaos = deputados_orfaos(ctx.engine)
+    except Exception:  # sem Silver ainda (primeira carga) ou banco antigo: segue sem órfãos
+        log.debug("órfãos não calculados", exc_info=True)
+        ctx.orfaos = []
+    ctx.etapas["orfaos"] = {"deputados": len(ctx.orfaos)}
+    if not ctx.orfaos:
+        return specs
+    escolhidos = {s.nome for s in specs}
+    extras = [
+        s
+        for s in catalogo
+        if s.ids is not None and s.ids.incluir_orfaos and s.nome not in escolhidos
+        and (not endpoints or s.nome in endpoints)
+    ]  # fmt: skip
+    ctx.apenas_orfaos = {s.nome for s in extras}
+    return specs + extras
 
 
 def _processar(
@@ -133,7 +160,10 @@ def run_pipeline(
 
     ctx = start_run(engine, modo, start, end, origem,
                     {"steps": sorted(steps), "endpoints": sorted(endpoints or []), "force": force})  # fmt: skip
-    specs = _selecionar(load_catalog(), endpoints, hoje, set(watermarks), force)
+    catalogo = load_catalog()
+    specs = _selecionar(catalogo, endpoints, hoje, set(watermarks), force)
+    if "extract" in steps:
+        specs = _incluir_orfaos(ctx, catalogo, specs, endpoints)
     extrator = GenericExtractor(CamaraClient()) if "extract" in steps else None
     falhas: list[str] = []
     t0 = time.monotonic()
