@@ -148,3 +148,131 @@ def test_deputados_orfaos_da_silver(engine):
             conn.execute(
                 text("DELETE FROM silver.votos WHERE id_votacao IN ('orfao-1', 'orfao-2')")
             )
+
+
+# ------------------------------------------------------------------ IA (M4) com cliente falso
+PROPS_IA = [
+    (9000001, "PL", "Dispõe sobre a distribuição gratuita de medicamentos e vacinas nos hospitais do SUS.", ["Saúde"]),
+    (9000002, "PEC", "Altera o sistema tributário para criar imposto sobre bens e reduzir isenções fiscais.", ["Economia"]),
+    (9000003, "PL", "Institui o Dia Nacional do Bordado.", ["Homenagens e Datas Comemorativas"]),
+    (9000004, "REQ", "Requer informações ao Ministro.", None),  # tipo não relevante: fica de fora
+]  # fmt: skip
+
+
+@pytest.fixture
+def props_ia(engine, monkeypatch):
+    from radar.config import get_settings
+
+    # os embeddings falsos (saco de palavras) têm similaridades menores que os reais
+    monkeypatch.setenv("TEMA_LIMIAR_MINIMO", "0.05")
+    get_settings.cache_clear()
+    build(engine)
+    with engine.begin() as conn:
+        for id_, tipo, ementa, temas in PROPS_IA:
+            conn.execute(text(
+                "INSERT INTO gold.fato_proposicao (id_proposicao, sigla_tipo, numero, ano, ementa, "
+                "temas_oficiais, data_apresentacao, regime) VALUES (:i, :t, 1, 2026, :e, :o, '2026-11-20', "
+                ":r) ON CONFLICT (id_proposicao) DO NOTHING"),
+                {"i": id_, "t": tipo, "e": ementa, "o": temas,
+                 "r": "Urgência (Art. 155, RICD)" if tipo == "PEC" else None})  # fmt: skip
+        conn.execute(text("DELETE FROM ops.custos_ia"))
+    yield engine
+    with engine.begin() as conn:
+        conn.execute(text("DELETE FROM gold.fato_proposicao WHERE id_proposicao >= 9000000"))
+        conn.execute(text("UPDATE gold.dim_tema SET embedding = NULL, texto_hash = NULL"))
+    get_settings.cache_clear()
+
+
+def _ia(engine, i, col):
+    return _um(engine, f"SELECT {col} FROM gold.fato_proposicao WHERE id_proposicao = :i", i=i)
+
+
+def test_ia_classifica_resume_pontua_e_e_idempotente(props_ia):
+    from radar.ai.runner import run_ai
+    from tests.ai_fake import ClienteFalso
+
+    cli = ClienteFalso()
+    r = run_ai(props_ia, None, orcamento_usd=1.0, cliente=cli)
+    assert (
+        r["temas"] == 12 and r["embeddings"] == 3 and r["resumos"] == 3 and not r["teto_atingido"]
+    )
+    assert _ia(props_ia, 9000001, "tema_ia") == "Saúde"
+    assert _ia(props_ia, 9000002, "tema_ia") == "Tributário e Fiscal"
+    assert _ia(props_ia, 9000004, "tema_ia") is None  # REQ fora dos tipos relevantes
+    assert len(_ia(props_ia, 9000001, "resumo_executivo")) == 400  # truncado
+    assert _ia(props_ia, 9000001, "setores_afetados") == [
+        "Serviços",
+        "Setor Público",
+    ]  # sem repetição
+    assert _ia(props_ia, 9000001, "ia_prompt_versao") == "resumo-v3"
+    assert float(_ia(props_ia, 9000002, "relevancia_score")) > float(
+        _ia(props_ia, 9000003, "relevancia_score")
+    )
+    assert _um(props_ia, "SELECT count(*) FROM ops.custos_ia") >= 3 and r["custo_usd"] > 0
+    assert (
+        len(__import__("radar.ai.classifier", fromlist=["x"]).similares(props_ia, 9000001, k=2))
+        == 2
+    )
+
+    # segunda execução: nada mudou → nenhuma chamada paga
+    antes = (cli.chamadas_embed, cli.chamadas_chat)
+    r2 = run_ai(props_ia, None, orcamento_usd=1.0, cliente=cli)
+    assert (
+        (cli.chamadas_embed, cli.chamadas_chat) == antes
+        and r2["custo_usd"] == 0
+        and r2["pendentes"] == 0
+    )
+
+    # novo despacho não refaz o resumo; ementa nova refaz embedding e resumo
+    with props_ia.begin() as conn:
+        conn.execute(
+            text(
+                "UPDATE gold.fato_proposicao SET ultimo_despacho = 'Às comissões' WHERE id_proposicao = 9000001"
+            )
+        )
+        conn.execute(text("UPDATE gold.fato_proposicao SET ementa = ementa || ' Inclui farmácias.' WHERE id_proposicao = 9000001"))  # fmt: skip
+    r3 = run_ai(props_ia, None, orcamento_usd=1.0, cliente=cli)
+    assert r3["embeddings"] == 1 and r3["resumos"] == 1
+
+    # a carga da Gold não apaga as colunas de IA
+    build(props_ia)
+    assert _ia(props_ia, 9000002, "tema_ia") == "Tributário e Fiscal"
+
+
+def test_ia_para_no_teto_e_guarda_o_que_fez(props_ia):
+    from radar.ai.runner import run_ai
+    from tests.ai_fake import ClienteFalso
+
+    with props_ia.begin() as conn:
+        conn.execute(
+            text("UPDATE gold.fato_proposicao SET resumo_executivo = NULL, ia_texto_hash = NULL")
+        )
+    r = run_ai(props_ia, None, orcamento_usd=0.0002, cliente=ClienteFalso())
+    assert r["teto_atingido"] and r["resumos"] == 0 and r["pendentes"] == 3
+    assert r["classificadas"] == 3  # embeddings já feitos são classificados mesmo com o teto
+
+
+def test_falha_num_resumo_nao_derruba_os_demais(props_ia):
+    from radar.ai.runner import run_ai
+    from tests.ai_fake import ClienteFalso
+
+    r = run_ai(props_ia, None, orcamento_usd=1.0, cliente=ClienteFalso(falhar_em={"Bordado"}))
+    assert r["resumos"] == 2 and r["falhas_resumo"] == 1 and r["pendentes"] == 1
+
+
+def test_avaliacao_grava_acuracia(props_ia):
+    from radar.ai.cost import CostTracker
+    from radar.ai.evaluation import avaliar
+    from radar.ai.runner import run_ai
+    from tests.ai_fake import ClienteFalso
+
+    run_ai(props_ia, None, orcamento_usd=1.0, cliente=ClienteFalso())
+    r = avaliar(
+        props_ia,
+        ClienteFalso(),
+        CostTracker(props_ia, None, 1.0),
+        limiar=0.0,
+        amostra_sem_vazamento=10,
+    )
+    assert r["avaliadas"] == 3 and 0 <= r["acuracia"] <= 1 and r["sem_vazamento"]["n"] == 3
+    assert _um(props_ia, "SELECT count(*) FROM ops.avaliacao_ia") >= 1

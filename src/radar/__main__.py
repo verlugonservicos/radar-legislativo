@@ -127,7 +127,9 @@ def _executar_pipeline(args: argparse.Namespace, steps: frozenset[str]) -> int:
     inicio, fim = _datas(args)
     modo = getattr(args, "mode", None) or "backfill"
     endpoints = set(args.endpoints.split(",")) if getattr(args, "endpoints", None) else None
-    r = run_pipeline(modo, inicio, fim, steps=steps, endpoints=endpoints, force=args.force)
+    r = run_pipeline(modo, inicio, fim, steps=steps, endpoints=endpoints, force=args.force,
+                     ai_limit=getattr(args, "limit", None),
+                     ai_orcamento_usd=getattr(args, "orcamento", None))  # fmt: skip
     log.info(
         "execução %s: %s · %d endpoints · %s a %s · %.0f s",
         r["id_execucao"],
@@ -154,7 +156,9 @@ def _cmd_run(args: argparse.Namespace) -> int:
     if args.mode == "backfill" and not (args.start and args.end):
         log.error("--mode backfill exige --start e --end")
         return 2
-    return _executar_pipeline(args, frozenset({"extract", "bronze", "silver", "gold"}))
+    from radar.pipeline import ETAPAS_M3, ETAPAS_M4
+
+    return _executar_pipeline(args, ETAPAS_M3 if args.skip_ai else ETAPAS_M4)
 
 
 def _cmd_silver(args: argparse.Namespace) -> int:
@@ -192,6 +196,45 @@ def _cmd_gold(_: argparse.Namespace) -> int:
     return 1 if falhas else 0
 
 
+def _cmd_ai(args: argparse.Namespace) -> int:
+    from radar import db
+    from radar.ai.openai_client import ClienteIA, SemChaveOpenAI
+
+    engine = db.get_engine()
+    try:
+        if args.acao == "classificar":  # sem custo: só recalcula a similaridade já gravada
+            from radar.ai.classifier import classify
+            from radar.ai.relevance import update_relevance
+
+            n = classify(engine, todas=True, limiar=args.limiar)
+            log.info(
+                "reclassificadas: %d; relevância atualizada em %d", n, update_relevance(engine)
+            )
+            return 0
+        if args.acao == "avaliar":
+            from radar.ai.cost import CostTracker
+            from radar.ai.evaluation import avaliar
+
+            orc = args.orcamento if args.orcamento is not None else 0.05
+            r = avaliar(engine, ClienteIA(), CostTracker(engine, None, orc), limiar=args.limiar,
+                        amostra_sem_vazamento=args.amostra)  # fmt: skip
+            log.info("avaliação: %s", {k: v for k, v in r.items() if k != "curva"})
+            for ponto in r.get("curva", []):
+                log.info("  limiar %.3f · cobertura %.1f%% · acurácia %.1f%% · entre classificadas %.1f%%",
+                         ponto["limiar"], 100 * ponto["cobertura"], 100 * ponto["acuracia"],
+                         100 * ponto["acuracia_classificadas"])  # fmt: skip
+            return 0
+        from radar.ai.runner import executar_ia
+
+        r = executar_ia(engine, args.limit, args.orcamento)
+    except SemChaveOpenAI as erro:
+        log.error("%s", erro)
+        return 2
+    log.info("ia: execução %s %s · %s", r["id_execucao"], r["status"],
+             {k: v for k, v in r.items() if k not in ("id_execucao", "status", "custos")})  # fmt: skip
+    return 0 if r["status"] in ("success", "partial") else 1
+
+
 def _cmd_status(_: argparse.Namespace) -> int:
     from sqlalchemy import text
 
@@ -213,6 +256,9 @@ def _cmd_status(_: argparse.Namespace) -> int:
             text("SELECT schema, tabelas, tamanho_mb FROM ops.vw_tamanho_schemas ORDER BY 1")
         ).all()
         banco = conn.execute(text("SELECT tamanho_mb FROM ops.vw_tamanho_banco")).scalar_one()
+        custo_mes = conn.execute(text(
+            "SELECT coalesce(sum(custo_usd), 0), count(DISTINCT id_execucao) FROM ops.custos_ia "
+            "WHERE criado_em >= date_trunc('month', now())")).one()  # fmt: skip
     log.info("últimas execuções:")
     for e in execs:
         log.info("  #%s %-11s %-8s %s (%s s)", *e)
@@ -221,6 +267,7 @@ def _cmd_status(_: argparse.Namespace) -> int:
         log.info("  schema %-6s %3d tabelas %8.2f MB", schema, tabelas, mb)
     limite = get_settings().db_limite_mb
     log.info("banco: %.2f MB de %d MB (%.1f%%)", banco, limite, 100 * float(banco) / limite)
+    log.info("custo de IA no mês: US$ %.4f em %d execução(ões)", float(custo_mes[0]), custo_mes[1])
     return 0
 
 
@@ -270,9 +317,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_bro = sub.add_parser("bronze", help="Landing → Bronze (partições do período)")
     _args_periodo(p_bro, obrigatorio=True)
     p_bro.set_defaults(func=_cmd_bronze)
-    p_run = sub.add_parser("run", help="Pipeline (no M2: extração + Bronze)")
+    p_run = sub.add_parser("run", help="Pipeline completo: extração → Bronze → Silver → Gold → IA")
     p_run.add_argument("--mode", choices=["incremental", "backfill"], required=True)
     _args_periodo(p_run, obrigatorio=False)
+    p_run.add_argument("--skip-ai", action="store_true", help="não executa a etapa de IA")
+    p_run.add_argument("--limit", type=int, help="IA: no máximo N proposições por etapa")
+    p_run.add_argument(
+        "--orcamento", type=float, help="IA: teto em US$ (padrão: IA_ORCAMENTO_MAX_USD)"
+    )
     p_run.set_defaults(func=_cmd_run)
     p_sil = sub.add_parser("silver", help="Bronze → Silver (incremental por entidade)")
     p_sil.add_argument("--entidades", help="lista separada por vírgula (padrão: todas)")
@@ -283,6 +335,21 @@ def build_parser() -> argparse.ArgumentParser:
     p_gold = sub.add_parser("gold", help="Silver → Gold")
     p_gold.add_argument("acao", choices=["build"])
     p_gold.set_defaults(func=_cmd_gold)
+    p_ai = sub.add_parser("ai", help="IA: embeddings, classificação, resumos e relevância")
+    p_ai.add_argument(
+        "acao",
+        nargs="?",
+        default="run",
+        choices=["run", "avaliar", "classificar"],
+        help="run (padrão) · avaliar (acurácia vs. temas oficiais) · classificar (refaz, sem custo)",
+    )
+    p_ai.add_argument("--limit", type=int, help="no máximo N proposições por etapa")
+    p_ai.add_argument("--orcamento", type=float, help="teto em US$ desta execução")
+    p_ai.add_argument(
+        "--limiar", type=float, help="limiar mínimo de similaridade (avaliar/classificar)"
+    )
+    p_ai.add_argument("--amostra", type=int, default=300, help="avaliar: amostra sem vazamento")
+    p_ai.set_defaults(func=_cmd_ai)
     sub.add_parser("status", help="Execuções, cobertura e tamanho do banco").set_defaults(
         func=_cmd_status
     )

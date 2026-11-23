@@ -47,7 +47,7 @@ Provisionamento, túnel, DBeaver e backup: [`docs/operacao.md`](docs/operacao.md
 | M1 Catálogo dos 78 endpoints | ✅ |
 | M2 Landing + Bronze | ✅ |
 | M3 Silver + Gold | ✅ |
-| M4 IA | ⏳ |
+| M4 IA | ⏳ validação |
 | M5 Dashboards | ⏳ |
 | M6 Automação | ⏳ |
 | M7 Docs e pitch | ⏳ |

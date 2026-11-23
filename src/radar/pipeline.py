@@ -33,6 +33,7 @@ log = logging.getLogger("radar.pipeline")
 
 ETAPAS_M2 = frozenset({"extract", "bronze"})
 ETAPAS_M3 = frozenset({"extract", "bronze", "silver", "gold"})
+ETAPAS_M4 = ETAPAS_M3 | {"ai"}
 
 
 class APIIndisponivel(RuntimeError):
@@ -69,6 +70,22 @@ def _selecionar(
         for s in escolhidos
         if due(s, hoje, primeira_execucao=s.nome not in ja_rodaram, force=force)
     ]
+
+
+def _etapa_ia(engine, ctx: RunContext, limit: int | None, orcamento_usd: float | None) -> list[str]:
+    """IA depois da Gold; sem chave da OpenAI a etapa é pulada (não é falha)."""
+    from radar.ai.openai_client import SemChaveOpenAI
+    from radar.ai.runner import run_ai
+
+    inicio = time.monotonic()
+    try:
+        ia = run_ai(engine, ctx.id_execucao, limit, orcamento_usd)
+    except SemChaveOpenAI as aviso:
+        log.warning("IA pulada: %s", aviso)
+        ia = {"pulada": str(aviso)}
+    ctx.contagens["ia"] = ia
+    ctx.etapas["ia"] = {"duracao_s": round(time.monotonic() - inicio, 1)}
+    return ["ia.teto_atingido"] if ia.get("teto_atingido") else []
 
 
 def _incluir_orfaos(
@@ -146,6 +163,8 @@ def run_pipeline(
     endpoints: set[str] | None = None,
     force: bool = False,
     origem: str = "cli",
+    ai_limit: int | None = None,
+    ai_orcamento_usd: float | None = None,
 ) -> dict:
     """Executa as etapas pedidas e devolve o resumo da execução."""
     engine = get_engine()
@@ -201,6 +220,8 @@ def run_pipeline(
             ctx.contagens["gold"] = gold
             ctx.etapas["gold"] = {"duracao_s": round(time.monotonic() - inicio_etapa, 1)}
             falhas += [f"gold.{n}" for n, c in gold.get("arquivos", {}).items() if "falha" in c]
+        if "ai" in steps:
+            falhas += _etapa_ia(engine, ctx, ai_limit, ai_orcamento_usd)
         status = "partial" if falhas else "success"
         erro_txt = f"endpoints com erro: {', '.join(falhas)}" if falhas else None
     except APIIndisponivel as erro:

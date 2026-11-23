@@ -108,15 +108,16 @@ ON CONFLICT (id_orgao) DO UPDATE SET
     cod_tipo_orgao = EXCLUDED.cod_tipo_orgao, data_inicio = EXCLUDED.data_inicio,
     data_fim = EXCLUDED.data_fim, casa = EXCLUDED.casa;
 
--- Peso de relevância por tipo: PEC > PLP/MPV > PL > PDL > demais.
+-- Peso de relevância por tipo (SPEC 10.7): PEC 1.0 · MPV 0.9 · PLP 0.8 · PL 0.6 · PDL 0.5 · demais 0.2.
 INSERT INTO gold.dim_tipo_proposicao (sigla_tipo, nome, descricao, peso_relevancia)
 SELECT DISTINCT ON (sigla) sigla, nome, descricao,
-       CASE sigla WHEN 'PEC' THEN 1.00 WHEN 'PLP' THEN 0.90 WHEN 'MPV' THEN 0.90
-                  WHEN 'PL' THEN 0.80 WHEN 'PDL' THEN 0.60 ELSE 0.30 END
+       CASE sigla WHEN 'PEC' THEN 1.00 WHEN 'MPV' THEN 0.90 WHEN 'PLP' THEN 0.80
+                  WHEN 'PL' THEN 0.60 WHEN 'PDL' THEN 0.50 ELSE 0.20 END
 FROM silver.referencias
 WHERE dominio = 'referencias_proposicoes_sigla_tipo' AND sigla IS NOT NULL
 ORDER BY sigla, cod
-ON CONFLICT (sigla_tipo) DO UPDATE SET nome = EXCLUDED.nome, descricao = EXCLUDED.descricao;
+ON CONFLICT (sigla_tipo) DO UPDATE SET nome = EXCLUDED.nome, descricao = EXCLUDED.descricao,
+    peso_relevancia = EXCLUDED.peso_relevancia;
 
 INSERT INTO gold.dim_frente (id_frente, titulo, id_legislatura, situacao, keywords, id_coordenador)
 SELECT id_frente, titulo, id_legislatura, situacao, keywords, id_coordenador

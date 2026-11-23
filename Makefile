@@ -9,7 +9,7 @@ VPS_DB_DESTINO     ?= 127.0.0.1:5433
 TUNNEL_PORTA_LOCAL ?= 5433
 VPS_DIR            ?= /opt/portfolio/radar-legislativo
 
-.PHONY: catalog catalog-check amostras dicionario setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync
+.PHONY: ai ai-avaliar catalog catalog-check amostras dicionario setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync
 
 setup:            ## cria o ambiente, instala dependências e os hooks do pre-commit
 	$(PYTHON) -m venv $(VENV)
@@ -50,6 +50,12 @@ amostras:         ## grava uma resposta real de cada endpoint em tests/fixtures/
 
 dicionario:       ## gera docs/dicionario_de_dados.md
 	$(PY) -m radar catalog dicionario
+
+ai:               ## IA nas pendentes (LIMIT=10 para testar; teto IA_ORCAMENTO_MAX_USD)
+	$(PY) -m radar ai $(if $(LIMIT),--limit $(LIMIT),)
+
+ai-avaliar:       ## acurácia da classificação contra os temas oficiais (~US$ 0,001)
+	$(PY) -m radar ai avaliar
 
 test:             ## testes unitários com cobertura
 	$(VENV)/bin/pytest -m "not integration" --cov=radar --cov-report=term-missing

@@ -79,7 +79,7 @@ class Settings(BaseSettings):
     preco_embedding_usd_1m: float = 0.02
     preco_llm_entrada_usd_1m: float = 0.15
     preco_llm_saida_usd_1m: float = 0.60
-    tema_limiar_minimo: float = Field(default=0.20, ge=0, le=1)
+    tema_limiar_minimo: float = Field(default=0.30, ge=0, le=1)  # ADR-026
 
     # --- Telegram ---
     telegram_bot_token: SecretStr | None = None

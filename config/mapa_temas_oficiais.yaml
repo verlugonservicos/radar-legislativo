@@ -1,0 +1,37 @@
+# Tema oficial da Câmara (/referencias/proposicoes/codTema) → tema interno (config/temas.yaml).
+# Mapeamento muitos-para-um usado só na avaliação da IA (SPEC V3 3.3.1). As chaves são as 32
+# entradas de silver.referencias (domínio referencias_proposicoes_cod_tema) em 23/11/2026; o destino
+# segue as descrições de temas.yaml (lista = qualquer um vale). Sem correspondência clara → Outros
+# (não entra na acurácia).
+"Administração Pública": Administração Pública
+"Agricultura, Pecuária, Pesca e Extrativismo": Agronegócio
+"Arte, Cultura e Religião": Direitos Sociais e Cidadania
+"Cidades e Desenvolvimento Urbano": Infraestrutura e Transportes
+"Ciência, Tecnologia e Inovação": Tecnologia e Inovação
+"Ciências Exatas e da Terra": Outros
+"Ciências Sociais e Humanas": Outros
+"Comunicações": Tecnologia e Inovação
+"Defesa e Segurança": Segurança Pública e Justiça
+"Direito Civil e Processual Civil": Segurança Pública e Justiça
+"Direito Constitucional": Outros
+"Direito e Defesa do Consumidor": Economia e Sistema Financeiro
+"Direito e Justiça": Segurança Pública e Justiça
+"Direito Penal e Processual Penal": Segurança Pública e Justiça
+"Direitos Humanos e Minorias": Direitos Sociais e Cidadania
+"Economia": Economia e Sistema Financeiro
+"Educação": Educação
+"Energia, Recursos Hídricos e Minerais": Meio Ambiente e Energia
+"Esporte e Lazer": Direitos Sociais e Cidadania
+"Estrutura Fundiária": Agronegócio
+"Finanças Públicas e Orçamento": Tributário e Fiscal
+"Homenagens e Datas Comemorativas": Administração Pública
+"Indústria, Comércio e Serviços": Economia e Sistema Financeiro
+"Meio Ambiente e Desenvolvimento Sustentável": Meio Ambiente e Energia
+"Política, Partidos e Eleições": Administração Pública
+"Previdência e Assistência Social": [Trabalho e Previdência, Direitos Sociais e Cidadania]
+"Processo Legislativo e Atuação Parlamentar": Administração Pública
+"Relações Internacionais e Comércio Exterior": Economia e Sistema Financeiro
+"Saúde": Saúde
+"Trabalho e Emprego": Trabalho e Previdência
+"Turismo": Economia e Sistema Financeiro
+"Viação, Transporte e Mobilidade": Infraestrutura e Transportes
