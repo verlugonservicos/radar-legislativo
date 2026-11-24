@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import logging
 import re
 import unicodedata
@@ -69,14 +70,34 @@ def _texto(v: object) -> object:
     return str(v)
 
 
+_RE_TAG = re.compile(
+    r"</?(?:p|br|span|strong|b|i|em|u|div|li|ul|ol|a|font|sup|sub|h[1-6])(?:\s[^>]*)?/?>", re.I
+)
+_RE_QUEBRA = re.compile(r"<(?:br\s*/?|p(?:\s[^>]*)?|/p|div(?:\s[^>]*)?|/div|li|/li)>", re.I)
+_RE_ESPACOS = re.compile(r"[ \t\u00a0]+")
+
+
+def sem_html(v: str) -> str:
+    """Texto que a API traz com marcação HTML (descrição de eventos, despachos, sumários):
+    quebras de parágrafo viram quebra de linha, demais tags somem, entidades (&amp;, &nbsp;)
+    são convertidas e espaços repetidos colapsam. Texto sem '<' nem '&' passa intacto."""
+    if "<" not in v and "&" not in v:
+        return v
+    v = _RE_QUEBRA.sub("\n", v)
+    v = _RE_TAG.sub("", v)
+    v = html.unescape(v)
+    linhas = [_RE_ESPACOS.sub(" ", linha).strip() for linha in v.splitlines()]
+    return "\n".join(linha for linha in linhas if linha)
+
+
 def clean_text(serie: pd.Series) -> pd.Series:
-    """strip + normalização Unicode NFC; vazios e nulos viram None (nunca o texto 'nan')."""
+    """strip + NFC + sem HTML; vazios e nulos viram None (nunca o texto 'nan')."""
 
     def _limpar(v: object) -> object:
         v = _texto(v)
         if v is None:
             return None
-        v = unicodedata.normalize("NFC", v).strip()
+        v = sem_html(unicodedata.normalize("NFC", v)).strip()
         return v or None
 
     return pd.Series([_limpar(v) for v in serie], index=serie.index, dtype="object")

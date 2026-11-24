@@ -134,3 +134,19 @@ def test_sinal_do_valor_liquido_corrigido_sem_rejeitar():
     r = validate(df, [not_null(*ent.pk), *ent.regras], "despesas")
     assert df["valor_liquido"].tolist() == [90.0, -7.0, 30.0]  # só corrige quando o módulo bate
     assert len(r.validos) == 3 and r.avisos == {"sinal_valor_liquido_corrigido": 1}
+
+
+def test_texto_com_html_da_api_fica_limpo():
+    """A API manda descrições com marcação (eventos, despachos) e entidades (&amp;, &nbsp;)."""
+    sujo = (
+        "Audiência Pública <p><strong>A - Relatório</strong></p><p></p>"
+        '<p><span style="font-size: 12pt;">FULANO, Prefeito</span> - (confirmado);</p><br>Fim'
+    )
+    assert (
+        base.sem_html(sujo)
+        == "Audiência Pública\nA - Relatório\nFULANO, Prefeito - (confirmado);\nFim"
+    )
+    assert base.sem_html("J A SOBRAL &amp; CIA LTDA") == "J A SOBRAL & CIA LTDA"
+    assert base.sem_html("voto do NOVO &nbsp;ao Projeto") == "voto do NOVO ao Projeto"
+    assert base.sem_html("valor < 10 e x > 2") == "valor < 10 e x > 2"  # sinais soltos não são tags
+    assert base.clean_text(pd.Series(["<p> </p>"])).tolist() == [None]

@@ -146,7 +146,9 @@ export class Tabela {
     const tbody = this.el.querySelector('tbody');
     tbody.innerHTML = fatia.length ? fatia.map((l, i) => `<tr class="${this.aoClicar ? 'is-clickable' : ''}" data-i="${i}" ${this.aoClicar ? 'tabindex="0"' : ''}>${this.colunas.map((c) => {
       const conteudo = c.render ? c.render(l) : fmt.escapar(c.num ? fmt.num(this.valor(c, l)) : this.valor(c, l) ?? '—');
-      return `<td class="${c.num ? 'num' : ''} ${c.clip ? 'cell-clip' : ''}">${conteudo}</td>`;
+      // texto longo: até 3 linhas na tabela, completo no tooltip (title)
+      const corpo = c.clip ? `<div class="clip3" title="${fmt.escapar(this.valor(c, l) ?? '')}">${conteudo}</div>` : conteudo;
+      return `<td class="${c.num ? 'num' : ''} ${c.clip ? 'cell-clip' : ''}">${corpo}</td>`;
     }).join('')}</tr>`).join('') : `<tr><td colspan="${this.colunas.length}">${vazio()}</td></tr>`;
     if (this.aoClicar) {
       tbody.querySelectorAll('tr[data-i]').forEach((tr) => {

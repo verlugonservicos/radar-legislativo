@@ -85,6 +85,7 @@ table.data tr:last-child td { border-bottom: 0; }
 .table-foot { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); }
 .table-foot .pager { margin-left: auto; display: flex; gap: var(--space-1); }
 .cell-clip { max-width: 520px; }
+.clip3 { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-line; }
 .muted { color: var(--text-muted); }
 .avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--surface-2); flex: none; }
 .person { display: flex; align-items: center; gap: var(--space-3); }
