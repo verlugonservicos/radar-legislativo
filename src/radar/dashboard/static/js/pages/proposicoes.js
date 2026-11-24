@@ -177,6 +177,7 @@ function desenharTramitacao() {
 let modoProjetos = 'total';
 function desenharProjetos() {
   const porDep = modoProjetos === 'por-deputado';
+  document.getElementById('projetos-sub-media').hidden = !porDep;
   const deputados = Object.fromEntries(partidos.map((p) => [p.sigla_partido, p.deputados]));
   const agg = {};
   for (const d of projetosPartido) {
@@ -193,7 +194,7 @@ function desenharProjetos() {
   const el = document.getElementById('graf-projetos'); el.classList.remove('skeleton');
   montar(el, (t) => {
     const op = barras({ categorias: ps.map((a) => a.sigla), horizontal: true, rotulo: true, formatter, gradiente: 'invertido',
-                        series: [{ name: porDep ? 'Projetos por deputado' : 'Projetos', data: ps.map(valor) }] })(t);
+                        series: [{ name: porDep ? 'Média de projetos por deputado' : 'Projetos', data: ps.map(valor) }] })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(agg[s].deputados)})` };
     // no modo Total, cada barra mostra também a fatia do total de projetos (dos temas filtrados)
     if (!porDep) {
