@@ -223,8 +223,16 @@ function desenharSetores() {
   if (!ordem.length) { vazioEm('graf-setores'); return; }
   const el = document.getElementById('graf-setores');
   el.classList.remove('skeleton');
-  montar(el, barras({ gradiente: 'invertido', categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true }),
-    { tabela: { colunas: ['Setor', 'Menções'], linhas: ordem } });
+  // % do total de menções (um resumo cita até 4 setores), no mesmo padrão dos projetos por partido
+  const total = ordem.reduce((t, d) => t + d[1], 0);
+  const pct = (v) => fmt.pct((100 * v) / total);
+  montar(el, (t) => {
+    const op = barras({ gradiente: 'invertido', categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true })(t);
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pct(x.value)})` };
+    op.grid = { ...op.grid, right: 104 };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => `<b>${fmt.escapar(xs[0].name)}</b><br>Menções: <b>${fmt.num(xs[0].value)}</b> (${pct(xs[0].value)} do total)` };
+    return op;
+  }, { tabela: { colunas: ['Setor', 'Menções', '% do total'], linhas: ordem.map(([s, v]) => [s, v, pct(v)]) } });
 }
 
 await seguro(document.getElementById('graf-tramitacao'), desenharTramitacao);
