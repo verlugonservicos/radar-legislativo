@@ -47,7 +47,7 @@ await seguro(document.getElementById('graf-sankey'), async () => {
       : coluna(name) === 1 ? { position: 'right', offset: [deslocamentoMeio(), 0] }
       : {} }));
   const el = limpa('graf-sankey');
-  const COLUNA = 190;  // coluna da direita: nome da federação/bloco + somatório alinhado na borda
+  const COLUNA = 190;  // coluna da direita: nome da federação/bloco (o total fica dentro do gráfico)
   const ESQ = 104; const LARGURA_NO = 14;
   // distância do nó do meio até a coluna da direita (os nós do meio ficam a meio caminho das colunas)
   const deslocamentoMeio = () => {
@@ -73,19 +73,34 @@ await seguro(document.getElementById('graf-sankey'), async () => {
         color: t.text, fontSize: 11,
         formatter: (p) => {
           if (tipo(p.name) === 'partido') return `{n|${p.name}} {q|${fmt.num(total(p.name))}}`;
-          const nome = p.name.length > 24 ? `${p.name.slice(0, 22)}…` : p.name;
-          return `{d|${nome}}{s|${fmt.num(total(p.name))}}`;
+          return p.name.length > 30 ? `${p.name.slice(0, 28)}…` : p.name;
         },
         rich: {
           n: { color: t.text, fontSize: 11 }, q: { color: t.accent, fontSize: 11, fontWeight: 700 },
-          // nome com largura fixa + somatório alinhado à direita: os totais formam uma coluna na borda
-          d: { color: t.text, fontSize: 11, width: COLUNA - 52, overflow: 'truncate' },
-          s: { color: t.accent, fontSize: 12, fontWeight: 700, width: 36, align: 'right' },
         },
       },
       lineStyle: { color: 'gradient', opacity: 0.35 }, data: nosCom(t), links,
     }],
-  }), { tabela: { colunas: ['De', 'Para', 'Deputados'], linhas: links.map((l) => [l.source, l.target, l.value]) } });
+  }), {
+    tabela: { colunas: ['De', 'Para', 'Deputados'], linhas: links.map((l) => [l.source, l.target, l.value]) },
+    // total de cada federação/bloco dentro da área do gráfico, encostado à esquerda da barra
+    depois: (inst, t) => {
+      const serie = inst.getModel().getSeriesByIndex(0);
+      const grafo = serie.getGraph();
+      const { x: x0, y: y0 } = serie.layoutInfo;  // o layout dos nós é relativo à área da série
+      const textos = [];
+      grafo.eachNode((no) => {
+        if (coluna(no.id) === 0) return;
+        const { x, y, dy } = no.getLayout();
+        textos.push({
+          type: 'text', x: x0 + x - 8, y: y0 + y + dy / 2, silent: true, z: 100,
+          style: { text: fmt.num(total(no.id)), align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
+                   fill: t.text, stroke: t.surface, lineWidth: 4 },
+        });
+      });
+      inst.setOption({ graphic: [{ id: 'totais', type: 'group', children: textos }] }, { replaceMerge: ['graphic'] });
+    },
+  });
 });
 
 const cartao = (p) => `<div class="item person"><img class="avatar" src="${fmt.escapar(p.url_foto || '')}" alt="" loading="lazy" width="36" height="36">

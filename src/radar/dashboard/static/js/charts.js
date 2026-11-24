@@ -41,7 +41,9 @@ function registrar() {
 }
 
 /** Monta um gráfico: `fazerOpcao(t)` recebe as cores do tema e devolve a opção ECharts. */
-export function montar(el, fazerOpcao, { tabela } = {}) {
+/** `depois(inst, t)`: chamado após cada desenho (inicial, troca de tema) e redimensionamento — para
+ *  sobreposições que dependem da posição calculada pelo ECharts (ex.: totais no sankey). */
+export function montar(el, fazerOpcao, { tabela, depois } = {}) {
   if (!el) return null;
   for (const m of montados) {  // o mesmo elemento redesenhado: descarta a instância antiga
     if (m.el === el) { m.instancia.dispose(); m.ro?.disconnect(); montados.delete(m); }
@@ -49,9 +51,10 @@ export function montar(el, fazerOpcao, { tabela } = {}) {
   registrar();
   el.setAttribute('role', 'img');
   let inst = echarts.init(el, 'radar', { renderer: 'canvas' });
-  const desenhar = () => inst.setOption(fazerOpcao(temaAtual().t), true);
+  const posDesenho = () => { if (depois) inst.on('finished', function uma() { inst.off('finished', uma); depois(inst, temaAtual().t); }); };
+  const desenhar = () => { posDesenho(); inst.setOption(fazerOpcao(temaAtual().t), true); };
   desenhar();
-  const ro = new ResizeObserver(() => inst.resize());
+  const ro = new ResizeObserver(() => { posDesenho(); inst.resize(); });
   ro.observe(el);
   const registro = {
     el, ro,
