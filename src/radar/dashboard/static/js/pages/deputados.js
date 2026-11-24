@@ -259,7 +259,10 @@ let gastoPartido; let gastoDeputado;
 function eixoAte(maior, marcas = 5) {
   const bruto = (maior || 1) / marcas; const ordem = 10 ** Math.floor(Math.log10(bruto));
   const passo = [1, 2, 2.5, 5, 10].map((m) => m * ordem).find((v) => v >= bruto);
-  return { min: 0, max: Math.ceil(maior / passo) * passo, interval: passo };
+  // nível intermediário de escala: linha de grade a cada meio passo (sem número, para não amontoar
+  // rótulos) — mais referência no mesmo espaço, sem encolher as barras
+  return { min: 0, max: Math.ceil(maior / passo) * passo, interval: passo,
+           minorTick: { show: true, splitNumber: 2 }, minorSplitLine: { show: true, lineStyle: { type: 'dashed', opacity: 0.5 } } };
 }
 
 function desenharGastos() {
