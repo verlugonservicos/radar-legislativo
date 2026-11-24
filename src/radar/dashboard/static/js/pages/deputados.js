@@ -166,21 +166,24 @@ function desenharMapa() {
                  linhas: regs.map((r) => [r.regiao, REGIOES[r.regiao].join(', '), r.deputados, formatter(r[metrica])]) } });
 }
 
-// quantidade do ranking pela altura disponível (o card acompanha o mapa ao lado): ~27 px por barra,
-// entre 20 e 30 deputados; o título do card mostra o número
-const qtdRanking = (el) => Math.max(20, Math.min(30, Math.floor((el.clientHeight - 50) / 27)));
-let qtdAtual = 0;
+// Top 25: o gráfico ocupa a altura do card (acompanha o mapa ao lado), com o eixo preso embaixo e a
+// legenda de cores numa faixa larga no topo
+const QTD_RANKING = 25;
 function desenharRanking() {
   ranking?.instancia.dispose();
   const el = limpa('graf-ranking');
-  qtdAtual = qtdRanking(el);
-  document.getElementById('ranking-t').textContent = `Top ${qtdAtual} por score de atividade`;
-  el.setAttribute('aria-label', `Ranking dos ${qtdAtual} deputados mais ativos`);
-  const top = deps.filter(passa).slice(0, qtdAtual);
-  ranking = montar(el, barras({
-    gradiente: 'invertido', categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
-    series: [{ name: 'Score de atividade', data: top.map((d) => d.score_atividade) }],
-  }));
+  const top = deps.filter(passa).slice(0, QTD_RANKING);
+  ranking = montar(el, (t) => {
+    const op = barras({
+      gradiente: 'invertido', categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
+      series: [{ name: 'Score de atividade', data: top.map((d) => d.score_atividade) }],
+    })(t);
+    // legenda de cores: faixa horizontal larga, alinhada à esquerda no topo, com os rótulos nas pontas
+    op.visualMap = { ...op.visualMap, left: 0, right: 'auto', top: 0, itemHeight: Math.min(320, el.clientWidth * 0.55), itemWidth: 12,
+      text: ['maior', 'menor'], textGap: 8 };
+    op.grid = { ...op.grid, top: 34, bottom: 4 };
+    return op;
+  });
 }
 
 // Gastos da cota (mesmo critério do mapa para gasto: maior = vermelho), respeitando partido e UF
@@ -256,8 +259,5 @@ selMetrica.addEventListener('change', desenharMapa);
 
 await seguro(document.getElementById('graf-mapa'), desenharMapa);
 await seguro(document.getElementById('graf-ranking'), desenharRanking);
-// a altura muda com a largura da tela (o mapa mantém a proporção do Brasil): redesenha só se a quantidade mudar
-new ResizeObserver(() => { const el = document.getElementById('graf-ranking'); if (qtdAtual && qtdRanking(el) !== qtdAtual) desenharRanking(); })
-  .observe(document.getElementById('graf-ranking'));
 await seguro(document.getElementById('graf-gasto-partido'), desenharGastos);
 await seguro(document.getElementById('tabela-deputados'), desenharTabela);
