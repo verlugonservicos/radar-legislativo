@@ -125,16 +125,15 @@ await seguro(document.getElementById('graf-sankey'), async () => {
       // a federação do meio tem o nome deslocado para a coluna da direita: o total acompanha o nome
       let xDireita = 0;
       grafo.eachNode((no) => { xDireita = Math.max(xDireita, no.getLayout().x); });
-      // % só nos destinos finais (blocos, federações fora de bloco e "Sem bloco"), que somam a Câmara
-      // inteira e fecham 100,00% exato; a federação de dentro do bloco mostra só o número (já está nos %
-      // do bloco — somá-la de novo passava de 100%)
+      // total e % só nos destinos finais (blocos, federações fora de bloco e "Sem bloco"), que somam a
+      // Câmara inteira e fecham 100,00% exato; a federação de dentro do bloco não ganha total (já está no bloco)
       const destinos = nomes.filter((n) => coluna(n) === 2);
       const pcts = Object.fromEntries(fmt.pctsExatos(destinos.map(total)).map((v, i) => [destinos[i], v]));
       grafo.eachNode((no) => {
-        if (coluna(no.id) === 0) return;
+        if (!pcts[no.id]) return;  // só destinos finais: a federação de dentro do bloco fica sem total (confundia)
         const { y, dy } = no.getLayout();
         const x = xDireita;
-        const rotulo = pcts[no.id] ? `${fmt.num(total(no.id))} (${pcts[no.id]})` : `${fmt.num(total(no.id))} (no bloco)`;
+        const rotulo = `${fmt.num(total(no.id))} (${pcts[no.id]})`;
         textos.push({
           type: 'text', x: x0 + x - 8, y: y0 + y + dy / 2, silent: true, z: 100,
           style: { text: rotulo, align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
