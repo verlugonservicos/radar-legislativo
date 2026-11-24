@@ -2,7 +2,7 @@
 {% from "partials/componentes.html.j2" import card, grafico %}
 {% block conteudo %}
 <div class="grid">
-  {% call card("calendario", "Eventos por dia", "De 30 dias antes a 7 dias depois da data de referência", "span-12", termo="eventos-por-dia") %}{{ grafico("graf-calendario", "Calendário de calor com a quantidade de eventos por dia", "chart--sm") }}{% endcall %}
+  {% call card("calendario", "Eventos por dia", "De 30 dias antes a 7 dias depois da data de referência · número de eventos em cada dia (os próximos dias se preenchem com a carga diária)", "span-12", termo="eventos-por-dia") %}{{ grafico("graf-calendario", "Calendário de calor com a quantidade de eventos por dia", "chart--sm") }}{% endcall %}
   {% call card("orgaos", "Top 15 Eventos por órgão", "Órgãos com mais eventos no período", "span-6") %}{{ grafico("graf-orgaos", "Barras de eventos por órgão", "chart--lg") }}{% endcall %}
   {% call card("tipos", "Top 10 Eventos por tipo e presença média", "Quantidade de eventos e deputados presentes em média", "span-6") %}{{ grafico("graf-tipos", "Barras de eventos por tipo com presença média", "chart--lg") }}{% endcall %}
   {% call card("pauta", "Itens críticos em pauta", "Proposições de temas críticos nos próximos 7 dias", "span-12", termo="pauta") %}<div class="stack" id="lista-pauta"></div>{% endcall %}

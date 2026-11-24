@@ -5,25 +5,34 @@ import { barras, montar } from '../charts.js';
 import { chipTema, Tabela, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
-await iniciar();
+const m = await iniciar();
 const ag = await dados('agenda');
 const limpa = (id) => { const el = document.getElementById(id); el.classList.remove('skeleton'); return el; };
 const contar = (ls, f) => { const m = new Map(); for (const d of ls) m.set(f(d), (m.get(f(d)) || 0) + 1); return [...m.entries()].sort((a, b) => b[1] - a[1]); };
 
 await seguro(document.getElementById('graf-calendario'), async () => {
   const porDia = contar(ag, (d) => d.data);
-  const datas = ag.map((d) => d.data).sort();
-  if (!datas.length) { limpa('graf-calendario').innerHTML = vazio(); return; }
+  if (!porDia.length) { limpa('graf-calendario').innerHTML = vazio(); return; }
+  // janela inteira (30 dias antes a 7 depois da data de referência), mesmo sem evento nas pontas: os dias
+  // futuros aparecem vazios até a carga diária trazer a agenda; número de eventos dentro de cada dia
+  const DIA = 86_400_000;
+  const ref = Date.parse(`${(m.periodo?.fim || porDia.map((d) => d[0]).sort().at(-1)).slice(0, 10)}T00:00:00Z`);
+  const iso = (ms) => new Date(ms).toISOString().slice(0, 10);
+  const max = Math.max(...porDia.map((d) => d[1]));
   montar(limpa('graf-calendario'), (t) => ({
-    tooltip: { formatter: (p) => `${fmt.data(p.data[0])}: <b>${fmt.num(p.data[1])}</b> eventos` },
-    visualMap: { min: 0, max: Math.max(...porDia.map((d) => d[1])), show: false, inRange: { color: [t.grid, t.accent] } },
+    tooltip: { formatter: (p) => `${fmt.data(p.data[0])}: <b>${fmt.num(p.data[1])}</b> ${p.data[1] === 1 ? 'evento' : 'eventos'}` },
+    visualMap: { min: 0, max, show: true, calculable: false, orient: 'horizontal', right: 16, top: 0, itemWidth: 10, itemHeight: 90,
+      text: ['mais', 'menos'], textGap: 6, textStyle: { color: t.muted, fontSize: 11 }, inRange: { color: [t.grid, t.accent] } },
     calendar: {
-      range: [datas[0], datas[datas.length - 1]], cellSize: ['auto', 18], top: 30, left: 40, right: 16, bottom: 8,
+      range: [iso(ref - 30 * DIA), iso(ref + 7 * DIA)], cellSize: ['auto', 30], top: 44, left: 40, right: 16, bottom: 8,
       orient: 'horizontal', splitLine: { show: false }, itemStyle: { borderColor: t.surface, borderWidth: 3, color: t.grid },
       dayLabel: { firstDay: 1, nameMap: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'], color: t.muted }, monthLabel: { nameMap: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'], color: t.muted },
       yearLabel: { show: false },
     },
-    series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: porDia }],
+    series: [{ type: 'heatmap', coordinateSystem: 'calendar', data: porDia.map(([d, n]) => ({ value: [d, n],
+      // número no dia: claro sobre as células escuras, escuro sobre as claras
+      label: { show: true, formatter: (p) => fmt.num(p.data.value[1]), fontSize: 12, fontWeight: 600,
+               color: n > max * 0.55 ? t.surface : t.text } })) }],
   }), { tabela: { colunas: ['Data', 'Eventos'], linhas: porDia.map(([d, n]) => [fmt.data(d), n]) } });
 });
 
