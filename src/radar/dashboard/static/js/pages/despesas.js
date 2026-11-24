@@ -68,16 +68,28 @@ await seguro(document.getElementById('graf-fornecedores'), async () => {
 });
 
 await seguro(document.getElementById('graf-partido'), async () => {
-  const ps = (await dados('partidos')).filter((p) => p.deputados >= 3).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
+  const todos = await dados('partidos');
+  const ps = todos.filter((p) => p.deputados >= 3).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
   const dep = Object.fromEntries(ps.map((p) => [p.sigla_partido, p.deputados]));
+  // % = fatia do partido no gasto total da cota (todos os partidos), como no gráfico por UF
+  const total = todos.reduce((s, p) => s + (p.gasto_total || 0), 0);
+  const pct = (p) => fmt.pct2(total ? (100 * (p.gasto_total || 0)) / total : 0);
   montar(limpa('graf-partido'), (t) => {
     const op = barras({
       gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
       series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
     })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(dep[s])})` };  // nº de deputados
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(ps[x.dataIndex])})` };
+    op.grid = { ...op.grid, right: 132 };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
+      const p = ps[xs[0].dataIndex];
+      return `<b>${fmt.escapar(p.sigla_partido)}</b> · ${fmt.num(p.deputados)} deputados<br>Por deputado: <b>${fmt.brl(p.gasto_por_deputado)}</b>`
+        + `<br>Gasto total: ${fmt.brlCheio(p.gasto_total)} (${pct(p)} do total da cota)`;
+    } };
     return op;
-  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado'], linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado)]) } });
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado', 'Gasto total', '% do total'],
+                 linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado), fmt.brlCheio(p.gasto_total), pct(p)]) } });
 });
 
 await seguro(document.getElementById('graf-uf'), async () => {
