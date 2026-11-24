@@ -247,13 +247,21 @@ function desenharRanking() {
     })(t);
     // enquadramento: eixo até 100 (o score vai de 0 a 100) e margens laterais justas ao rótulo "97,0"
     op.grid = { ...op.grid, left: 0, right: 44, bottom: 4 };
-    op.xAxis = { ...op.xAxis, max: 100, axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };
+    op.xAxis = { ...op.xAxis, ...eixoAte(100, 5), axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };  // 0, 20 … 100
     return op;
   }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Score de atividade'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.num1(d.score_atividade)]) } });
 }
 
 // Gastos da cota (mesmo critério do mapa para gasto: maior = vermelho), respeitando partido e UF
 let gastoPartido; let gastoDeputado;
+// eixo X que termina na marca "redonda" logo acima do maior valor (ex.: 536 → 600), com ~4 a 6 marcas:
+// a barra maior não encosta na borda e o fim do eixo tem número, sem sensação de vazio
+function eixoAte(maior, marcas = 5) {
+  const bruto = (maior || 1) / marcas; const ordem = 10 ** Math.floor(Math.log10(bruto));
+  const passo = [1, 2, 2.5, 5, 10].map((m) => m * ordem).find((v) => v >= bruto);
+  return { min: 0, max: Math.ceil(maior / passo) * passo, interval: passo };
+}
+
 function desenharGastos() {
   const ls = deps.filter(passa);
   const porPartido = new Map();
@@ -263,16 +271,16 @@ function desenharGastos() {
   // % do gasto total dos deputados filtrados, entre parênteses ao lado de cada barra (padrão dos projetos/setores)
   const total = ls.reduce((t, d) => t + (d.gasto_total || 0), 0);
   const pct = (v) => fmt.pct2(total ? (100 * v) / total : 0);  // 2 casas: no Top 20 por deputado, os valores ficam abaixo de 1%
-  const comPct = (op) => {
+  const comPct = (op, maior, marcas = 4) => {
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(x.value)})` };
     // enquadramento: nomes encostados à esquerda, eixo até o maior valor e margem direita justa ao rótulo
     op.grid = { ...op.grid, left: 0, right: 124 };
-    op.xAxis = { ...op.xAxis, max: 'dataMax', axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: false } };
+    op.xAxis = { ...op.xAxis, ...eixoAte(maior, marcas), axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };
     return op;
   };
   gastoPartido = montar(limpa('graf-gasto-partido'), (t) => {
     const op = comPct(barras({ categorias: partidos.map(([p]) => p), horizontal: true, rotulo: true, formatter: fmt.brl, gradiente: true,
-                               series: [{ name: 'Gasto da cota', data: partidos.map(([, v]) => Math.round(v)) }] })(t));
+                               series: [{ name: 'Gasto da cota', data: partidos.map(([, v]) => Math.round(v)) }] })(t), partidos[0]?.[1]);
     // nome do partido com o nº de deputados (a categoria continua só a sigla, usada no tooltip)
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (p) => `${p} (${fmt.num(qtd(p))})` };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
@@ -284,12 +292,7 @@ function desenharGastos() {
     const op = comPct(barras({
       categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.brl,
       gradiente: true, series: [{ name: 'Gasto da cota', data: top.map((d) => Math.round(d.gasto_total || 0)) }],
-    })(t));
-    // plot mais estreito (nomes longos + rótulos com %): no máximo ~3 marcas no eixo, em passo "redondo"
-    const bruto = Math.max(...top.map((d) => d.gasto_total || 0)) / 3;
-    const ordem = 10 ** Math.floor(Math.log10(bruto || 1));
-    const passo = [1, 2, 2.5, 5, 10].map((m) => m * ordem).find((v) => v >= bruto);
-    op.xAxis = { ...op.xAxis, interval: passo };  // termina no maior valor (comPct), com marcas a cada 'passo'
+    })(t), top[0]?.gasto_total, 3);
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)} (${pct(ps[0].value)} do total dos ${fmt.num(ls.length)} deputados)` };
     return op;
@@ -322,7 +325,7 @@ function desenharProjetosDeputado() {
     // enquadramento: eixo termina no maior valor (sem a sobra até a próxima marca) e margem direita justa ao
     // rótulo mais longo ("536 (19,51%)"); a esquerda encosta nos nomes
     op.grid = { ...op.grid, left: 0, right: 96 };
-    op.xAxis = { ...op.xAxis, max: 'dataMax', axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: false } };
+    op.xAxis = { ...op.xAxis, ...eixoAte(porDep[top[0].id_deputado].total, 6), axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const d = top[xs[0].dataIndex]; const a = porDep[d.id_deputado];
       const temas = Object.entries(a.temas).sort((x, y) => y[1] - x[1]).slice(0, 3)
