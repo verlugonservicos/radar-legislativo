@@ -10,15 +10,37 @@ const limpa = (id) => { const el = document.getElementById(id); el.classList.rem
 const ops = await dados('operacao');
 
 await seguro(document.getElementById('graf-execucoes'), async () => {
-  montar(limpa('graf-execucoes'), (t) => barras({
-    categorias: ops.map((e) => `#${e.id_execucao}`), formatter: (v) => `${fmt.num(Math.round(v / 60))} min`,
-    series: [{ name: 'Duração', data: ops.map((e) => ({ value: e.duracao_s, itemStyle: { color: { success: t.positive, partial: t.warning, failed: t.negative }[e.status] || t.muted } })) }],
-  })(t), { tabela: { colunas: ['Execução', 'Modo', 'Status', 'Duração (min)'], linhas: ops.map((e) => [e.id_execucao, e.modo, e.status, Math.round(e.duracao_s / 60)]) } });
+  // rótulo no topo de cada barra (duração em minutos); eixo em minutos "redondos" (antes: 83, 167, 250…)
+  const min = (s) => `${fmt.num(Math.round(s / 60))} min`;
+  const maiorMin = Math.max(...ops.map((e) => e.duracao_s / 60), 1);
+  const passo = [10, 20, 30, 60, 120].find((p) => maiorMin / p <= 5) || 120;
+  montar(limpa('graf-execucoes'), (t) => {
+    const op = barras({
+      categorias: ops.map((e) => `#${e.id_execucao}`), formatter: min, rotulo: true,
+      series: [{ name: 'Duração', data: ops.map((e) => ({ value: e.duracao_s, itemStyle: { color: { success: t.positive, partial: t.warning, failed: t.negative }[e.status] || t.muted } })) }],
+    })(t);
+    op.yAxis = { ...op.yAxis, interval: passo * 60, max: Math.ceil(maiorMin / passo) * passo * 60 };
+    return op;
+  }, { tabela: { colunas: ['Execução', 'Modo', 'Status', 'Duração (min)'], linhas: ops.map((e) => [e.id_execucao, e.modo, e.status, Math.round(e.duracao_s / 60)]) } });
 });
 
 await seguro(document.getElementById('graf-banco'), async () => {
   const tam = await dados('tamanho_schemas');
-  montar(limpa('graf-banco'), rosca({ itens: tam.map((s) => ({ name: s.schema, value: s.tamanho_mb })), formatter: (v) => `${fmt.num1(v)} MB` }),
+  // rótulos ao lado da rosca: camada, tamanho e % do banco, com linha-guia
+  const totalMb = tam.reduce((a, s) => a + s.tamanho_mb, 0);
+  const pcts = fmt.pctsExatos(tam.map((s) => s.tamanho_mb));
+  montar(limpa('graf-banco'), (t) => {
+    const op = rosca({ itens: tam.map((s) => ({ name: s.schema, value: s.tamanho_mb })), formatter: (v) => `${fmt.num1(v)} MB` })(t);
+    op.series[0].label = { show: true, position: 'outside', alignTo: 'edge', edgeDistance: 6, overflow: 'none', color: t.text, fontSize: 12, lineHeight: 16,
+      formatter: (p) => `{n|${p.name}}\n{v|${fmt.num1(p.value)} MB · ${pcts[p.dataIndex]}}`,
+      rich: { n: { fontWeight: 700, color: t.text, fontSize: 12 }, v: { color: t.muted, fontSize: 11 } } };
+    op.series[0].labelLine = { show: true, length: 12, length2: 10, lineStyle: { color: t.muted } };
+    op.series[0].radius = ['40%', '60%'];
+    op.series[0].avoidLabelOverlap = true;
+    op.title = { text: `${fmt.num1(totalMb)} MB`, subtext: 'total', left: 'center', top: '38%',
+      textStyle: { fontSize: 16, fontWeight: 700, color: t.text }, subtextStyle: { color: t.muted, fontSize: 11 } };
+    return op;
+  },
     { tabela: { colunas: ['Schema', 'Tabelas', 'MB'], linhas: tam.map((s) => [s.schema, s.tabelas, fmt.num1(s.tamanho_mb)]) } });
 });
 
