@@ -9,7 +9,7 @@ const m = await iniciar();
 const limpa = (id) => { const el = document.getElementById(id); el.classList.remove('skeleton'); return el; };
 const ops = await dados('operacao');
 // cores das camadas do medalhão, próximas dos metais (bronze, prata, ouro); ops em grafite neutro
-const COR_CAMADA = { bronze: '#B87333', silver: '#A8A9AD', gold: '#D4AF37', ops: '#475569' };
+const COR_CAMADA = { bronze: '#B87333', silver: '#A8A9AD', gold: '#F2C200', ops: '#475569' };
 
 await seguro(document.getElementById('graf-execucoes'), async () => {
   // rótulo no topo de cada barra (duração em minutos); eixo em minutos "redondos" (antes: 83, 167, 250…)
