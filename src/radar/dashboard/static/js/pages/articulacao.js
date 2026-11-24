@@ -33,6 +33,9 @@ await seguro(document.getElementById('graf-frentes'), async () => {
 });
 
 await seguro(document.getElementById('graf-sankey'), async () => {
+  // % = parcela da Câmara (deputados em exercício) em cada federação/bloco, com 2 casas
+  const camara = (await dados('partidos')).reduce((s, p) => s + p.deputados, 0);
+  const pctCamara = (v) => fmt.pct2(camara ? (100 * v) / camara : 0);
   const bp = (await dados('blocos_partidos')).filter((d) => d.membros > 0);
   if (!bp.length) { limpa('graf-sankey').innerHTML = vazio('Sem blocos vigentes com deputados em exercício.'); return; }
   // 3 níveis: partido → federação → bloco. Uma federação atua como um partido só e pode entrar inteira
@@ -117,7 +120,7 @@ await seguro(document.getElementById('graf-sankey'), async () => {
         const x = xDireita;
         textos.push({
           type: 'text', x: x0 + x - 8, y: y0 + y + dy / 2, silent: true, z: 100,
-          style: { text: fmt.num(total(no.id)), align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
+          style: { text: `${fmt.num(total(no.id))} (${pctCamara(total(no.id))})`, align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
                    fill: t.text, stroke: t.surface, lineWidth: 4 },
         });
       });
