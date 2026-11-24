@@ -43,6 +43,9 @@ function registrar() {
 /** Monta um gráfico: `fazerOpcao(t)` recebe as cores do tema e devolve a opção ECharts. */
 export function montar(el, fazerOpcao, { tabela } = {}) {
   if (!el) return null;
+  for (const m of montados) {  // o mesmo elemento redesenhado: descarta a instância antiga
+    if (m.el === el) { m.instancia.dispose(); m.ro?.disconnect(); montados.delete(m); }
+  }
   registrar();
   el.setAttribute('role', 'img');
   let inst = echarts.init(el, 'radar', { renderer: 'canvas' });
@@ -51,7 +54,7 @@ export function montar(el, fazerOpcao, { tabela } = {}) {
   const ro = new ResizeObserver(() => inst.resize());
   ro.observe(el);
   const registro = {
-    el,
+    el, ro,
     redesenhar() { inst.dispose(); registrar(); inst = echarts.init(el, 'radar', { renderer: 'canvas' }); desenhar(); },
     get instancia() { return inst; },
   };
@@ -68,7 +71,13 @@ function tabelaAlternativa(el, { colunas, linhas }) {
   const cab = colunas.map((c) => `<th scope="col">${fmt.escapar(c)}</th>`).join('');
   const corpo = linhas.slice(0, 200).map((l) => `<tr>${l.map((v) => `<td>${fmt.escapar(v)}</td>`).join('')}</tr>`).join('');
   det.innerHTML = `<summary>Ver dados em tabela</summary><div class="table-wrap"><table class="data"><thead><tr>${cab}</tr></thead><tbody>${corpo}</tbody></table></div>`;
-  el.after(det);
+  const anterior = el.nextElementSibling;
+  if (anterior?.classList.contains('chart-alt')) {  // redesenho: substitui, nunca acumula
+    det.open = anterior.open;
+    anterior.replaceWith(det);
+  } else {
+    el.after(det);
+  }
 }
 
 // ------------------------------------------------------------------ fábricas de opções

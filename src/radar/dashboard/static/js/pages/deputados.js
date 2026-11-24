@@ -30,23 +30,90 @@ let mapa; let ranking; let tabela;
 const geo = await fetch('static/geo/brasil-ufs.json').then((r) => r.json());
 echarts.registerMap('BR', geo);
 
+// UF → região (IBGE) e a UF que recebe o rótulo da região no mapa
+const REGIOES = {
+  Norte: ['AC', 'AM', 'AP', 'PA', 'RO', 'RR', 'TO'],
+  Nordeste: ['AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE'],
+  'Centro-Oeste': ['DF', 'GO', 'MS', 'MT'],
+  Sudeste: ['ES', 'MG', 'RJ', 'SP'],
+  Sul: ['PR', 'RS', 'SC'],
+};
+const ROTULO_REGIAO = { Norte: 'AM', Nordeste: 'PI', 'Centro-Oeste': 'MT', Sudeste: 'MG', Sul: 'RS' };
+const regiaoDe = Object.fromEntries(Object.entries(REGIOES).flatMap(([r, ufs]) => ufs.map((u) => [u, r])));
+
+/** Agrega as UFs por região: somas para deputados/gastos, médias ponderadas pelos deputados. */
+function porRegiao() {
+  return Object.keys(REGIOES).map((regiao) => {
+    const ufs = porUf.filter((u) => regiaoDe[u.sigla_uf] === regiao);
+    const dep = ufs.reduce((a, u) => a + u.deputados, 0);
+    const pond = (k) => ufs.reduce((a, u) => a + (u[k] || 0) * u.deputados, 0) / dep;
+    return {
+      regiao, deputados: dep, gasto_por_deputado: ufs.reduce((a, u) => a + u.gasto_total, 0) / dep,
+      score_atividade_medio: pond('score_atividade_medio'), presenca_votacoes_media: pond('presenca_votacoes_media'),
+    };
+  });
+}
+
+/** Interpola entre duas cores #RRGGBB (t de 0 a 1). */
+function misturar(c1, c2, t) {
+  const a = c1.match(/\w\w/g).map((h) => parseInt(h, 16)); const b = c2.match(/\w\w/g).map((h) => parseInt(h, 16));
+  return `#${a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, '0')).join('')}`;
+}
+
+let modoMapa = 'uf';
+document.querySelectorAll('#mapa-agrupamento button').forEach((b) => b.addEventListener('click', () => {
+  modoMapa = b.dataset.modo;
+  document.querySelectorAll('#mapa-agrupamento button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  desenharMapa();
+}));
+
 function desenharMapa() {
-  mapa?.instancia.dispose();
   const [rotulo, formatter] = METRICAS[selMetrica.value];
-  const valores = porUf.map((u) => ({ name: u.sigla_uf, value: u[selMetrica.value] }));
-  const vs = valores.map((v) => v.value);
-  mapa = montar(limpa('graf-mapa'), (t) => ({
-    tooltip: { trigger: 'item', formatter: (p) => `<b>${p.name}</b><br>${rotulo}: ${formatter(p.value)}` },
-    visualMap: { min: Math.min(...vs), max: Math.max(...vs), left: 0, bottom: 0, itemHeight: 110, calculable: true, text: ['maior', 'menor'],
-      inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
-    series: [{ type: 'map', map: 'BR', roam: false, nameProperty: 'sigla', data: valores, selectedMode: 'single',
-      layoutCenter: ['54%', '50%'], layoutSize: '104%',      // ocupa o card inteiro (o Brasil é quase quadrado)
-      itemStyle: { borderColor: t.surface, borderWidth: 1, areaColor: t.grid },
-      emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
-      select: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
-      label: { show: true, fontSize: 9, color: t.muted } }],
-  }), { tabela: { colunas: ['UF', rotulo], linhas: porUf.map((u) => [u.sigla_uf, formatter(u[selMetrica.value])]) } });
-  mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
+  const metrica = selMetrica.value;
+  const base = { type: 'map', map: 'BR', roam: false, nameProperty: 'sigla',
+                 layoutCenter: ['54%', '50%'], layoutSize: '104%' };  // ocupa o card inteiro (o Brasil é quase quadrado)
+  if (modoMapa === 'uf') {
+    const valores = porUf.map((u) => ({ name: u.sigla_uf, value: u[metrica] }));
+    const vs = valores.map((v) => v.value);
+    mapa = montar(limpa('graf-mapa'), (t) => ({
+      tooltip: { trigger: 'item', formatter: (p) => `<b>${p.name}</b><br>${rotulo}: ${formatter(p.value)}` },
+      visualMap: { min: Math.min(...vs), max: Math.max(...vs), left: 0, bottom: 0, itemHeight: 110, calculable: true, text: ['maior', 'menor'],
+        inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
+      series: [{ ...base, data: valores, selectedMode: 'single',
+        itemStyle: { borderColor: t.surface, borderWidth: 1, areaColor: t.grid },
+        emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
+        select: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
+        label: { show: true, fontSize: 9, color: t.muted } }],
+    }), { tabela: { colunas: ['UF', rotulo], linhas: porUf.map((u) => [u.sigla_uf, formatter(u[metrica])]) } });
+    mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
+    return;
+  }
+  // modo região: cada UF recebe a cor da sua região; a borda na mesma cor "funde" os estados
+  const regs = porRegiao();
+  const vs = regs.map((r) => r[metrica]);
+  const [min, max] = [Math.min(...vs), Math.max(...vs)];
+  const valorDe = Object.fromEntries(regs.map((r) => [r.regiao, r[metrica]]));
+  mapa = montar(limpa('graf-mapa'), (t) => {
+    const cor = (v) => misturar(t.grid.length === 7 ? t.grid : '#E2E8F0', t.accent.length === 7 ? t.accent : '#4F46E5', max > min ? (v - min) / (max - min) : 1);
+    return {
+      tooltip: { trigger: 'item', formatter: (p) => { const r = regiaoDe[p.name]; return `<b>${r}</b> (${REGIOES[r].join(', ')})<br>${rotulo}: ${formatter(valorDe[r])}`; } },
+      series: [{
+        ...base, selectedMode: false,
+        data: Object.keys(regiaoDe).map((uf) => {
+          const r = regiaoDe[uf]; const c = cor(valorDe[r]); const temRotulo = ROTULO_REGIAO[r] === uf;
+          return {
+            name: uf, value: valorDe[r], itemStyle: { areaColor: c, borderColor: c, borderWidth: 0.6 },
+            emphasis: { itemStyle: { areaColor: c, borderColor: t.text, borderWidth: 1 } },
+            label: { show: temRotulo, formatter: () => `{r|${r}}\n{v|${formatter(valorDe[r])}}`,
+              rich: { r: { fontWeight: 700, fontSize: 12, color: t.text, textBorderColor: t.surface, textBorderWidth: 3 },
+                      v: { fontSize: 11, color: t.text, textBorderColor: t.surface, textBorderWidth: 3, padding: [2, 0, 0, 0] } } },
+          };
+        }),
+        emphasis: { label: { show: false } },
+      }],
+    };
+  }, { tabela: { colunas: ['Região', 'UFs', 'Deputados', rotulo],
+                 linhas: regs.map((r) => [r.regiao, REGIOES[r.regiao].join(', '), r.deputados, formatter(r[metrica])]) } });
 }
 
 function desenharRanking() {
