@@ -89,9 +89,13 @@ await seguro(document.getElementById('graf-sankey'), async () => {
       const grafo = serie.getGraph();
       const { x: x0, y: y0 } = serie.layoutInfo;  // o layout dos nós é relativo à área da série
       const textos = [];
+      // a federação do meio tem o nome deslocado para a coluna da direita: o total acompanha o nome
+      let xDireita = 0;
+      grafo.eachNode((no) => { xDireita = Math.max(xDireita, no.getLayout().x); });
       grafo.eachNode((no) => {
         if (coluna(no.id) === 0) return;
-        const { x, y, dy } = no.getLayout();
+        const { y, dy } = no.getLayout();
+        const x = xDireita;
         textos.push({
           type: 'text', x: x0 + x - 8, y: y0 + y + dy / 2, silent: true, z: 100,
           style: { text: fmt.num(total(no.id)), align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
