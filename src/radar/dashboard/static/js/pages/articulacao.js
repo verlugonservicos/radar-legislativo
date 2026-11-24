@@ -12,10 +12,24 @@ const limpa = (id) => { const el = document.getElementById(id); el.classList.rem
 await seguro(document.getElementById('graf-frentes'), async () => {
   const top = frentes.slice(0, 20);
   const corta = (t) => t.replace(/^Frente Parlamentar (Mista )?(em |de |da |do |pela |pelo |para )?/i, '').slice(0, 48);
-  montar(limpa('graf-frentes'), barras({
-    gradiente: 'invertido', categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
-    series: [{ name: 'Deputados', data: top.map((f) => f.membros) }],
-  }), { tabela: { colunas: ['Frente', 'Deputados', 'Partidos', 'Partido com mais membros'], linhas: top.map((f) => [f.titulo, f.membros, f.partidos_distintos, f.top_partido]) } });
+  // % = parcela da Câmara (deputados em exercício) que integra a frente; um deputado entra em várias
+  // frentes, então as barras não somam 100%
+  const camara = (await dados('partidos')).reduce((s, p) => s + p.deputados, 0);
+  const pct = (v) => fmt.pct2(camara ? (100 * v) / camara : 0);
+  montar(limpa('graf-frentes'), (t) => {
+    const op = barras({
+      gradiente: 'invertido', categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
+      series: [{ name: 'Deputados', data: top.map((f) => f.membros) }],
+    })(t);
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pct(x.value)})` };
+    op.grid = { ...op.grid, right: 104 };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
+      const f = top[xs[0].dataIndex];
+      return `<b>${fmt.escapar(f.titulo)}</b><br>Deputados: <b>${fmt.num(f.membros)}</b> (${pct(f.membros)} dos ${fmt.num(camara)} em exercício)`
+        + `<br>${fmt.num(f.partidos_distintos)} partidos · mais membros: ${fmt.escapar(f.top_partido || '—')}`;
+    } };
+    return op;
+  }, { tabela: { colunas: ['Frente', 'Deputados', '% da Câmara', 'Partidos', 'Partido com mais membros'], linhas: top.map((f) => [f.titulo, f.membros, pct(f.membros), f.partidos_distintos, f.top_partido]) } });
 });
 
 await seguro(document.getElementById('graf-sankey'), async () => {
