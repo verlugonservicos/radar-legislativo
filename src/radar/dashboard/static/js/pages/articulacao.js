@@ -34,7 +34,8 @@ await seguro(document.getElementById('graf-frentes'), async () => {
 
 await seguro(document.getElementById('graf-sankey'), async () => {
   // % = parcela da Câmara (deputados em exercício) em cada federação/bloco, com 2 casas
-  const camara = (await dados('partidos')).reduce((s, p) => s + p.deputados, 0);
+  const partidosCamara = await dados('partidos');
+  const camara = partidosCamara.reduce((s, p) => s + p.deputados, 0);
   const pctCamara = (v) => fmt.pct2(camara ? (100 * v) / camara : 0);
   const bp = (await dados('blocos_partidos')).filter((d) => d.membros > 0);
   if (!bp.length) { limpa('graf-sankey').innerHTML = vazio('Sem blocos vigentes com deputados em exercício.'); return; }
@@ -49,6 +50,11 @@ await seguro(document.getElementById('graf-sankey'), async () => {
     else if (federacaoDe.has(d.partido)) somar(federacaoDe.get(d.partido), d.bloco, d.membros);  // federação → bloco
     else somar(d.partido, d.bloco, d.membros);                                         // partido → bloco
   }
+  // partidos fora de qualquer bloco/federação viram a linha "Sem bloco": assim o lado direito soma 100%
+  // da Câmara (os 19 da federação PSDB CIDADANIA já estão dentro do bloco de 273)
+  const SEM_BLOCO = 'Sem bloco';
+  const emBloco = new Set(bp.map((d) => d.partido));
+  for (const p of partidosCamara) if (p.deputados > 0 && !emBloco.has(p.sigla_partido)) somar(p.sigla_partido, SEM_BLOCO, p.deputados);
   const links = [...fluxo].map(([k, value]) => { const [source, target] = k.split('\u0000'); return { source, target, value }; });
   const entra = new Map(); const sai = new Map();
   for (const l of links) { entra.set(l.target, (entra.get(l.target) || 0) + l.value); sai.set(l.source, (sai.get(l.source) || 0) + l.value); }
@@ -63,7 +69,8 @@ await seguro(document.getElementById('graf-sankey'), async () => {
   const corDe = (n) => PALETA[nomes.indexOf(n) % PALETA.length];
   const destino = (n) => links.find((l) => l.source === n)?.target;
   const nosCom = (t) => nomes.map((name, i) => ({ name, depth: coluna(name),
-    itemStyle: coluna(name) === 1 ? { color: corDe(destino(name)), opacity: 0.35, borderWidth: 0 } : { color: PALETA[i % PALETA.length] },
+    itemStyle: coluna(name) === 1 ? { color: corDe(destino(name)), opacity: 0.35, borderWidth: 0 }
+      : name === SEM_BLOCO ? { color: '#94A3B8' } : { color: PALETA[i % PALETA.length] },
     label: coluna(name) === 0 ? { position: 'left' }                    // partido: nome e número à esquerda
       // federação intermediária: o rótulo vai para a coluna da direita (na altura do nó), fora das faixas
       : coluna(name) === 1 ? { position: 'right', offset: [deslocamentoMeio(), 0] }
