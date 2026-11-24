@@ -1,4 +1,5 @@
 // Votações e Partidos: votações por dia, participação, fidelidade × governismo e concordância.
+/* global echarts */
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, montar } from '../charts.js';
@@ -44,9 +45,49 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
   const maxDep = Math.max(...ps.map((p) => p.deputados));
   const minX = Math.max(0, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 3) / 5) * 5);
   const elDisp = limpa('graf-dispersao');
-  const COLUNA = 130;  // margem direita: coluna de nomes do aglomerado perto de 100% de fidelidade
+  const estreito = elDisp.clientWidth < 480;
+  const COLUNA = estreito ? 120 : 130;  // margem direita: coluna de nomes do aglomerado perto de 100%
+  const TOPO = estreito ? 92 : 48;      // a legenda quebra em 3 linhas no celular
+
+  // Posicionamento dos nomes sem sobreposição: perto de 100% de fidelidade o nome vai para a coluna
+  // da direita; nos demais, testa posições em volta da bolha (8 direções, 3 distâncias) e fica com a
+  // primeira que não encosta em outro nome nem em outra bolha. Afastado da bolha, ganha linha-guia.
+  const ocupados = [];
+  let bolhas = [];
+  const cruza = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  const cruzaCirculo = (r, c) => {
+    const nx = Math.max(r.x, Math.min(c.x, r.x + r.w)); const ny = Math.max(r.y, Math.min(c.y, r.y + r.h));
+    return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + 2) ** 2;
+  };
+  const DIRECOES = [[0, -1], [1, 0], [-1, 0], [0, 1], [1, -1], [-1, -1], [1, 1], [-1, 1]];
+  function posicionarRotulo(p) {
+    const inst = echarts.getInstanceByDom(elDisp);
+    if (p.seriesIndex === 0 && p.dataIndex === 0) {  // começo de um novo desenho: recalcula o mapa de ocupação
+      ocupados.length = 0;
+      bolhas = ps.map((q) => {
+        const [x, y] = inst.convertToPixel({ gridIndex: 0 }, [q.fidelidade_pct, q.governismo_pct]);
+        return { x, y, r: (8 + 30 * Math.sqrt(q.deputados / maxDep)) / 2 };
+      });
+    }
+    const largura = elDisp.clientWidth; const altura = elDisp.clientHeight;
+    const cx = p.rect.x + p.rect.width / 2; const cy = p.rect.y + p.rect.height / 2; const raio = p.rect.width / 2;
+    const lw = p.labelRect.width; const lh = p.labelRect.height;
+    if (cx > largura - COLUNA - 70) return { x: largura - COLUNA + (estreito ? 6 : 14), align: 'left', moveOverlap: 'shiftY' };
+    for (const d of [raio + 4, raio + 22, raio + 42]) {
+      for (const [ux, uy] of DIRECOES) {
+        const ax = cx + ux * d; const ay = cy + uy * d;
+        const r = { x: ux > 0 ? ax : ux < 0 ? ax - lw : ax - lw / 2, y: uy > 0 ? ay : uy < 0 ? ay - lh : ay - lh / 2, w: lw, h: lh };
+        const dentro = r.x >= 4 && r.y >= TOPO - 6 && r.x + r.w <= largura - COLUNA && r.y + r.h <= altura - 40;
+        if (dentro && !ocupados.some((o) => cruza(r, o)) && !bolhas.some((c) => cruzaCirculo(r, c))) {
+          ocupados.push(r);
+          return { x: r.x, y: r.y, align: 'left', verticalAlign: 'top' };
+        }
+      }
+    }
+    return { moveOverlap: 'shiftY' };  // sem posição livre: deixa o ECharts afastar na vertical
+  }
   montar(elDisp, (t) => ({
-    grid: { left: 20, right: COLUNA, top: 48, bottom: 36, containLabel: true },
+    grid: { left: 20, right: COLUNA, top: TOPO, bottom: 36, containLabel: true },
     legend: { top: 0, left: 0, itemWidth: 10, itemHeight: 10, icon: 'circle' },
     tooltip: { formatter: (p) => `<b>${fmt.escapar(p.data[3])}</b> · ${fmt.num(p.data[2])} deputados<br>Fidelidade ao partido: ${fmt.pct(p.data[0])}<br>Governismo: ${fmt.pct(p.data[1])}` },
     dataZoom: [{ type: 'inside', xAxisIndex: 0, filterMode: 'none' }, { type: 'inside', yAxisIndex: 0, filterMode: 'none' }],
@@ -61,13 +102,10 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
       symbolSize: (d) => 8 + 30 * Math.sqrt(d[2] / maxDep),
       itemStyle: { color: g.cor(t), opacity: 0.55, borderColor: g.cor(t), borderWidth: 1.5 },
       emphasis: { focus: 'self', itemStyle: { opacity: 0.9 } },
-      label: { show: true, formatter: (p) => p.data[3], position: 'top', distance: 3, fontSize: 11, fontWeight: 600, color: t.text,
-        backgroundColor: translucido(t.surface, 0.85), padding: [1, 4], borderRadius: 4 },  // legível mesmo sobre outra bolha
+      label: { show: true, formatter: (p) => p.data[3], position: 'top', distance: 3, fontSize: estreito ? 10 : 11, fontWeight: 600, color: t.text,
+        backgroundColor: translucido(t.surface, 0.85), padding: [1, 4], borderRadius: 4 },  // legível mesmo perto de outra bolha
       labelLine: { show: true, length2: 4, lineStyle: { color: t.muted, width: 0.8 } },
-      // perto da borda direita: o nome vai para uma coluna fora da área do gráfico, ligado por uma linha-guia
-      labelLayout: (p) => (p.rect.x + p.rect.width / 2 > elDisp.clientWidth - COLUNA - 70
-        ? { x: elDisp.clientWidth - COLUNA + 14, align: 'left', moveOverlap: 'shiftY' }
-        : { moveOverlap: 'shiftY' }),
+      labelLayout: posicionarRotulo,
       markLine: k === 0 ? { silent: true, symbol: 'none', lineStyle: { color: t.muted, type: 'dashed', width: 1 },
         label: { formatter: '50%', color: t.muted, fontSize: 10, position: 'insideStartTop' }, data: [{ yAxis: 50 }] } : undefined,
     })),
