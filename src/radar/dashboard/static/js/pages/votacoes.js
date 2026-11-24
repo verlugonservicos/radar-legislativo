@@ -2,7 +2,7 @@
 /* global echarts */
 import { iniciar, seguro } from '../app.js';
 import { dados, meta } from '../data.js';
-import { barras, GRADIENTE, montar } from '../charts.js';
+import { barras, montar } from '../charts.js';
 import { Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -64,10 +64,11 @@ const translucido = (hex, a) => (/^#[0-9a-f]{6}$/i.test(hex)
 
 // grupos pela proximidade com o governo (só para colorir e facilitar a leitura)
 const GRUPOS = [
-  // mesmas cores do degradê dos outros gráficos: mais governismo em verde, menos em vermelho
-  { nome: 'Alinhados ao governo (≥ 60%)', teste: (g) => g >= 60, cor: () => GRADIENTE[0] },
-  { nome: 'Intermediários (40–60%)', teste: (g) => g >= 40 && g < 60, cor: () => GRADIENTE[1] },
-  { nome: 'Distantes do governo (< 40%)', teste: (g) => g < 40, cor: () => GRADIENTE[2] },
+  // cores neutras de propósito: verde/vermelho aqui soaria como julgamento político (governo = bom,
+  // oposição = ruim); o degradê verde/vermelho fica para métricas de desempenho (gasto, participação)
+  { nome: 'Alinhados ao governo (≥ 60%)', teste: (g) => g >= 60, cor: () => '#0284C7' },
+  { nome: 'Intermediários (40–60%)', teste: (g) => g >= 40 && g < 60, cor: () => '#F59E0B' },
+  { nome: 'Distantes do governo (< 40%)', teste: (g) => g < 40, cor: () => '#475569' },
 ];
 
 await seguro(document.getElementById('graf-dispersao'), async () => {
