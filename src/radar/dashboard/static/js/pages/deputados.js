@@ -172,11 +172,13 @@ function desenharMapa() {
       series: [{ ...serieBase, selectedMode: false,
         data: Object.keys(ufs).map((uf) => ({
           name: uf, value: ufs[uf][metrica] ?? '-',
-          ...(uf === selUf.value ? { itemStyle: { borderColor: t.text, borderWidth: 2.5 }, label: { color: t.text, fontWeight: 700 } } : {}),
+          ...(uf === selUf.value ? { itemStyle: { borderColor: t.text, borderWidth: 2.5 }, label: { color: '#0F172A', fontWeight: 800 } } : {}),
         })),
         itemStyle: { borderColor: t.surface, borderWidth: 1, areaColor: t.grid },
-        emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
-        label: { show: true, fontSize: 10, color: t.muted } }],
+        emphasis: { label: { show: true, color: '#0F172A' }, itemStyle: { areaColor: t.warning } },
+        // sigla da UF em preto nos dois temas: o fundo é sempre a cor viva da escala (verde/âmbar/vermelho),
+        // onde o cinza do tema escuro sumia
+        label: { show: true, fontSize: 10, fontWeight: 600, color: '#0F172A' } }],
     }), { tabela: { colunas: ['UF', 'Deputados', rotulo],
                     linhas: Object.entries(ufs).map(([uf, a]) => [uf, a.deputados, formatter(a[metrica])]) },
           depois: (inst, t) => etiquetaUfSelecionada(inst, t, ufs) });
