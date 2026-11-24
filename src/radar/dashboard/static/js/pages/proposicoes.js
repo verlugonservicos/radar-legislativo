@@ -54,6 +54,14 @@ function desenharArea() {
   }));
 }
 
+// nome do tipo de proposição por extenso: "PL" sozinho se confunde com o partido
+const TIPOS = {
+  PL: 'Projeto de Lei', PDL: 'Projeto de Decreto Legislativo', PLP: 'Projeto de Lei Complementar',
+  MPV: 'Medida Provisória', PEC: 'Proposta de Emenda à Constituição', PRC: 'Projeto de Resolução',
+  PLN: 'Projeto de Lei do Congresso', PLV: 'Projeto de Lei de Conversão', REQ: 'Requerimento', INC: 'Indicação',
+};
+const nomeTipo = (sigla) => (TIPOS[sigla] ? `${TIPOS[sigla]} (${sigla})` : sigla);
+
 function desenharTreemap() {
   const el = document.getElementById('graf-treemap');
   el.classList.remove('skeleton');
@@ -69,10 +77,12 @@ function desenharTreemap() {
   }));
   if (!data.length) { el.innerHTML = vazio(); return; }
   graficos.treemap = montar(el, (t) => ({
-    tooltip: { formatter: (p) => `${fmt.escapar(p.treePathInfo.map((x) => x.name).filter(Boolean).join(' › '))}: <b>${fmt.num(p.value)}</b>` },
+    tooltip: { formatter: (p) => `${fmt.escapar(p.treePathInfo.map((x, i) => (i === 2 ? nomeTipo(x.name) : x.name)).filter(Boolean).join(' › '))}: <b>${fmt.num(p.value)}</b>` },
     series: [{
       type: 'treemap', roam: false, nodeClick: false, breadcrumb: { show: false }, width: '100%', height: '100%',
-      label: { show: true, formatter: '{b}', fontSize: 11 }, upperLabel: { show: true, height: 22, color: '#fff', fontWeight: 600 },
+      // retângulo grande: nome por extenso; médio: "Projeto de Lei"; pequeno: só a sigla (o tooltip mostra tudo)
+      label: { show: true, fontSize: 11, overflow: 'truncate', ellipsis: '…',
+        formatter: (p) => (TIPOS[p.name] ? `${TIPOS[p.name]}\n${p.name}` : p.name) }, upperLabel: { show: true, height: 22, color: '#fff', fontWeight: 600 },
       itemStyle: { borderColor: t.surface, borderWidth: 2, gapWidth: 2 },
       // os tipos herdam a cor do tema; a faixa do título usa um tom mais escuro dela
       levels: [
