@@ -8,6 +8,8 @@ import * as fmt from '../format.js';
 const m = await iniciar();
 const limpa = (id) => { const el = document.getElementById(id); el.classList.remove('skeleton'); return el; };
 const ops = await dados('operacao');
+// cores das camadas do medalhão, próximas dos metais (bronze, prata, ouro); ops em grafite neutro
+const COR_CAMADA = { bronze: '#B87333', silver: '#A8A9AD', gold: '#D4AF37', ops: '#475569' };
 
 await seguro(document.getElementById('graf-execucoes'), async () => {
   // rótulo no topo de cada barra (duração em minutos); eixo em minutos "redondos" (antes: 83, 167, 250…)
@@ -30,7 +32,8 @@ await seguro(document.getElementById('graf-banco'), async () => {
   const totalMb = tam.reduce((a, s) => a + s.tamanho_mb, 0);
   const pcts = fmt.pctsExatos(tam.map((s) => s.tamanho_mb));
   montar(limpa('graf-banco'), (t) => {
-    const op = rosca({ itens: tam.map((s) => ({ name: s.schema, value: s.tamanho_mb })), formatter: (v) => `${fmt.num1(v)} MB` })(t);
+    const op = rosca({ itens: tam.map((s) => ({ name: s.schema, value: s.tamanho_mb, itemStyle: COR_CAMADA[s.schema] ? { color: COR_CAMADA[s.schema] } : undefined })),
+                       formatter: (v) => `${fmt.num1(v)} MB` })(t);
     op.series[0].label = { show: true, position: 'outside', alignTo: 'edge', edgeDistance: 6, overflow: 'none', color: t.text, fontSize: 12, lineHeight: 16,
       formatter: (p) => `{n|${p.name}}\n{v|${fmt.num1(p.value)} MB · ${pcts[p.dataIndex]}}`,
       rich: { n: { fontWeight: 700, color: t.text, fontSize: 12 }, v: { color: t.muted, fontSize: 11 } } };
@@ -63,7 +66,9 @@ await seguro(document.getElementById('graf-funil'), async () => {
   const f = await dados('funil_camadas');
   montar(limpa('graf-funil'), barras({
     categorias: f.map((d) => d.entidade),
-    series: [{ name: 'Bronze', data: f.map((d) => d.bronze) }, { name: 'Silver', data: f.map((d) => d.silver) }, { name: 'Gold', data: f.map((d) => d.gold) }],
+    series: [{ name: 'Bronze', data: f.map((d) => d.bronze), itemStyle: { color: COR_CAMADA.bronze } },
+             { name: 'Silver', data: f.map((d) => d.silver), itemStyle: { color: COR_CAMADA.silver } },
+             { name: 'Gold', data: f.map((d) => d.gold), itemStyle: { color: COR_CAMADA.gold } }],
   }), { tabela: { colunas: ['Entidade', 'Bronze', 'Silver', 'Gold', 'Rejeitados'], linhas: f.map((d) => [d.entidade, d.bronze, d.silver, d.gold, d.rejeitados]) } });
 });
 
