@@ -53,6 +53,7 @@ img { max-width: 100%; }
   border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer;
 }
 .icon-btn:hover { background: var(--surface-2); }
+.icon-btn[data-action="cores"][aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }  /* modo daltônico ligado */
 .icon-btn svg { width: 20px; height: 20px; }
 .menu-btn { display: none; }
 .collapse-btn { margin-left: calc(-1 * var(--space-4)); }

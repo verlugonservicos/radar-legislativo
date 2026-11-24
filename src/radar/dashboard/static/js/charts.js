@@ -99,7 +99,12 @@ export function linhas({ x, series, area = false, formatter = fmt.num, xData = t
 
 // Degradê das barras ordenadas por valor: menor = verde, intermediário = âmbar, maior = vermelho
 // (com gradiente: 'invertido', o contrário)
-export const GRADIENTE = ['#16A34A', '#F59E0B', '#DC2626'];
+// Modo daltônico (preferência salva; a página recarrega ao alternar): troca verde→âmbar→vermelho pela
+// escala divergente azul→areia→laranja (extremos da paleta Okabe-Ito; o meio em areia evita os tons
+// esverdeados que surgiriam entre azul e amarelo), distinguível em deuteranopia,
+// protanopia e tritanopia (o eixo azul–amarelo é preservado e a luminosidade muda ao longo da escala)
+export const DALTONICO = document.documentElement.dataset.cores === 'daltonico';
+export const GRADIENTE = DALTONICO ? ['#0072B2', '#D9C27E', '#D55E00'] : ['#16A34A', '#F59E0B', '#DC2626'];
 /** Cor do degradê para um valor (mesma escala do visualMap): útil onde não há visualMap, como no treemap. */
 export function corGradiente(v, min, max, invertido = false) {
   const cores = (invertido ? [...GRADIENTE].reverse() : GRADIENTE).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));

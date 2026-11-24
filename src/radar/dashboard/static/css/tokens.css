@@ -37,4 +37,16 @@
     --shadow-sm: 0 1px 2px rgb(0 0 0 / .4); --shadow-md: 0 8px 24px rgb(0 0 0 / .35);
   }
 }
+/* Modo daltônico: positivo/negativo em azul/laranja (Okabe-Ito) no lugar de verde/vermelho */
+:root[data-cores="daltonico"] {
+  --positive: #0072B2; --negative: #C2410C; --positive-soft: #E6F1F8; --negative-soft: #FDEEE6;
+}
+:root[data-cores="daltonico"][data-theme="dark"] {
+  --positive: #56B4E9; --negative: #F28B4B; --positive-soft: #0B2A3D; --negative-soft: #3A1E0E;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-cores="daltonico"]:not([data-theme="light"]) {
+    --positive: #56B4E9; --negative: #F28B4B; --positive-soft: #0B2A3D; --negative-soft: #3A1E0E;
+  }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

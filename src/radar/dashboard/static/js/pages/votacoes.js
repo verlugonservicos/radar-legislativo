@@ -2,7 +2,7 @@
 /* global echarts */
 import { iniciar, seguro } from '../app.js';
 import { dados, meta } from '../data.js';
-import { barras, montar } from '../charts.js';
+import { barras, GRADIENTE, montar } from '../charts.js';
 import { Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -174,7 +174,7 @@ await seguro(document.getElementById('graf-heatmap'), async () => {
     // dimensão 2 = % de concordância (a 3 é o nº de votações em comum)
     visualMap: { seriesIndex: 0, dimension: 2, min: vmin, max: 100, calculable: false, orient: 'vertical', right: 8, top: 8,
       itemWidth: 14, itemHeight: 160, text: ['100% votam igual', `${vmin}%`], textGap: 8,
-      inRange: { color: ['#DC2626', '#F59E0B', '#475569'] }, textStyle: { color: t.muted } },
+      inRange: { color: [GRADIENTE[2], GRADIENTE[1], '#475569'] }, textStyle: { color: t.muted } },
     series: [
       { type: 'heatmap', data: pontos, itemStyle: { borderColor: t.surface, borderWidth: 1 },
         label: { show: el.clientWidth >= 420, formatter: (p) => Math.round(p.data.value[2]), fontSize: 9 },

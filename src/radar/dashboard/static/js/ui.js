@@ -29,6 +29,19 @@ export function iniciarShell() {
     const novo = temaEfetivo() === 'dark' ? 'light' : 'dark';
     aplicarTema(novo); gravarPreferencia(novo); redesenharTodos();
   });
+  // cores para daltônicos: salva a preferência e recarrega (todas as cores calculadas são refeitas)
+  const botaoCores = document.querySelector('[data-action="cores"]');
+  if (botaoCores) {
+    const ativo = document.documentElement.dataset.cores === 'daltonico';
+    botaoCores.setAttribute('aria-pressed', String(ativo));
+    botaoCores.setAttribute('aria-label', ativo ? 'Voltar às cores padrão' : 'Ativar cores para daltônicos');
+    botaoCores.title = ativo ? 'Cores para daltônicos: ativadas' : 'Cores para daltônicos';
+    botaoCores.addEventListener('click', () => {
+      try { if (ativo) localStorage.removeItem('radar-cores'); else localStorage.setItem('radar-cores', 'daltonico'); } catch { /* modo privado */ }
+      if (ativo) delete document.documentElement.dataset.cores; else document.documentElement.dataset.cores = 'daltonico';
+      location.reload();
+    });
+  }
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (!lerPreferencia()) { aplicarTema(temaEfetivo()); redesenharTodos(); }
   });

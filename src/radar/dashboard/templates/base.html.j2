@@ -12,6 +12,7 @@
   <script>
     /* aplica o tema salvo antes de pintar (evita piscar) */
     try { const t = localStorage.getItem('radar-tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    try { if (localStorage.getItem('radar-cores') === 'daltonico') document.documentElement.dataset.cores = 'daltonico'; } catch (e) {}
   </script>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="{{ asset('css/tokens.css') }}">
@@ -44,6 +45,7 @@
       <h1 class="header__title">{{ pagina.titulo }}</h1>
       <div class="header__actions">
         <span class="update-badge" data-update><span class="update-badge__dot" aria-hidden="true"></span><span data-update-text>Carregando…</span></span>
+        <button class="icon-btn" type="button" data-action="cores" aria-label="Ativar cores para daltônicos" title="Cores para daltônicos" aria-pressed="false">{{ icone("eye") }}</button>
         <button class="icon-btn" type="button" data-action="tema" aria-label="Alternar tema" aria-pressed="false">
           <span class="ico-sun">{{ icone("sun") }}</span>
         </button>
