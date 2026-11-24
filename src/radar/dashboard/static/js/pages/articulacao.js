@@ -101,7 +101,7 @@ await seguro(document.getElementById('graf-sankey'), async () => {
       label: {
         color: t.text, fontSize: 11,
         formatter: (p) => {
-          if (tipo(p.name) === 'partido') return `{n|${p.name}} {q|${fmt.num(total(p.name))}}`;
+          if (tipo(p.name) === 'partido') return `{n|${p.name}} {q|(${fmt.num(total(p.name))})}`;
           return p.name.length > 30 ? `${p.name.slice(0, 28)}…` : p.name;
         },
         rich: {
