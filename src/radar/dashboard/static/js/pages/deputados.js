@@ -254,14 +254,14 @@ function desenharGastos() {
   const ls = deps.filter(passa);
   const porPartido = new Map();
   for (const d of ls) porPartido.set(d.sigla_partido, (porPartido.get(d.sigla_partido) || 0) + (d.gasto_total || 0));
-  const partidos = [...porPartido].sort((a, b) => b[1] - a[1]);
+  const partidos = [...porPartido].sort((a, b) => b[1] - a[1]).slice(0, 20);  // Top 20 partidos
   const qtd = (sigla) => ls.filter((d) => d.sigla_partido === sigla).length;
   // % do gasto total dos deputados filtrados, entre parênteses ao lado de cada barra (padrão dos projetos/setores)
   const total = ls.reduce((t, d) => t + (d.gasto_total || 0), 0);
-  const pct = (v) => fmt.pct(total ? (100 * v) / total : 0);
+  const pct = (v) => fmt.pct2(total ? (100 * v) / total : 0);  // 2 casas: no Top 20 por deputado, os valores ficam abaixo de 1%
   const comPct = (op) => {
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(x.value)})` };
-    op.grid = { ...op.grid, right: 124 };
+    op.grid = { ...op.grid, right: 132 };
     return op;
   };
   gastoPartido = montar(limpa('graf-gasto-partido'), (t) => {

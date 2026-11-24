@@ -1,6 +1,7 @@
 // Formatação pt-BR (SPEC V3 12.2): números, moeda compacta, percentuais e datas.
 const nf = new Intl.NumberFormat('pt-BR');
 const nf1 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const nf2 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const brlFull = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const brlCompact = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: 'compact', maximumFractionDigits: 1 });
 const dtf = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' });
@@ -15,6 +16,7 @@ export const brl = (v) => (vazio(v) ? '—' : brlCompact.format(v).replace(/ /g
 export const brlFull_ = (v) => (vazio(v) ? '—' : brlFull.format(v));
 export { brlFull_ as brlCheio };
 export const pct = (v) => (vazio(v) ? '—' : `${nf1.format(v)}%`);
+export const pct2 = (v) => (vazio(v) ? '—' : `${nf2.format(v)}%`);
 export const pctFrac = (v) => (vazio(v) ? '—' : `${nf1.format(v * 100)}%`);
 export const data = (iso) => (iso ? dtf.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`)) : '—');
 export const dataCurta = (iso) => (iso ? dtfShort.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`)).replace('.', '') : '—');
