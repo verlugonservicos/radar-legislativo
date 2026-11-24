@@ -303,6 +303,9 @@ function desenharProjetosDeputado() {
   }
   const top = deps.filter((d) => passa(d) && porDep[d.id_deputado])
     .sort((a, b) => porDep[b.id_deputado].total - porDep[a.id_deputado].total || a.nome.localeCompare(b.nome)).slice(0, 20);
+  // % do total de projetos de todos os deputados do filtro (não só dos 20), com 2 casas
+  const totalProj = deps.filter((d) => passa(d) && porDep[d.id_deputado]).reduce((t, d) => t + porDep[d.id_deputado].total, 0);
+  const pctProj = (v) => fmt.pct2(totalProj ? (100 * v) / totalProj : 0);
   const el = limpa('graf-projetos-deputado');
   // nota só quando os autores do lote aparecem no ranking filtrado
   const ids = new Set(top.map((d) => d.id_deputado));
@@ -311,14 +314,16 @@ function desenharProjetosDeputado() {
   projetosDeputado = montar(el, (t) => {
     const op = barras({ categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true,
                         gradiente: 'invertido', series: [{ name: 'Projetos', data: top.map((d) => porDep[d.id_deputado].total) }] })(t);
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pctProj(x.value)})` };
+    op.grid = { ...op.grid, right: 112 };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const d = top[xs[0].dataIndex]; const a = porDep[d.id_deputado];
       const temas = Object.entries(a.temas).sort((x, y) => y[1] - x[1]).slice(0, 3)
         .map(([tema, n]) => `${fmt.escapar(tema)}: ${fmt.num(n)}`).join('<br>');
-      return `<b>${fmt.escapar(d.nome)}</b> (${fmt.escapar(d.sigla_partido)}-${fmt.escapar(d.sigla_uf)})<br>Projetos: <b>${fmt.num(a.total)}</b><br><i>Principais temas</i><br>${temas}`;
+      return `<b>${fmt.escapar(d.nome)}</b> (${fmt.escapar(d.sigla_partido)}-${fmt.escapar(d.sigla_uf)})<br>Projetos: <b>${fmt.num(a.total)}</b> (${pctProj(a.total)} do total)<br><i>Principais temas</i><br>${temas}`;
     } };
     return op;
-  }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Projetos'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, porDep[d.id_deputado].total]) } });
+  }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Projetos', '% do total'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, porDep[d.id_deputado].total, pctProj(porDep[d.id_deputado].total)]) } });
 }
 
 function perfil(d) {
