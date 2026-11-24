@@ -40,8 +40,13 @@ await seguro(document.getElementById('graf-sankey'), async () => {
   const nomes = [...new Set(links.flatMap((l) => [l.source, l.target]))];
   // colunas: partidos (0) · federações que entram num bloco (1) · destinos finais, à direita (2)
   const coluna = (n) => (tipo(n) === 'partido' ? 0 : sai.has(n) ? 1 : 2);
+  // a federação do meio (ex.: PSDB CIDADANIA → bloco) é só uma passagem: o nó toma a cor do bloco de
+  // destino com a mesma transparência das faixas, emendando-as sem o "quadradinho" solto no meio;
+  // o nome e o total dela aparecem na coluna da direita
+  const corDe = (n) => PALETA[nomes.indexOf(n) % PALETA.length];
+  const destino = (n) => links.find((l) => l.source === n)?.target;
   const nosCom = (t) => nomes.map((name, i) => ({ name, depth: coluna(name),
-    itemStyle: { color: PALETA[i % PALETA.length] },
+    itemStyle: coluna(name) === 1 ? { color: corDe(destino(name)), opacity: 0.35, borderWidth: 0 } : { color: PALETA[i % PALETA.length] },
     label: coluna(name) === 0 ? { position: 'left' }                    // partido: nome e número à esquerda
       // federação intermediária: o rótulo vai para a coluna da direita (na altura do nó), fora das faixas
       : coluna(name) === 1 ? { position: 'right', offset: [deslocamentoMeio(), 0] }
