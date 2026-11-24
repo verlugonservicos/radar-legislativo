@@ -2,7 +2,7 @@
 /* global echarts */
 import { iniciar, seguro } from '../app.js';
 import { dados, meta } from '../data.js';
-import { barras, montar } from '../charts.js';
+import { barras, GRADIENTE, montar } from '../charts.js';
 import { Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -64,9 +64,10 @@ const translucido = (hex, a) => (/^#[0-9a-f]{6}$/i.test(hex)
 
 // grupos pela proximidade com o governo (só para colorir e facilitar a leitura)
 const GRUPOS = [
-  { nome: 'Alinhados ao governo (≥ 60%)', teste: (g) => g >= 60, cor: (t) => t.accent },
-  { nome: 'Intermediários (40–60%)', teste: (g) => g >= 40 && g < 60, cor: (t) => t.warning },
-  { nome: 'Distantes do governo (< 40%)', teste: (g) => g < 40, cor: (t) => t.negative },
+  // mesmas cores do degradê dos outros gráficos: mais governismo em verde, menos em vermelho
+  { nome: 'Alinhados ao governo (≥ 60%)', teste: (g) => g >= 60, cor: () => GRADIENTE[0] },
+  { nome: 'Intermediários (40–60%)', teste: (g) => g >= 40 && g < 60, cor: () => GRADIENTE[1] },
+  { nome: 'Distantes do governo (< 40%)', teste: (g) => g < 40, cor: () => GRADIENTE[2] },
 ];
 
 await seguro(document.getElementById('graf-dispersao'), async () => {
