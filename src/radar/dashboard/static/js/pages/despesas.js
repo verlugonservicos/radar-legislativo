@@ -73,7 +73,7 @@ const desvio = (v, media) => { const d = media ? (100 * (v - media)) / media : 0
 const comMedia = (op, media, t) => {
   op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${desvio(x.value, media)})` };
   op.series[0].markLine = { silent: true, symbol: 'none', lineStyle: { color: t.muted, type: 'dashed', width: 1 },
-    label: { formatter: `média ${fmt.brl(media)}`, color: t.muted, fontSize: 10, position: 'end' }, data: [{ xAxis: media }] };
+    label: { formatter: `média ${fmt.brl(media)}`, color: t.muted, fontSize: 10, position: 'start', distance: 6 }, data: [{ xAxis: media }] };  // rótulo no topo da linha: embaixo encavalava nos valores do eixo
   op.grid = { ...op.grid, right: 132 };
   return op;
 };
