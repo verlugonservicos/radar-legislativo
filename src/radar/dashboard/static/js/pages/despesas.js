@@ -72,8 +72,10 @@ await seguro(document.getElementById('graf-fornecedores'), async () => {
 const desvio = (v, media) => { const d = media ? (100 * (v - media)) / media : 0; return `${d > 0 ? '+' : d < 0 ? '−' : ''}${fmt.pct2(Math.abs(d))}`; };
 const comMedia = (op, media, t) => {
   op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${desvio(x.value, media)})` };
-  op.series[0].markLine = { silent: true, symbol: 'none', lineStyle: { color: t.muted, type: 'dashed', width: 1 },
-    label: { formatter: `média ${fmt.brl(media)}`, color: t.muted, fontSize: 10, position: 'start', distance: 6 }, data: [{ xAxis: media }] };  // rótulo no topo da linha: embaixo encavalava nos valores do eixo
+  // média em destaque: rótulo em negrito na cor do texto e linha um pouco mais forte; o rótulo fica no topo
+  // da linha (embaixo encavalava nos valores do eixo)
+  op.series[0].markLine = { silent: true, symbol: 'none', lineStyle: { color: t.text, type: 'dashed', width: 1.5, opacity: 0.8 },
+    label: { formatter: `média ${fmt.brl(media)}`, color: t.text, fontSize: 12, fontWeight: 700, position: 'start', distance: 6 }, data: [{ xAxis: media }] };
   op.grid = { ...op.grid, right: 132 };
   return op;
 };
