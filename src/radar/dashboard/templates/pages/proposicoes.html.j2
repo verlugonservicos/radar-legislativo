@@ -7,7 +7,7 @@
   <button class="btn" type="button" id="limpar-temas">Limpar</button>
 </div>
 <div class="grid">
-  {% call card("area", "Proposições relevantes por tema e semana", "Últimas 26 semanas · S = número da semana no ano", "span-8", termo="tema-ia") %}{{ grafico("graf-area", "Área empilhada de proposições por tema e semana", "chart--lg") }}{% endcall %}
+  {% call card("area", "Proposições relevantes por tema e semana", "Últimas 26 semanas · S-NN = número da semana no ano", "span-8", termo="tema-ia") %}{{ grafico("graf-area", "Área empilhada de proposições por tema e semana", "chart--lg") }}{% endcall %}
   {% call card("acuracia", "Acurácia da classificação por IA", "Contra os temas oficiais da Câmara", "span-4", termo="acuracia") %}
     {{ grafico("graf-gauge", "Acurácia da IA", "chart--sm") }}
     <dl class="kv" id="kv-ia"></dl>

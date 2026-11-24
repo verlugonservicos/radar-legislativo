@@ -47,7 +47,7 @@ function desenharArea() {
     tooltip: { trigger: 'axis', formatter: (ps) => `<b>${fmt.rotuloSemana(semanas[ps[0].dataIndex])}</b><br>`
       + ps.filter((p) => p.value).map((p) => `${p.marker}${fmt.escapar(p.seriesName)}: <b>${fmt.num(p.value)}</b>`).join('<br>') },
     legend: { type: 'scroll', top: 0, left: 0 },
-    xAxis: { type: 'category', data: semanas, boundaryGap: false, axisLabel: { formatter: (v) => `S${fmt.semanaAno(v)}` } },  // nº da semana (ISO)
+    xAxis: { type: 'category', data: semanas, boundaryGap: false, axisLabel: { formatter: (v) => `S-${fmt.semanaAno(v)}` } },  // nº da semana (ISO)
     yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
     series: series.map((x) => ({
       name: x.t, type: 'line', stack: 'total', areaStyle: { opacity: 0.9 }, showSymbol: false,

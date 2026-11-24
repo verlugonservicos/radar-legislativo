@@ -47,13 +47,13 @@ await seguro(document.querySelector('.kpi-row'), async () => {
         return `<b>${fmt.rotuloSemana(s)}</b>${parcial}<br>${ps.map((p) => `${p.marker} ${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`;
       },
     },
-    xAxis: { type: 'category', data: chaves, axisLabel: { formatter: (v) => `S${fmt.semanaAno(v)}`, interval: 0, hideOverlap: true } },  // nº da semana (ISO)
+    xAxis: { type: 'category', data: chaves, axisLabel: { formatter: (v) => `S-${fmt.semanaAno(v)}`, interval: 0, hideOverlap: true } },  // nº da semana (ISO)
     yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
     series: [
       { name: 'Proposições', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).proposicoes) },
       { name: 'Votações', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).votacoes) },
     ],
-  }), { tabela: { colunas: ['Semana', 'Início (segunda)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [`S${fmt.semanaAno(c)}`, fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
+  }), { tabela: { colunas: ['Semana', 'Início (segunda)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [`S-${fmt.semanaAno(c)}`, fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
 });
 
 await seguro(document.getElementById('graf-temas'), async () => {

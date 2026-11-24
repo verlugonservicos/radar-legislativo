@@ -32,7 +32,7 @@ await seguro(document.getElementById('graf-dia'), async () => {
   const total = (s) => s.aprovadas + s.rejeitadas + s.sem;
   montar(limpa('graf-dia'), (t) => {
     const op = barras({
-      categorias: chaves.map((c) => `S${fmt.semanaAno(c)}`), empilhado: true,  // nº da semana no ano (ISO)
+      categorias: chaves.map((c) => `S-${fmt.semanaAno(c)}`), empilhado: true,  // nº da semana no ano (ISO)
       series: [
         { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive } },
         { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas), itemStyle: { color: t.negative } },
@@ -50,7 +50,7 @@ await seguro(document.getElementById('graf-dia'), async () => {
     };
     return op;
   }, { tabela: { colunas: ['Semana', 'Início (segunda)', 'Total', 'Aprovadas', 'Rejeitadas', 'Nominais', 'Dias com votação'],
-                 linhas: chaves.map((c) => { const s = semanas.get(c); return [`S${fmt.semanaAno(c)}`, fmt.data(c), total(s), s.aprovadas, s.rejeitadas, s.nominais, s.dias]; }) } });
+                 linhas: chaves.map((c) => { const s = semanas.get(c); return [`S-${fmt.semanaAno(c)}`, fmt.data(c), total(s), s.aprovadas, s.rejeitadas, s.nominais, s.dias]; }) } });
 });
 
 await seguro(document.getElementById('graf-participacao'), async () => {
