@@ -95,12 +95,12 @@ function desenharMapa() {
   const metrica = selMetrica.value;
   const base = { type: 'map', map: 'BR', roam: false, nameProperty: 'sigla',
                  top: 4, bottom: 4, left: 4, right: 4 };  // preenche a área (que tem a proporção do Brasil, 4:5)
+  // tela estreita: legenda na horizontal, abaixo do mapa (não cobre os estados)
+  const estreito = document.getElementById('graf-mapa').clientWidth < 480;
+  const legenda = estreito ? { orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 12, itemHeight: 160 }
+    : { left: 0, bottom: 8, itemHeight: 100, itemWidth: 14 };
   if (modoMapa === 'uf') {
-    // tela estreita: legenda na horizontal, abaixo do mapa (não cobre os estados)
-    const estreito = document.getElementById('graf-mapa').clientWidth < 480;
     const serieBase = estreito ? { ...base, bottom: 52 } : base;
-    const legenda = estreito ? { orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 12, itemHeight: 160 }
-      : { left: 0, bottom: 8, itemHeight: 100, itemWidth: 14 };
     const ufs = porUfFiltrado();
     const vs = Object.values(ufs).map((a) => a[metrica]).filter((v) => v !== null && v !== undefined);
     // a UF filtrada fica destacada pela própria seleção do filtro (o 2º clique desmarca de verdade)
@@ -135,8 +135,12 @@ function desenharMapa() {
     const borda = (c) => misturar(c, texto, 0.18);
     return {
       tooltip: { trigger: 'item' },
+      // mesma legenda de cor do mapa por UF (só leitura: as cores das regiões já vêm calculadas acima;
+      // o visualMap age apenas sobre os pontos invisíveis das etiquetas; sem alças, os extremos vão no texto)
+      visualMap: { min, max, ...legenda, calculable: false, seriesIndex: 0, dimension: 2,
+        text: [`maior · ${formatter(max)}`, `menor · ${formatter(min)}`], inRange: { color: coresDe(metrica) }, textStyle: { color: t.muted }, formatter },
       geo: {
-        map: 'BR', roam: false, nameProperty: 'sigla', top: 4, bottom: 4, left: 4, right: 4,
+        map: 'BR', roam: false, nameProperty: 'sigla', top: 4, bottom: estreito ? 52 : 4, left: 4, right: 4,
         label: { show: false }, emphasis: { disabled: true }, select: { disabled: true },
         tooltip: { show: true, formatter: (p) => { const r = regiaoDe[p.name]; return etiqueta(r, ` (${REGIOES[r].join(', ')})`, resumoDe[r]); } },
         regions: Object.keys(regiaoDe).map((uf) => {
