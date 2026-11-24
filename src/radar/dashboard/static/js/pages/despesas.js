@@ -96,8 +96,8 @@ await seguro(document.getElementById('graf-uf'), async () => {
   // barras horizontais (como o gráfico por partido), com o nº de deputados ao lado da UF; o % é a fatia
   // da UF no gasto total da cota (a média por deputado não soma 100%, o gasto total soma)
   const us = (await dados('deputados_uf')).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
-  const total = us.reduce((s, u) => s + (u.gasto_total || 0), 0);
-  const pct = (u) => fmt.pct2(total ? (100 * (u.gasto_total || 0)) / total : 0);
+  const pctsUf = fmt.pctsExatos(us.map((u) => u.gasto_total || 0));  // as 27 UFs: fecha 100,00%
+  const pct = (u) => pctsUf[us.indexOf(u)];
   const porUf = Object.fromEntries(us.map((u) => [u.sigla_uf, u]));
   montar(limpa('graf-uf'), (t) => {
     const op = barras({

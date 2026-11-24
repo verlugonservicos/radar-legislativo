@@ -17,6 +17,18 @@ export const brlFull_ = (v) => (vazio(v) ? '—' : brlFull.format(v));
 export { brlFull_ as brlCheio };
 export const pct = (v) => (vazio(v) ? '—' : `${nf1.format(v)}%`);
 export const pct2 = (v) => (vazio(v) ? '—' : `${nf2.format(v)}%`);
+/** Percentuais com 2 casas de um conjunto COMPLETO, que somam exatamente 100,00% (método dos maiores
+ *  restos: arredonda para baixo e distribui os centésimos que faltam para as maiores sobras).
+ *  Use só quando o gráfico mostra todas as partes do total; recortes (Top N) usam pct2 simples. */
+export function pctsExatos(valores) {
+  const total = valores.reduce((t, v) => t + (v || 0), 0);
+  if (!total) return valores.map(() => pct2(0));
+  const bruto = valores.map((v) => ((v || 0) * 10000) / total);
+  const base = bruto.map(Math.floor);
+  let falta = 10000 - base.reduce((t, v) => t + v, 0);
+  [...bruto.keys()].sort((a, b) => (bruto[b] - base[b]) - (bruto[a] - base[a])).forEach((i) => { if (falta > 0) { base[i] += 1; falta -= 1; } });
+  return base.map((c) => pct2(c / 100));
+}
 export const pctFrac = (v) => (vazio(v) ? '—' : `${nf1.format(v * 100)}%`);
 export const data = (iso) => (iso ? dtf.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`)) : '—');
 export const dataCurta = (iso) => (iso ? dtfShort.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`)).replace('.', '') : '—');

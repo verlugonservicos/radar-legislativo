@@ -41,15 +41,14 @@ await seguro(document.getElementById('graf-funil'), async () => {
 
 // barras horizontais com o % do total entre parênteses (2 casas), no padrão dos demais painéis
 function comPercentual(id, ls, formatter, nome, sufixo) {
-  const total = ls.reduce((t, d) => t + d[1], 0);
-  const pct = (v) => fmt.pct2(total ? (100 * v) / total : 0);
+  const pcts = fmt.pctsExatos(ls.map((d) => d[1]));  // conjunto completo: fecha 100,00%
   montar(limpa(id), (t) => {
     const op = barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, formatter, series: [{ name: nome, data: ls.map((d) => d[1]) }] })(t);
-    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${formatter(x.value)} (${pct(x.value)})` };
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${formatter(x.value)} (${pcts[x.dataIndex]})` };
     op.grid = { ...op.grid, right: 120 };
-    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>${nome}: <b>${formatter(ps[0].value)}</b> (${pct(ps[0].value)} ${sufixo})` };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>${nome}: <b>${formatter(ps[0].value)}</b> (${pcts[ps[0].dataIndex]} ${sufixo})` };
     return op;
-  }, { tabela: { colunas: ['Item', nome, '% do total'], linhas: ls.map(([n, v]) => [n, formatter(v), pct(v)]) } });
+  }, { tabela: { colunas: ['Item', nome, '% do total'], linhas: ls.map(([n, v], i) => [n, formatter(v), pcts[i]]) } });
 }
 
 await seguro(document.getElementById('graf-qualidade'), async () => {

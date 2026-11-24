@@ -33,10 +33,8 @@ await seguro(document.getElementById('graf-frentes'), async () => {
 });
 
 await seguro(document.getElementById('graf-sankey'), async () => {
-  // % = parcela da Câmara (deputados em exercício) em cada federação/bloco, com 2 casas
+  // % = parcela da Câmara (deputados em exercício) em cada destino final, com 2 casas, fechando 100%
   const partidosCamara = await dados('partidos');
-  const camara = partidosCamara.reduce((s, p) => s + p.deputados, 0);
-  const pctCamara = (v) => fmt.pct2(camara ? (100 * v) / camara : 0);
   const bp = (await dados('blocos_partidos')).filter((d) => d.membros > 0);
   if (!bp.length) { limpa('graf-sankey').innerHTML = vazio('Sem blocos vigentes com deputados em exercício.'); return; }
   // 3 níveis: partido → federação → bloco. Uma federação atua como um partido só e pode entrar inteira
@@ -121,13 +119,19 @@ await seguro(document.getElementById('graf-sankey'), async () => {
       // a federação do meio tem o nome deslocado para a coluna da direita: o total acompanha o nome
       let xDireita = 0;
       grafo.eachNode((no) => { xDireita = Math.max(xDireita, no.getLayout().x); });
+      // % só nos destinos finais (blocos, federações fora de bloco e "Sem bloco"), que somam a Câmara
+      // inteira e fecham 100,00% exato; a federação de dentro do bloco mostra só o número (já está nos %
+      // do bloco — somá-la de novo passava de 100%)
+      const destinos = nomes.filter((n) => coluna(n) === 2);
+      const pcts = Object.fromEntries(fmt.pctsExatos(destinos.map(total)).map((v, i) => [destinos[i], v]));
       grafo.eachNode((no) => {
         if (coluna(no.id) === 0) return;
         const { y, dy } = no.getLayout();
         const x = xDireita;
+        const rotulo = pcts[no.id] ? `${fmt.num(total(no.id))} (${pcts[no.id]})` : `${fmt.num(total(no.id))} (no bloco)`;
         textos.push({
           type: 'text', x: x0 + x - 8, y: y0 + y + dy / 2, silent: true, z: 100,
-          style: { text: `${fmt.num(total(no.id))} (${pctCamara(total(no.id))})`, align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
+          style: { text: rotulo, align: 'right', verticalAlign: 'middle', fontSize: 15, fontWeight: 700,
                    fill: t.text, stroke: t.surface, lineWidth: 4 },
         });
       });
