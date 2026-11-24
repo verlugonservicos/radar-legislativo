@@ -55,10 +55,15 @@ await seguro(document.getElementById('graf-dia'), async () => {
 
 await seguro(document.getElementById('graf-participacao'), async () => {
   const ps = partidos.filter((p) => p.participacao_pct !== null).sort((a, b) => b.participacao_pct - a.participacao_pct);
-  montar(limpa('graf-participacao'), barras({
-    gradiente: 'invertido', categorias: ps.map((p) => p.sigla_partido), horizontal: true, rotulo: true, formatter: fmt.pct,
-    series: [{ name: 'Participação', data: ps.map((p) => p.participacao_pct) }],
-  }), { tabela: { colunas: ['Partido', 'Participação'], linhas: ps.map((p) => [p.sigla_partido, fmt.pct(p.participacao_pct)]) } });
+  const dep = Object.fromEntries(ps.map((p) => [p.sigla_partido, p.deputados]));
+  montar(limpa('graf-participacao'), (t) => {
+    const op = barras({
+      gradiente: 'invertido', categorias: ps.map((p) => p.sigla_partido), horizontal: true, rotulo: true, formatter: fmt.pct,
+      series: [{ name: 'Participação', data: ps.map((p) => p.participacao_pct) }],
+    })(t);
+    op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(dep[s])})` };  // nº de deputados
+    return op;
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Participação'], linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.pct(p.participacao_pct)]) } });
 });
 
 const translucido = (hex, a) => (/^#[0-9a-f]{6}$/i.test(hex)
