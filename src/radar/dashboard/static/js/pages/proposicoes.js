@@ -43,9 +43,11 @@ function desenharArea() {
     .sort((a, b) => b.total - a.total);
   const [min, max] = [Math.min(...series.map((x) => x.total)), Math.max(...series.map((x) => x.total))];
   graficos.area = montar(el, (tm) => ({
-    grid: { left: 8, right: 16, top: 64, bottom: 8, containLabel: true }, tooltip: { trigger: 'axis' },
+    grid: { left: 8, right: 16, top: 64, bottom: 8, containLabel: true },
+    tooltip: { trigger: 'axis', formatter: (ps) => `<b>${fmt.rotuloSemana(semanas[ps[0].dataIndex])}</b><br>`
+      + ps.filter((p) => p.value).map((p) => `${p.marker}${fmt.escapar(p.seriesName)}: <b>${fmt.num(p.value)}</b>`).join('<br>') },
     legend: { type: 'scroll', top: 0, left: 0 },
-    xAxis: { type: 'category', data: semanas, boundaryGap: false, axisLabel: { formatter: fmt.dataCurta } },
+    xAxis: { type: 'category', data: semanas, boundaryGap: false, axisLabel: { formatter: (v) => `S${fmt.semanaAno(v)}` } },  // nº da semana (ISO)
     yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
     series: series.map((x) => ({
       name: x.t, type: 'line', stack: 'total', areaStyle: { opacity: 0.9 }, showSymbol: false,

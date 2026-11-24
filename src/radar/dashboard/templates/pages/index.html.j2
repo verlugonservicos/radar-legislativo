@@ -15,7 +15,7 @@
   {{ kpi("kpi-despesas", "Despesas da cota", "Valor líquido · 7 dias (notas chegam com atraso)") }}
 </div>
 <div class="grid" style="margin-top:var(--space-6)">
-  {% call card("serie", "Proposições × votações por semana", "Últimos 90 dias · cada ponto é uma semana (segunda a domingo)", "span-7") %}{{ grafico("graf-serie", "Linha semanal de proposições apresentadas e votações", "chart--lg") }}{% endcall %}
+  {% call card("serie", "Proposições × votações por semana", "Últimos 90 dias · S = número da semana no ano (segunda a domingo)", "span-7") %}{{ grafico("graf-serie", "Linha semanal de proposições apresentadas e votações", "chart--lg") }}{% endcall %}
   {% call card("temas", "Proposições relevantes por tema", "Classificação por IA · últimas 4 semanas", "span-5", termo="tema-ia") %}{{ grafico("graf-temas", "Barras de proposições por tema", "chart--lg") }}{% endcall %}
   {% call card("top", "Top 5 da semana", "Maior score de relevância nos últimos 7 dias", "span-7", termo="relevancia") %}<div class="stack" id="lista-top"><div class="skeleton" style="height:240px"></div></div>{% endcall %}
   {% call card("pauta", "Próximas pautas críticas", "Temas críticos em pauta nos próximos 7 dias", "span-5", termo="pauta") %}<div class="stack" id="lista-pauta"><div class="skeleton" style="height:240px"></div></div>{% endcall %}

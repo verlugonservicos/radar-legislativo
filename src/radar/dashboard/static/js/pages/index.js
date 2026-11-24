@@ -28,7 +28,6 @@ await seguro(document.querySelector('.kpi-row'), async () => {
     const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
     return d.toISOString().slice(0, 10);
   };
-  const domingo = (iso) => { const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + 6); return d.toISOString().slice(0, 10); };
   const semanas = new Map();
   for (const d of k) {
     const s = semanas.get(segunda(d.data)) || { proposicoes: 0, votacoes: 0, dias: 0 };
@@ -45,16 +44,16 @@ await seguro(document.querySelector('.kpi-row'), async () => {
       trigger: 'axis',
       formatter: (ps) => {
         const s = chaves[ps[0].dataIndex]; const parcial = semanas.get(s).dias < 7 ? ' <i>(semana parcial)</i>' : '';
-        return `Semana de ${fmt.data(s)} a ${fmt.data(domingo(s))}${parcial}<br>${ps.map((p) => `${p.marker} ${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`;
+        return `<b>${fmt.rotuloSemana(s)}</b>${parcial}<br>${ps.map((p) => `${p.marker} ${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`;
       },
     },
-    xAxis: { type: 'category', data: chaves, axisLabel: { formatter: (v) => fmt.dataCurta(v), interval: 0, hideOverlap: true } },
+    xAxis: { type: 'category', data: chaves, axisLabel: { formatter: (v) => `S${fmt.semanaAno(v)}`, interval: 0, hideOverlap: true } },  // nº da semana (ISO)
     yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
     series: [
       { name: 'Proposições', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).proposicoes) },
       { name: 'Votações', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).votacoes) },
     ],
-  }), { tabela: { colunas: ['Semana (segunda-feira)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
+  }), { tabela: { colunas: ['Semana', 'Início (segunda)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [`S${fmt.semanaAno(c)}`, fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
 });
 
 await seguro(document.getElementById('graf-temas'), async () => {

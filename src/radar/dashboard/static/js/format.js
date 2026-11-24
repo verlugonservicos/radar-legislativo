@@ -28,6 +28,11 @@ export function semanaAno(iso) {
   const inicioAno = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
   return 1 + Math.round(((d - inicioAno) / 86_400_000 - 3 + ((inicioAno.getUTCDay() + 6) % 7)) / 7);
 }
+/** "Semana 29 · 13 de jul a 19 de jul" a partir da segunda-feira (AAAA-MM-DD). */
+export function rotuloSemana(segunda) {
+  const dom = new Date(Date.parse(`${segunda.slice(0, 10)}T00:00:00Z`) + 6 * 86_400_000).toISOString().slice(0, 10);
+  return `Semana ${semanaAno(segunda)} · ${dataCurta(segunda)} a ${dataCurta(dom)}`;
+}
 export const dataHora = (iso) => (iso ? dtfTime.format(new Date(iso)) : '—');
 export function relativo(iso) {
   if (!iso) return '—';
