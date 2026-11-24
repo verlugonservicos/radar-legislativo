@@ -80,8 +80,9 @@ await seguro(document.getElementById('graf-partido'), async () => {
       series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
     })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(dep[s])})` };  // nº de deputados
-    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(ps[x.dataIndex])})` };
-    op.grid = { ...op.grid, right: 132 };
+    // sem % no rótulo: a barra é média por deputado e o % (fatia do gasto total) depende do tamanho da
+    // bancada — barra maior com % menor confundia; o % fica só no tooltip e na tabela, como "gasto total"
+    op.grid = { ...op.grid, right: 84 };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const p = ps[xs[0].dataIndex];
       return `<b>${fmt.escapar(p.sigla_partido)}</b> · ${fmt.num(p.deputados)} deputados<br>Por deputado: <b>${fmt.brl(p.gasto_por_deputado)}</b>`
@@ -105,8 +106,8 @@ await seguro(document.getElementById('graf-uf'), async () => {
       series: [{ name: 'Gasto por deputado', data: us.map((u) => u.gasto_por_deputado) }],
     })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(porUf[s].deputados)})` };
-    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(us[x.dataIndex])})` };
-    op.grid = { ...op.grid, right: 132 };
+    // sem % no rótulo (mesmo motivo do gráfico por partido): o % do gasto total fica no tooltip e na tabela
+    op.grid = { ...op.grid, right: 84 };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => {
       const u = us[ps[0].dataIndex];
       return `<b>${fmt.escapar(u.sigla_uf)}</b> · ${fmt.num(u.deputados)} deputados<br>Por deputado: <b>${fmt.brl(u.gasto_por_deputado)}</b>`
