@@ -69,10 +69,15 @@ await seguro(document.getElementById('graf-fornecedores'), async () => {
 
 await seguro(document.getElementById('graf-partido'), async () => {
   const ps = (await dados('partidos')).filter((p) => p.deputados >= 3).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
-  montar(limpa('graf-partido'), barras({
-    gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
-    series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
-  }), { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado'], linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado)]) } });
+  const dep = Object.fromEntries(ps.map((p) => [p.sigla_partido, p.deputados]));
+  montar(limpa('graf-partido'), (t) => {
+    const op = barras({
+      gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
+      series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
+    })(t);
+    op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(dep[s])})` };  // nº de deputados
+    return op;
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado'], linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado)]) } });
 });
 
 await seguro(document.getElementById('graf-uf'), async () => {
