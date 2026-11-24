@@ -275,9 +275,11 @@ def entidades() -> list[Entidade]:
             ],
         ),
         Entidade(
-            "blocos_partidos", ["id_bloco", "id_partido"],
+            # a API repete o id do bloco no `id` de cada partido (ADR-028): chave = bloco + sigla;
+            # o id_partido verdadeiro é resolvido pela sigla na Gold (dim_partido)
+            "blocos_partidos", ["id_bloco", "sigla_partido"],
             {"id_bloco": "int", "id_partido": "int", "sigla_partido": "text", "nome_partido": "text"},
-            [Fonte("blocos_partidos", {"id_bloco": "@id_pai", "id_partido": "id", "sigla_partido": "sigla", "nome_partido": "nome"})],
+            [Fonte("blocos_partidos", {"id_bloco": "@id_pai", "sigla_partido": "sigla", "nome_partido": "nome"})],
         ),
         # ---------------------------------------------------------- deputados
         Entidade(

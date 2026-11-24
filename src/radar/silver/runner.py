@@ -41,8 +41,33 @@ class SilverResult:
         return self.lidos == self.gravados + self.rejeitados + self.duplicados
 
 
+def _migrar_chaves(engine: Engine, entidades: list[Entidade]) -> list[str]:
+    """Tabela Silver cuja chave primária mudou no código: recria e zera a marca d'água da entidade.
+
+    A Silver é derivada da Bronze, então recriar não perde nada: a próxima execução relê a
+    entidade inteira (ex.: ADR-028, blocos_partidos passou a usar bloco + sigla).
+    """
+    migradas = []
+    with engine.begin() as conn:
+        for e in entidades:
+            atual = conn.execute(text(
+                "SELECT array_agg(a.attname ORDER BY k.ord) FROM pg_constraint c "
+                "CROSS JOIN LATERAL unnest(c.conkey) WITH ORDINALITY AS k(attnum, ord) "
+                "JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = k.attnum "
+                "WHERE c.conrelid = to_regclass(:t) AND c.contype = 'p'"), {"t": f"silver.{e.nome}"}).scalar()  # fmt: skip
+            if atual is not None and list(atual) != list(e.pk):
+                conn.execute(text(f"DROP TABLE silver.{e.nome}"))
+                conn.execute(text("DELETE FROM ops.controle_ingestao WHERE endpoint = :e AND camada = 'silver'"),
+                             {"e": e.nome})  # fmt: skip
+                migradas.append(e.nome)
+                log.warning("silver.%s: chave mudou de %s para %s — tabela recriada; será relida da Bronze",
+                            e.nome, list(atual), e.pk)  # fmt: skip
+    return migradas
+
+
 def criar_tabelas(engine: Engine, entidades: list[Entidade] | None = None) -> int:
     entidades = entidades or todas_entidades()
+    _migrar_chaves(engine, entidades)
     ddl = "CREATE SCHEMA IF NOT EXISTS silver;\n" + "\n".join(gerar_ddl(e) for e in entidades)
     with engine.begin() as conn, conn.connection.driver_connection.cursor() as cur:
         cur.execute(ddl)

@@ -27,6 +27,11 @@ FROM silver.orgaos_membros
 ON CONFLICT (id_orgao, id_deputado, cod_titulo, data_inicio) DO UPDATE SET
     titulo = EXCLUDED.titulo, data_fim = EXCLUDED.data_fim;
 
+-- recarga completa (tabela pequena): o id_partido vem de dim_partido pela sigla, porque a API repete
+-- o id do bloco no campo `id` dos partidos (ADR-028)
+DELETE FROM gold.ponte_bloco_partido;
 INSERT INTO gold.ponte_bloco_partido
-SELECT id_bloco, id_partido, sigla_partido FROM silver.blocos_partidos
+SELECT b.id_bloco, p.id_partido, b.sigla_partido
+FROM silver.blocos_partidos b
+JOIN LATERAL (SELECT max(id_partido) AS id_partido FROM gold.dim_partido d WHERE d.sigla = b.sigla_partido) p ON p.id_partido IS NOT NULL
 ON CONFLICT (id_bloco, id_partido) DO UPDATE SET sigla_partido = EXCLUDED.sigla_partido;

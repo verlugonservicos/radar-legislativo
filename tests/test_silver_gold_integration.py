@@ -314,3 +314,16 @@ def test_titulo_padroniza_maiusculas_de_tipos_e_fornecedores(engine):
     for entrada, esperado in casos.items():
         assert _um(engine, "SELECT gold.titulo(:t)", t=entrada) == esperado
     assert _um(engine, "SELECT gold.titulo(NULL)") is None
+
+
+def test_blocos_partidos_mantem_todos_os_partidos_do_bloco(engine):
+    """ADR-028: a API repete o id do bloco em todos os partidos; a chave é bloco + sigla."""
+    import json as _json
+
+    fx = _json.loads((FIXTURES / "blocos_partidos.json").read_text(encoding="utf-8"))
+    siglas = {p["sigla"] for p in fx["dados"]}
+    run_silver(engine, None, {"blocos_partidos"}, completa=True)
+    gravadas = set(
+        engine.connect().execute(text("SELECT sigla_partido FROM silver.blocos_partidos")).scalars()
+    )
+    assert siglas and siglas <= gravadas

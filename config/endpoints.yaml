@@ -330,9 +330,10 @@ endpoints:
   tipo: subrecurso
   paginado: false
   frequencia: semanal
+  # a API devolve o id do BLOCO no campo `id` de todos os partidos (ADR-028): a chave usa a sigla
   chave:
   - '{id_pai}'
-  - id
+  - sigla
   ids:
     de: blocos
     campo: id

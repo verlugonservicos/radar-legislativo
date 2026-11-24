@@ -2,8 +2,8 @@
 {% from "partials/componentes.html.j2" import card, grafico %}
 {% block conteudo %}
 <div class="grid">
-  {% call card("frentes", "Top 20 frentes parlamentares", "Por número de deputados em exercício", "span-7", termo="frente") %}{{ grafico("graf-frentes", "Barras das 20 maiores frentes parlamentares", "chart--xl") }}{% endcall %}
-  {% call card("sankey", "Partidos nos blocos", "Deputados em exercício de cada partido e total de cada bloco (número em destaque)", "span-5", termo="partido-bloco") %}{{ grafico("graf-sankey", "Diagrama de fluxo dos partidos para os blocos", "chart--xl") }}{% endcall %}
+  {% call card("frentes", "Top 20 frentes parlamentares", "Por número de deputados em exercício", "span-12", termo="frente") %}{{ grafico("graf-frentes", "Barras das 20 maiores frentes parlamentares", "chart--xl") }}{% endcall %}
+  {% call card("sankey", "Partidos nos blocos", "Partido → federação → bloco · o número em cada faixa é a quantidade de deputados em exercício", "span-12", termo="partido-bloco") %}{{ grafico("graf-sankey", "Diagrama de fluxo dos partidos para as federações e os blocos", "chart--xl") }}{% endcall %}
   {% call card("mesa", "Mesa Diretora", "Composição vigente", "span-12", termo="mesa") %}<div class="people" id="lista-mesa"></div>{% endcall %}
   {% call card("lideres", "Lideranças", "Líderes de partido, bloco, governo, oposição, maioria e minoria", "span-12", termo="lideranca") %}<div class="people" id="lista-lideres"></div>{% endcall %}
   {% call card("tabela", "Frentes parlamentares", "Todas as frentes com membros em exercício", "span-12") %}<div id="tabela-frentes"></div>{% endcall %}
