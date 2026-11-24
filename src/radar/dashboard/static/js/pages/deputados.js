@@ -250,22 +250,38 @@ function desenharGastos() {
   for (const d of ls) porPartido.set(d.sigla_partido, (porPartido.get(d.sigla_partido) || 0) + (d.gasto_total || 0));
   const partidos = [...porPartido].sort((a, b) => b[1] - a[1]);
   const qtd = (sigla) => ls.filter((d) => d.sigla_partido === sigla).length;
+  // % do gasto total dos deputados filtrados, entre parênteses ao lado de cada barra (padrão dos projetos/setores)
+  const total = ls.reduce((t, d) => t + (d.gasto_total || 0), 0);
+  const pct = (v) => fmt.pct(total ? (100 * v) / total : 0);
+  const comPct = (op) => {
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(x.value)})` };
+    op.grid = { ...op.grid, right: 124 };
+    return op;
+  };
   gastoPartido = montar(limpa('graf-gasto-partido'), (t) => {
-    const op = barras({ categorias: partidos.map(([p]) => p), horizontal: true, rotulo: true, formatter: fmt.brl, gradiente: true,
-                        series: [{ name: 'Gasto da cota', data: partidos.map(([, v]) => Math.round(v)) }] })(t);
+    const op = comPct(barras({ categorias: partidos.map(([p]) => p), horizontal: true, rotulo: true, formatter: fmt.brl, gradiente: true,
+                               series: [{ name: 'Gasto da cota', data: partidos.map(([, v]) => Math.round(v)) }] })(t));
     // nome do partido com o nº de deputados (a categoria continua só a sigla, usada no tooltip)
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (p) => `${p} (${fmt.num(qtd(p))})` };
-    return {
-    ...op,
-    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' },
-      formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)}<br>${fmt.num(qtd(ps[0].name))} deputados · ${fmt.brl(ps[0].value / qtd(ps[0].name))} por deputado` },
-    };
-  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto da cota'], linhas: partidos.map(([p, v]) => [p, qtd(p), fmt.brlCheio(v)]) } });
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)} (${pct(ps[0].value)} do total)<br>${fmt.num(qtd(ps[0].name))} deputados · ${fmt.brl(ps[0].value / qtd(ps[0].name))} por deputado` };
+    return op;
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto da cota', '% do total'], linhas: partidos.map(([p, v]) => [p, qtd(p), fmt.brlCheio(v), pct(v)]) } });
   const top = [...ls].sort((a, b) => (b.gasto_total || 0) - (a.gasto_total || 0)).slice(0, 20);
-  gastoDeputado = montar(limpa('graf-gasto-deputado'), barras({
-    categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.brl,
-    gradiente: true, series: [{ name: 'Gasto da cota', data: top.map((d) => Math.round(d.gasto_total || 0)) }],
-  }), { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Gasto da cota'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.brlCheio(d.gasto_total)]) } });
+  gastoDeputado = montar(limpa('graf-gasto-deputado'), (t) => {
+    const op = comPct(barras({
+      categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.brl,
+      gradiente: true, series: [{ name: 'Gasto da cota', data: top.map((d) => Math.round(d.gasto_total || 0)) }],
+    })(t));
+    // plot mais estreito (nomes longos + rótulos com %): no máximo ~3 marcas no eixo, em passo "redondo"
+    const bruto = Math.max(...top.map((d) => d.gasto_total || 0)) / 3;
+    const ordem = 10 ** Math.floor(Math.log10(bruto || 1));
+    const passo = [1, 2, 2.5, 5, 10].map((m) => m * ordem).find((v) => v >= bruto);
+    op.xAxis = { ...op.xAxis, interval: passo, max: Math.ceil((3 * bruto) / passo) * passo };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)} (${pct(ps[0].value)} do total dos ${fmt.num(ls.length)} deputados)` };
+    return op;
+  }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Gasto da cota', '% do total'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.brlCheio(d.gasto_total), pct(d.gasto_total || 0)]) } });
 }
 
 // Top 20 deputados por projetos apresentados (autor principal; mesmo critério do gráfico por partido na
