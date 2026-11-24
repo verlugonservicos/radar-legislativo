@@ -77,6 +77,9 @@ def _linhas(conn, sql: str) -> list[dict]:
     return [{k: _valor(v) for k, v in r.items()} for r in conn.execute(text(sql)).mappings()]
 
 
+CORTADOS: list[str] = []  # datasets cortados no último build (aparecem no resumo)
+
+
 def gravar_json(
     caminho: Path, nome: str, dados: Any, limite: int, extra: dict | None = None
 ) -> int:
@@ -92,12 +95,14 @@ def gravar_json(
                 {"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":")
             )
         log.warning(
-            "%s: JSON acima de %d bytes; cortado de %d para %d linhas",
+            "%s: JSON acima de %d bytes; cortado de %d para %d linhas — os totais do painel ficam "
+            "incompletos: exporte um resumo em vez do detalhe",
             nome,
             limite,
             total,
             len(dados),
         )
+        CORTADOS.append(nome)
     caminho.write_text(corpo, encoding="utf-8")
     return len(corpo.encode())
 
@@ -212,9 +217,15 @@ def build(out_dir: Path, engine: Engine | None = None, readonly: bool = False,
     Com `fixtures` ({dataset: dados}) não consulta o banco — é como o CI testa o build.
     """
     t0 = time.monotonic()
+    CORTADOS.clear()
     cfg = carregar_config()
     out_dir.mkdir(parents=True, exist_ok=True)
     limite = cfg.get("limite_json_bytes", 1_000_000)
+    # remove datasets de builds anteriores que não existem mais (ex.: despesas → despesas_mensal)
+    data_dir = out_dir / "data"
+    if data_dir.exists():
+        for antigo in data_dir.glob("*.json"):
+            antigo.unlink()
     if fixtures is not None:
         tamanhos = gravar_fixtures(out_dir / "data", fixtures, limite)
     else:
@@ -228,7 +239,11 @@ def build(out_dir: Path, engine: Engine | None = None, readonly: bool = False,
     validar(out_dir, cfg)
     total = sum(p.stat().st_size for p in out_dir.rglob("*") if p.is_file())
     r = {"paginas": len(paginas), "datasets": len(tamanhos), "bytes": total,
-         "duracao_s": round(time.monotonic() - t0, 1)}  # fmt: skip
+         "duracao_s": round(time.monotonic() - t0, 1), "cortados": sorted(set(CORTADOS))}  # fmt: skip
+    if r["cortados"]:
+        log.warning(
+            "ATENÇÃO: datasets cortados por tamanho (painéis incompletos): %s", r["cortados"]
+        )
     log.info("dashboard: %d páginas, %d datasets, %.1f MB em %.1f s", r["paginas"], r["datasets"],
              total / 1e6, r["duracao_s"])  # fmt: skip
     return r

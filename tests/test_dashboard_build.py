@@ -127,3 +127,13 @@ def test_glossario_tem_os_termos_pedidos_e_links_validos(site):
             r'href="glossario\.html#([a-z-]+)"', (out / f"{slug}.html").read_text(encoding="utf-8")
         ):
             assert termo in ids, (slug, termo)
+
+
+def test_build_avisa_dataset_cortado_e_remove_json_antigo(tmp_path):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "dataset_que_nao_existe_mais.json").write_text("{}")
+    fx = _fixtures()
+    fx["deputados"] = [{"id_deputado": i, "nome": "x" * 400} for i in range(4000)]  # > 1 MB
+    r = b.build(tmp_path, fixtures=fx)
+    assert r["cortados"] == ["deputados"]
+    assert not (tmp_path / "data" / "dataset_que_nao_existe_mais.json").exists()

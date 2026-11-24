@@ -19,7 +19,15 @@ DATASETS: dict[str, str] = {
     "votacoes_dia": "SELECT * FROM gold.mart_votacoes_dia ORDER BY data",
     "deputados": "SELECT * FROM gold.mart_deputados ORDER BY score_atividade DESC, nome",
     "deputados_uf": "SELECT * FROM gold.mart_deputados_uf ORDER BY sigla_uf",
-    "despesas": "SELECT * FROM gold.mart_despesas ORDER BY ano, mes",
+    # resumos prontos para a página (o mart detalhado passa de 1 MB com vários meses carregados)
+    "despesas_mensal": (
+        "SELECT ano, mes, sum(qtd)::int AS qtd, sum(valor_liquido) AS valor_liquido "
+        "FROM gold.mart_despesas GROUP BY 1, 2 ORDER BY 1, 2"
+    ),
+    "despesas_tipo": (
+        "SELECT tipo_despesa, sum(qtd)::int AS qtd, sum(valor_liquido) AS valor_liquido "
+        "FROM gold.mart_despesas GROUP BY 1 ORDER BY 3 DESC"
+    ),
     "fornecedores": "SELECT * FROM gold.mart_fornecedores ORDER BY valor DESC",
     "despesas_outliers": "SELECT * FROM gold.mart_despesas_outliers ORDER BY z_score DESC",
     "agenda": "SELECT * FROM gold.mart_agenda ORDER BY data, hora",

@@ -6,19 +6,14 @@ import { Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
 await iniciar();
-const desp = await dados('despesas');
 const limpa = (id) => { const el = document.getElementById(id); el.classList.remove('skeleton'); return el; };
-const agrupar = (ls, chave) => {
-  const m = new Map();
-  for (const d of ls) m.set(chave(d), (m.get(chave(d)) || 0) + d.valor_liquido);
-  return [...m.entries()];
-};
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 
 await seguro(document.getElementById('graf-mensal'), async () => {
-  const meses = agrupar(desp, (d) => `${d.ano}-${String(d.mes).padStart(2, '0')}`).sort();
+  const meses = (await dados('despesas_mensal')).map((d) => [`${d.ano}-${String(d.mes).padStart(2, '0')}`, d.valor_liquido]);
   montar(limpa('graf-mensal'), barras({
     categorias: meses.map(([k]) => `${MESES[Number(k.slice(5)) - 1]}/${k.slice(2, 4)}`), formatter: fmt.brl, rotulo: true,
+    gradiente: true,
     series: [{
       name: 'Valor líquido', data: meses.map(([, v]) => Math.round(v)),
       // média dos meses carregados: referência para ver quais meses ficaram acima ou abaixo
@@ -37,7 +32,7 @@ await seguro(document.getElementById('kv-quarentena'), async () => {
 });
 
 await seguro(document.getElementById('graf-tipos'), async () => {
-  const tipos = agrupar(desp, (d) => d.tipo_despesa).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const tipos = (await dados('despesas_tipo')).slice(0, 12).map((d) => [d.tipo_despesa, d.valor_liquido]);
   montar(limpa('graf-tipos'), barras({
     gradiente: true, categorias: tipos.map(([t]) => (t.length > 38 ? `${t.slice(0, 36)}…` : t)), horizontal: true, formatter: fmt.brl, rotulo: true,
     series: [{ name: 'Valor líquido', data: tipos.map(([, v]) => Math.round(v)) }],
