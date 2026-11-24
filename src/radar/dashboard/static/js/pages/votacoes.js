@@ -36,9 +36,11 @@ await seguro(document.getElementById('graf-dia'), async () => {
       series: [
         // rejeitadas são 1–3% das votações: o verde fica mais suave e o vermelho, cheio, com uma borda clara
         // separando do verde e o número de rejeitadas escrito em vermelho acima da barra
-        { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive, opacity: 0.55 } },
-        { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas),
-          itemStyle: { color: t.negative, borderColor: t.surface, borderWidth: 1 },
+        // verde sem canto arredondado (encaixa no vermelho); vermelho com altura mínima de 6 px, para 1 a 5
+        // rejeitadas não virarem um fio, e cantos de cima arredondados (fecha a barra)
+        { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive, opacity: 0.55, borderRadius: 0 } },
+        { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas || null), barMinHeight: 6,
+          itemStyle: { color: t.negative, borderRadius: [3, 3, 0, 0] },
           label: { show: true, position: 'top', distance: 4, color: t.negative, fontWeight: 700, fontSize: 11,
                    formatter: (p) => (p.value ? `${fmt.num(p.value)} rej.` : '') } },
         { name: 'Sem resultado', data: chaves.map((c) => semanas.get(c).sem), itemStyle: { color: t.grid } },
