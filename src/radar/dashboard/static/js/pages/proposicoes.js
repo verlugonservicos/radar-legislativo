@@ -164,6 +164,36 @@ await seguro(document.getElementById('graf-tramitacao'), async () => {
   }), { tabela: { colunas: ['Tema', 'Proposições', 'Mediana (dias)', 'P90 (dias)'], linhas: tr.map((d) => [d.tema, d.qtd, d.mediana_dias, d.p90_dias]) } });
 });
 
+// Projetos por partido (autor principal): total ou por deputado; o tooltip mostra o maior autor, porque
+// um só deputado pode responder por boa parte do partido
+let modoProjetos = 'total';
+async function desenharProjetos() {
+  const porDep = modoProjetos === 'por-deputado';
+  const valor = (p) => (porDep ? Math.round((10 * p.projetos) / p.deputados) / 10 : p.projetos);
+  const ps = (await dados('partidos')).filter((p) => p.deputados > 0).sort((a, b) => valor(b) - valor(a));
+  const qtd = Object.fromEntries(ps.map((p) => [p.sigla_partido, p]));
+  const formatter = porDep ? fmt.num1 : fmt.num;
+  const el = document.getElementById('graf-projetos'); el.classList.remove('skeleton');
+  montar(el, (t) => {
+    const op = barras({ categorias: ps.map((p) => p.sigla_partido), horizontal: true, rotulo: true, formatter, gradiente: 'invertido',
+                        series: [{ name: porDep ? 'Projetos por deputado' : 'Projetos', data: ps.map(valor) }] })(t);
+    op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(qtd[s].deputados)})` };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
+      const p = qtd[xs[0].name];
+      const maior = p.projetos_maior_autor ? `<br>Maior autor: ${fmt.escapar(p.projetos_maior_autor)} (${fmt.num(p.projetos_maior_autor_qtd)}, ${fmt.pct(p.projetos ? (100 * p.projetos_maior_autor_qtd) / p.projetos : 0)} do partido)` : '';
+      return `<b>${fmt.escapar(p.sigla_partido)}</b> · ${fmt.num(p.deputados)} ${p.deputados === 1 ? 'deputado' : 'deputados'}<br>Projetos: <b>${fmt.num(p.projetos)}</b> · ${fmt.num1(p.projetos / p.deputados)} por deputado${maior}`;
+    } };
+    return op;
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Projetos', 'Por deputado', 'Maior autor'],
+                 linhas: ps.map((p) => [p.sigla_partido, p.deputados, p.projetos, fmt.num1(p.projetos / p.deputados), p.projetos_maior_autor ? `${p.projetos_maior_autor} (${p.projetos_maior_autor_qtd})` : '—']) } });
+}
+document.querySelectorAll('#projetos-modo button').forEach((b) => b.addEventListener('click', () => {
+  modoProjetos = b.dataset.modo;
+  document.querySelectorAll('#projetos-modo button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  desenharProjetos();
+}));
+await seguro(document.getElementById('graf-projetos'), desenharProjetos);
+
 await seguro(document.getElementById('graf-setores'), async () => {
   const set = await dados('setores');
   const porSetor = {};

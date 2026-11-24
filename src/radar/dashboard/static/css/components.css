@@ -35,7 +35,7 @@
    subtítulo ocupa mais linhas; o teto evita esticar quando a tabela do vizinho é aberta */
 .chart--estica { flex: 1 0 auto; }
 .chart--preenche { flex: 1 0 auto; max-height: 940px; }  /* ocupa a altura do card vizinho (ex.: ranking ao lado do mapa) */
-.chart--lg.chart--estica { max-height: calc(420px + 3rem); } .chart--xl.chart--estica { max-height: calc(520px + 4rem); }
+.chart--lg.chart--estica { max-height: calc(420px + 3rem); } .chart--xl.chart--estica { max-height: calc(520px + 4rem); } .chart--ranking.chart--estica { max-height: calc(640px + 3rem); }
 @media (max-width: 1280px) { .chart--mapa { max-height: 720px; margin: 0 auto; max-width: 576px; } }
 .chart-alt { margin-top: var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); }
 .chart-alt summary { cursor: pointer; width: fit-content; }
