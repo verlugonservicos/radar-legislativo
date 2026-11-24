@@ -171,6 +171,27 @@ function desenharRanking() {
   }));
 }
 
+// Gastos da cota (mesmo critério do mapa para gasto: maior = vermelho), respeitando partido e UF
+let gastoPartido; let gastoDeputado;
+function desenharGastos() {
+  const ls = deps.filter(passa);
+  const porPartido = new Map();
+  for (const d of ls) porPartido.set(d.sigla_partido, (porPartido.get(d.sigla_partido) || 0) + (d.gasto_total || 0));
+  const partidos = [...porPartido].sort((a, b) => b[1] - a[1]);
+  const qtd = (sigla) => ls.filter((d) => d.sigla_partido === sigla).length;
+  gastoPartido = montar(limpa('graf-gasto-partido'), (t) => ({
+    ...barras({ categorias: partidos.map(([p]) => p), horizontal: true, rotulo: true, formatter: fmt.brl, gradiente: true,
+                series: [{ name: 'Gasto da cota', data: partidos.map(([, v]) => Math.round(v)) }] })(t),
+    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)}<br>${fmt.num(qtd(ps[0].name))} deputados · ${fmt.brl(ps[0].value / qtd(ps[0].name))} por deputado` },
+  }), { tabela: { colunas: ['Partido', 'Deputados', 'Gasto da cota'], linhas: partidos.map(([p, v]) => [p, qtd(p), fmt.brlCheio(v)]) } });
+  const top = [...ls].sort((a, b) => (b.gasto_total || 0) - (a.gasto_total || 0)).slice(0, 20);
+  gastoDeputado = montar(limpa('graf-gasto-deputado'), barras({
+    categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.brl,
+    gradiente: true, series: [{ name: 'Gasto da cota', data: top.map((d) => Math.round(d.gasto_total || 0)) }],
+  }), { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Gasto da cota'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.brlCheio(d.gasto_total)]) } });
+}
+
 function perfil(d) {
   abrirDrawer(`<div class="person"><img class="avatar" style="width:72px;height:72px" src="${fmt.escapar(d.url_foto)}" alt="" loading="lazy">
     <div><h2>${fmt.escapar(d.nome)}</h2><p class="muted">${fmt.escapar(d.sigla_partido)} · ${fmt.escapar(d.sigla_uf)}</p></div></div>
@@ -210,7 +231,7 @@ function desenharTabela() {
 
 function aplicar() {
   estado.gravar({ partidos: selPartido.value ? [selPartido.value] : [], ufs: selUf.value ? [selUf.value] : [] });
-  desenharMapa(); desenharRanking(); desenharTabela();
+  desenharMapa(); desenharRanking(); desenharGastos(); desenharTabela();
 }
 selPartido.addEventListener('change', aplicar);
 selUf.addEventListener('change', aplicar);
@@ -218,4 +239,5 @@ selMetrica.addEventListener('change', desenharMapa);
 
 await seguro(document.getElementById('graf-mapa'), desenharMapa);
 await seguro(document.getElementById('graf-ranking'), desenharRanking);
+await seguro(document.getElementById('graf-gasto-partido'), desenharGastos);
 await seguro(document.getElementById('tabela-deputados'), desenharTabela);
