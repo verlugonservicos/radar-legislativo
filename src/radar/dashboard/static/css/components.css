@@ -29,8 +29,9 @@
 
 /* gráfico */
 .chart { width: 100%; height: 320px; }
-.chart--lg { height: 420px; } .chart--sm { height: 240px; } .chart--xl { height: 520px; } .chart--mapa { height: 600px; }
-@media (max-width: 768px) { .chart--mapa { height: 420px; } }
+.chart--lg { height: 420px; } .chart--sm { height: 240px; } .chart--xl { height: 520px; } .chart--mapa { height: auto; aspect-ratio: 4 / 5; max-height: 820px; }   /* proporção do Brasil */
+.chart--ranking { height: 640px; }
+@media (max-width: 1280px) { .chart--mapa { max-height: 720px; margin: 0 auto; max-width: 576px; } }
 .chart-alt { margin-top: var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); }
 .chart-alt summary { cursor: pointer; width: fit-content; }
 .chart-alt table { margin-top: var(--space-2); }

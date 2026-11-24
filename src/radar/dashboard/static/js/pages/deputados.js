@@ -72,19 +72,24 @@ function desenharMapa() {
   const [rotulo, formatter] = METRICAS[selMetrica.value];
   const metrica = selMetrica.value;
   const base = { type: 'map', map: 'BR', roam: false, nameProperty: 'sigla',
-                 layoutCenter: ['54%', '50%'], layoutSize: '104%' };  // ocupa o card inteiro (o Brasil é quase quadrado)
+                 top: 4, bottom: 4, left: 4, right: 4 };  // preenche a área (que tem a proporção do Brasil, 4:5)
   if (modoMapa === 'uf') {
+    // tela estreita: legenda na horizontal, abaixo do mapa (não cobre os estados)
+    const estreito = document.getElementById('graf-mapa').clientWidth < 480;
+    const serieBase = estreito ? { ...base, bottom: 52 } : base;
+    const legenda = estreito ? { orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 12, itemHeight: 160 }
+      : { left: 0, bottom: 8, itemHeight: 100, itemWidth: 14 };
     const valores = porUf.map((u) => ({ name: u.sigla_uf, value: u[metrica] }));
     const vs = valores.map((v) => v.value);
     mapa = montar(limpa('graf-mapa'), (t) => ({
       tooltip: { trigger: 'item', formatter: (p) => `<b>${p.name}</b><br>${rotulo}: ${formatter(p.value)}` },
-      visualMap: { min: Math.min(...vs), max: Math.max(...vs), left: 0, bottom: 0, itemHeight: 110, calculable: true, text: ['maior', 'menor'],
+      visualMap: { min: Math.min(...vs), max: Math.max(...vs), ...legenda, calculable: true, text: ['maior', 'menor'],
         inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
-      series: [{ ...base, data: valores, selectedMode: 'single',
+      series: [{ ...serieBase, data: valores, selectedMode: 'single',
         itemStyle: { borderColor: t.surface, borderWidth: 1, areaColor: t.grid },
         emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
         select: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
-        label: { show: true, fontSize: 9, color: t.muted } }],
+        label: { show: true, fontSize: 10, color: t.muted } }],
     }), { tabela: { colunas: ['UF', rotulo], linhas: porUf.map((u) => [u.sigla_uf, formatter(u[metrica])]) } });
     mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
     return;
@@ -104,7 +109,7 @@ function desenharMapa() {
     return {
       tooltip: { trigger: 'item' },
       geo: {
-        map: 'BR', roam: false, nameProperty: 'sigla', layoutCenter: ['54%', '50%'], layoutSize: '104%',
+        map: 'BR', roam: false, nameProperty: 'sigla', top: 4, bottom: 4, left: 4, right: 4,
         label: { show: false }, emphasis: { disabled: true }, select: { disabled: true },
         tooltip: { show: true, formatter: (p) => { const r = regiaoDe[p.name]; return `<b>${r}</b> (${REGIOES[r].join(', ')})<br>${rotulo}: ${formatter(valorDe[r])}`; } },
         regions: Object.keys(regiaoDe).map((uf) => {

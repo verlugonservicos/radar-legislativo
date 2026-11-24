@@ -13,14 +13,19 @@
   </select>
 </div>
 <div class="grid">
-  {% call card("mapa", "Brasil por UF ou região", "Métrica selecionada acima · no modo UF, clique num estado para filtrar", "span-6") %}
-    <div class="seg" role="group" aria-label="Agrupar o mapa" id="mapa-agrupamento" style="align-self:flex-start;margin-bottom:var(--space-3)">
-      <button type="button" data-modo="uf" aria-pressed="true">Por UF</button>
-      <button type="button" data-modo="regiao" aria-pressed="false">Por região</button>
-    </div>
+  <section class="card span-6" aria-labelledby="mapa-t">
+    <header class="card__head">
+      <div><h2 class="card__title" id="mapa-t">Brasil por UF ou região</h2><p class="card__sub">Métrica selecionada acima · no modo UF, clique num estado para filtrar</p></div>
+      <div class="card__actions">
+        <div class="seg" role="group" aria-label="Agrupar o mapa" id="mapa-agrupamento">
+          <button type="button" data-modo="uf" aria-pressed="true">Por UF</button>
+          <button type="button" data-modo="regiao" aria-pressed="false">Por região</button>
+        </div>
+      </div>
+    </header>
     {{ grafico("graf-mapa", "Mapa do Brasil por unidade da federação ou região", "chart--mapa") }}
-  {% endcall %}
-  {% call card("ranking", "Top 20 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos 20 deputados mais ativos", "chart--mapa") }}{% endcall %}
+  </section>
+  {% call card("ranking", "Top 20 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos 20 deputados mais ativos", "chart--ranking") }}{% endcall %}
   {% call card("tabela", "Deputados em exercício", "Clique para ver o perfil", "span-12") %}<div id="tabela-deputados"></div>{% endcall %}
 </div>
 {% endblock %}
