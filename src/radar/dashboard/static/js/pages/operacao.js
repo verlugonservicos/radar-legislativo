@@ -39,12 +39,25 @@ await seguro(document.getElementById('graf-funil'), async () => {
   }), { tabela: { colunas: ['Entidade', 'Bronze', 'Silver', 'Gold', 'Rejeitados'], linhas: f.map((d) => [d.entidade, d.bronze, d.silver, d.gold, d.rejeitados]) } });
 });
 
+// barras horizontais com o % do total entre parênteses (2 casas), no padrão dos demais painéis
+function comPercentual(id, ls, formatter, nome, sufixo) {
+  const total = ls.reduce((t, d) => t + d[1], 0);
+  const pct = (v) => fmt.pct2(total ? (100 * v) / total : 0);
+  montar(limpa(id), (t) => {
+    const op = barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, formatter, series: [{ name: nome, data: ls.map((d) => d[1]) }] })(t);
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${formatter(x.value)} (${pct(x.value)})` };
+    op.grid = { ...op.grid, right: 120 };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>${nome}: <b>${formatter(ps[0].value)}</b> (${pct(ps[0].value)} ${sufixo})` };
+    return op;
+  }, { tabela: { colunas: ['Item', nome, '% do total'], linhas: ls.map(([n, v]) => [n, formatter(v), pct(v)]) } });
+}
+
 await seguro(document.getElementById('graf-qualidade'), async () => {
   const q = await dados('qualidade');
   const regras = new Map();
   for (const d of q) { const k = `${d.entidade} · ${d.regra}`; regras.set(k, (regras.get(k) || 0) + d.qtd); }
   const ls = [...regras.entries()].sort((a, b) => b[1] - a[1]);
-  montar(limpa('graf-qualidade'), barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, series: [{ name: 'Registros', data: ls.map((d) => d[1]) }] }));
+  comPercentual('graf-qualidade', ls, fmt.num, 'Registros', 'das rejeições');
 });
 
 await seguro(document.getElementById('graf-custos'), async () => {
@@ -53,7 +66,7 @@ await seguro(document.getElementById('graf-custos'), async () => {
   for (const d of c) porOp.set(d.operacao, (porOp.get(d.operacao) || 0) + d.custo_usd);
   const ls = [...porOp.entries()].sort((a, b) => b[1] - a[1]);
   const usd = (v) => `US$ ${v.toFixed(v < 0.01 ? 4 : 2).replace('.', ',')}`;
-  montar(limpa('graf-custos'), barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, formatter: usd, series: [{ name: 'Custo', data: ls.map((d) => d[1]) }] }));
+  comPercentual('graf-custos', ls, usd, 'Custo', 'do custo total');
   const itens = c.filter((d) => d.operacao === 'resumo').reduce((a, d) => a + d.itens, 0);
   document.getElementById('kv-custos').innerHTML = `<dt>Total</dt><dd><strong>${usd(m.ia?.custo_total_usd || 0)}</strong></dd>
     <dt>Resumos gerados</dt><dd>${fmt.num(itens)}</dd><dt>Modelos</dt><dd>${fmt.escapar([...new Set(c.map((d) => d.modelo))].join(', '))}</dd>`;
