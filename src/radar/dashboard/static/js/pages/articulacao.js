@@ -75,7 +75,13 @@ await seguro(document.getElementById('graf-sankey'), async () => {
       : {} }));
   const el = limpa('graf-sankey');
   const COLUNA = 190;  // coluna da direita: nome da federação/bloco (o total fica dentro do gráfico)
-  const ESQ = 104; const LARGURA_NO = 14;
+  // margem esquerda do tamanho do maior rótulo de partido (ex.: "REPUBLICANOS (43)"), medido no canvas,
+  // para nenhum nome ser cortado na borda do card
+  const medir = document.createElement('canvas').getContext('2d');
+  medir.font = `600 11px ${getComputedStyle(document.body).fontFamily}`;
+  const ESQ = Math.ceil(Math.max(90, ...nomes.filter((n) => tipo(n) === 'partido')
+    .map((n) => medir.measureText(`${n} (${fmt.num(total(n))})`).width)) + 16);
+  const LARGURA_NO = 14;
   // distância do nó do meio até a coluna da direita (os nós do meio ficam a meio caminho das colunas)
   const deslocamentoMeio = () => {
     const xDireita = el.clientWidth - COLUNA - LARGURA_NO;
