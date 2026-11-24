@@ -1,7 +1,7 @@
 // Proposições e Temas: área por tema/semana, acurácia da IA, treemap, tramitação, setores e tabela.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, corTema, gauge, montar } from '../charts.js';
+import { barras, corGradiente, corTema, gauge, montar } from '../charts.js';
 import { abrirDrawer, badgeImpacto, chipTema, Tabela, vazio } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
@@ -52,8 +52,11 @@ function desenharTreemap() {
   graficos.treemap?.instancia.dispose();
   const arvore = {};
   for (const d of ts) if (passa(d.tema)) { arvore[d.tema] ??= {}; arvore[d.tema][d.sigla_tipo] = (arvore[d.tema][d.sigla_tipo] || 0) + d.qtd; }
-  const data = Object.entries(arvore).map(([tema, tipos]) => ({
-    name: tema, itemStyle: { color: corTema(tema) },
+  // tema com mais proposições em verde, com menos em vermelho (mesma regra dos setores)
+  const somas = Object.values(arvore).map((tipos) => Object.values(tipos).reduce((a, b) => a + b, 0));
+  const [min, max] = [Math.min(...somas), Math.max(...somas)];
+  const data = Object.entries(arvore).map(([tema, tipos], i) => ({
+    name: tema, itemStyle: { color: corGradiente(somas[i], min, max, true) },
     children: Object.entries(tipos).map(([tipo, v]) => ({ name: tipo, value: v })),
   }));
   if (!data.length) { el.innerHTML = vazio(); return; }
@@ -63,7 +66,11 @@ function desenharTreemap() {
       type: 'treemap', roam: false, nodeClick: false, breadcrumb: { show: false }, width: '100%', height: '100%',
       label: { show: true, formatter: '{b}', fontSize: 11 }, upperLabel: { show: true, height: 22, color: '#fff', fontWeight: 600 },
       itemStyle: { borderColor: t.surface, borderWidth: 2, gapWidth: 2 },
-      levels: [{ itemStyle: { borderWidth: 0, gapWidth: 3 } }, { colorSaturation: [0.35, 0.6], itemStyle: { gapWidth: 1, borderColorSaturation: 0.6 } }],
+      // os tipos herdam a cor do tema; a faixa do título usa um tom mais escuro dela
+      levels: [
+        { itemStyle: { borderWidth: 0, gapWidth: 3 } },
+        { itemStyle: { gapWidth: 1, borderColorSaturation: 0.6 } },
+      ],
       data,
     }],
   }));
@@ -125,13 +132,15 @@ await seguro(document.getElementById('graf-gauge'), async () => {
 });
 
 await seguro(document.getElementById('graf-tramitacao'), async () => {
-  const tr = (await dados('tramitacao_tema')).filter((d) => d.tema !== 'Outros');
+  // ordenado pela mediana: tramitação mais lenta em vermelho, mais rápida em verde
+  const tr = (await dados('tramitacao_tema')).filter((d) => d.tema !== 'Outros')
+    .sort((a, b) => (b.mediana_dias ?? -1) - (a.mediana_dias ?? -1));
   const el = document.getElementById('graf-tramitacao');
   el.classList.remove('skeleton');
   montar(el, barras({
-    categorias: tr.map((d) => d.tema), horizontal: true, formatter: (v) => `${fmt.num(v)} dias`,
+    categorias: tr.map((d) => d.tema), horizontal: true, formatter: (v) => `${fmt.num(v)} dias`, gradiente: true,
     series: [
-      { name: 'Mediana', data: tr.map((d) => ({ value: d.mediana_dias, itemStyle: { color: corTema(d.tema) } })) },
+      { name: 'Mediana', data: tr.map((d) => d.mediana_dias) },
       { name: 'Percentil 90', data: tr.map((d) => d.p90_dias), itemStyle: { color: 'rgba(148,163,184,.55)' } },
     ],
   }), { tabela: { colunas: ['Tema', 'Proposições', 'Mediana (dias)', 'P90 (dias)'], linhas: tr.map((d) => [d.tema, d.qtd, d.mediana_dias, d.p90_dias]) } });

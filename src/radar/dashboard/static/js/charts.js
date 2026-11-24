@@ -100,13 +100,20 @@ export function linhas({ x, series, area = false, formatter = fmt.num, xData = t
 // Degradê das barras ordenadas por valor: menor = verde, intermediário = âmbar, maior = vermelho
 // (com gradiente: 'invertido', o contrário)
 export const GRADIENTE = ['#16A34A', '#F59E0B', '#DC2626'];
+/** Cor do degradê para um valor (mesma escala do visualMap): útil onde não há visualMap, como no treemap. */
+export function corGradiente(v, min, max, invertido = false) {
+  const cores = (invertido ? [...GRADIENTE].reverse() : GRADIENTE).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
+  const f = max > min ? Math.min(1, Math.max(0, (v - min) / (max - min))) * (cores.length - 1) : 0;
+  const i = Math.min(cores.length - 2, Math.floor(f)); const r = f - i;
+  return `rgb(${cores[i].map((c, k) => Math.round(c + (cores[i + 1][k] - c) * r)).join(',')})`;
+}
 const valorDe = (d) => (d !== null && typeof d === 'object' ? d.value : d);
 
 export function barras({ categorias, series, horizontal = false, empilhado = false, formatter = fmt.num, rotulo = false, gradiente = false }) {
   return (t = {}) => {
     const cat = { type: 'category', data: categorias, axisLabel: { interval: 0, hideOverlap: true } };
     const val = eixoNum(formatter);
-    const comGradiente = gradiente && series.length === 1;
+    const comGradiente = Boolean(gradiente);  // o degradê vale para a 1ª série (as demais mantêm a cor própria)
     const vs = comGradiente ? series[0].data.map(valorDe).filter((v) => v !== null && v !== undefined) : [];
     return {
       grid: { ...grade, top: series.length > 1 || comGradiente ? 36 : 12, right: rotulo && horizontal ? 72 : grade.right },
