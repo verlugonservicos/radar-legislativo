@@ -38,7 +38,8 @@ const REGIOES = {
   Sudeste: ['ES', 'MG', 'RJ', 'SP'],
   Sul: ['PR', 'RS', 'SC'],
 };
-const ROTULO_REGIAO = { Norte: 'AM', Nordeste: 'PI', 'Centro-Oeste': 'MT', Sudeste: 'MG', Sul: 'RS' };
+// centro aproximado de cada região (longitude, latitude) para a etiqueta
+const CENTRO_REGIAO = { Norte: [-60.5, -4.5], Nordeste: [-40.8, -8.0], 'Centro-Oeste': [-53.5, -15.0], Sudeste: [-45.5, -20.3], Sul: [-51.8, -27.3] };
 const regiaoDe = Object.fromEntries(Object.entries(REGIOES).flatMap(([r, ufs]) => ufs.map((u) => [u, r])));
 
 /** Agrega as UFs por região: somas para deputados/gastos, médias ponderadas pelos deputados. */
@@ -88,28 +89,40 @@ function desenharMapa() {
     mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
     return;
   }
-  // modo região: cada UF recebe a cor da sua região; a borda na mesma cor "funde" os estados
+  // modo região: cada UF recebe a cor da sua região (bordas internas na mesma cor "fundem" os estados);
+  // os rótulos são etiquetas posicionadas no centro geográfico de cada região (scatter sobre o geo).
   const regs = porRegiao();
   const vs = regs.map((r) => r[metrica]);
   const [min, max] = [Math.min(...vs), Math.max(...vs)];
   const valorDe = Object.fromEntries(regs.map((r) => [r.regiao, r[metrica]]));
   mapa = montar(limpa('graf-mapa'), (t) => {
-    const cor = (v) => misturar(t.grid.length === 7 ? t.grid : '#E2E8F0', t.accent.length === 7 ? t.accent : '#4F46E5', max > min ? (v - min) / (max - min) : 1);
+    const hex = (c, alt) => (/^#[0-9a-f]{6}$/i.test(c) ? c : alt);
+    const fundo = hex(t.grid, '#E2E8F0'); const forte = hex(t.accent, '#4F46E5'); const texto = hex(t.text, '#0F172A');
+    // a menor região já começa com 30% da cor de destaque: nunca some no fundo do card
+    const cor = (v) => misturar(fundo, forte, 0.3 + 0.7 * (max > min ? (v - min) / (max - min) : 1));
+    const borda = (c) => misturar(c, texto, 0.18);
     return {
-      tooltip: { trigger: 'item', formatter: (p) => { const r = regiaoDe[p.name]; return `<b>${r}</b> (${REGIOES[r].join(', ')})<br>${rotulo}: ${formatter(valorDe[r])}`; } },
-      series: [{
-        ...base, selectedMode: false,
-        data: Object.keys(regiaoDe).map((uf) => {
-          const r = regiaoDe[uf]; const c = cor(valorDe[r]); const temRotulo = ROTULO_REGIAO[r] === uf;
-          return {
-            name: uf, value: valorDe[r], itemStyle: { areaColor: c, borderColor: c, borderWidth: 0.6 },
-            emphasis: { itemStyle: { areaColor: c, borderColor: t.text, borderWidth: 1 } },
-            label: { show: temRotulo, formatter: () => `{r|${r}}\n{v|${formatter(valorDe[r])}}`,
-              rich: { r: { fontWeight: 700, fontSize: 12, color: t.text, textBorderColor: t.surface, textBorderWidth: 3 },
-                      v: { fontSize: 11, color: t.text, textBorderColor: t.surface, textBorderWidth: 3, padding: [2, 0, 0, 0] } } },
-          };
+      tooltip: { trigger: 'item' },
+      geo: {
+        map: 'BR', roam: false, nameProperty: 'sigla', layoutCenter: ['54%', '50%'], layoutSize: '104%',
+        label: { show: false }, emphasis: { disabled: true }, select: { disabled: true },
+        tooltip: { show: true, formatter: (p) => { const r = regiaoDe[p.name]; return `<b>${r}</b> (${REGIOES[r].join(', ')})<br>${rotulo}: ${formatter(valorDe[r])}`; } },
+        regions: Object.keys(regiaoDe).map((uf) => {
+          const c = cor(valorDe[regiaoDe[uf]]);
+          return { name: uf, itemStyle: { areaColor: c, borderColor: borda(c), borderWidth: 0.5 } };
         }),
-        emphasis: { label: { show: false } },
+      },
+      series: [{
+        type: 'scatter', coordinateSystem: 'geo', symbolSize: 1, itemStyle: { color: 'transparent' }, z: 5,
+        tooltip: { formatter: (p) => `<b>${p.name}</b> (${REGIOES[p.name].join(', ')})<br>${rotulo}: ${formatter(valorDe[p.name])}` },
+        data: Object.entries(CENTRO_REGIAO).map(([r, coord]) => ({ name: r, value: [...coord, valorDe[r]] })),
+        label: {
+          show: true, position: 'inside', formatter: (p) => `{r|${p.name}}\n{v|${formatter(p.value[2])}}`,
+          backgroundColor: t.surface, borderColor: t.border, borderWidth: 1, borderRadius: 8, padding: [6, 10],
+          shadowColor: 'rgba(15,23,42,.18)', shadowBlur: 6, align: 'center', lineHeight: 18,
+          rich: { r: { fontWeight: 700, fontSize: 13, color: t.text, align: 'center' },
+                  v: { fontSize: 13, color: t.accent, fontWeight: 700, align: 'center' } },
+        },
       }],
     };
   }, { tabela: { colunas: ['Região', 'UFs', 'Deputados', rotulo],
