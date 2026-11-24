@@ -112,7 +112,7 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
       {
         const ax = cx + ux * d; const ay = cy + uy * d + k * (lh + 2);
         const r = { x: ux > 0 ? ax : ux < 0 ? ax - lw : ax - lw / 2, y: uy > 0 ? ay : uy < 0 ? ay - lh : ay - lh / 2, w: lw, h: lh };
-        const dentro = r.x >= 40 && r.y >= TOPO - 6 && r.x + r.w <= largura - 4 && r.y + r.h <= altura - 40;
+        const dentro = r.x >= 40 && r.y >= TOPO - 6 && r.x + r.w <= largura - 4 && r.y + r.h <= altura - 24;
         if (dentro && !ocupados.some((o) => cruza(r, o)) && !bolhas.some((c) => cruzaCirculo(r, c))) {
           ocupados.push(r);
           return { x: r.x, y: r.y, align: 'left', verticalAlign: 'top' };
@@ -122,12 +122,12 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
     return { moveOverlap: 'shiftY' };  // sem posição livre: deixa o ECharts afastar na vertical
   }
   montar(elDisp, (t) => ({
-    grid: { left: 20, right: 12, top: TOPO, bottom: 36, containLabel: true },
+    grid: { left: 20, right: 12, top: TOPO, bottom: 6, containLabel: true },
     legend: { top: 0, left: 0, itemWidth: 10, itemHeight: 10, icon: 'circle' },
     tooltip: { formatter: (p) => `<b>${fmt.escapar(p.data[3])}</b> · ${fmt.num(p.data[2])} deputados<br>Fidelidade ao partido: ${fmt.pct(p.data[0])}<br>Governismo: ${fmt.pct(p.data[1])}` },
     dataZoom: [{ type: 'inside', xAxisIndex: 0, filterMode: 'none' }, { type: 'inside', yAxisIndex: 0, filterMode: 'none' }],
-    xAxis: { type: 'value', name: 'Fidelidade ao partido (%)', nameLocation: 'middle', nameGap: 26, min: minX, max: 101.5, interval: 20,
-      axisLabel: { showMaxLabel: false }, nameTextStyle: { color: t.muted } },
+    // sem título no eixo X (o subtítulo do card diz que o horizontal é a fidelidade): o gráfico usa o espaço
+    xAxis: { type: 'value', min: minX, max: 101.5, interval: 20, axisLabel: { showMaxLabel: false, formatter: (v) => `${v}%` } },
     yAxis: { type: 'value', name: 'Governismo (%)', nameLocation: 'middle', nameRotate: 90, nameGap: 36, max: 102,
       min: Math.max(0, Math.floor((Math.min(...ps.map((p) => p.governismo_pct)) - 6) / 10) * 10),
       axisLabel: { showMaxLabel: false }, nameTextStyle: { color: t.muted } },
