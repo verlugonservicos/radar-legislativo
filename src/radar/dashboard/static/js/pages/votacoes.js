@@ -34,8 +34,13 @@ await seguro(document.getElementById('graf-dia'), async () => {
     const op = barras({
       categorias: chaves.map((c) => `S-${fmt.semanaAno(c)}`), empilhado: true,  // nº da semana no ano (ISO)
       series: [
-        { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive } },
-        { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas), itemStyle: { color: t.negative } },
+        // rejeitadas são 1–3% das votações: o verde fica mais suave e o vermelho, cheio, com uma borda clara
+        // separando do verde e o número de rejeitadas escrito em vermelho acima da barra
+        { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive, opacity: 0.55 } },
+        { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas),
+          itemStyle: { color: t.negative, borderColor: t.surface, borderWidth: 1 },
+          label: { show: true, position: 'top', distance: 4, color: t.negative, fontWeight: 700, fontSize: 11,
+                   formatter: (p) => (p.value ? `${fmt.num(p.value)} rej.` : '') } },
         { name: 'Sem resultado', data: chaves.map((c) => semanas.get(c).sem), itemStyle: { color: t.grid } },
       ],
     })(t);
