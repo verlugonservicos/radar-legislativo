@@ -300,3 +300,17 @@ def test_marts_com_indice_unico_e_site_gerado_do_banco(engine, tmp_path):
     assert refresh_marts(engine)["marts"] == r["marts"]  # idempotente
     site = build_site(tmp_path / "site", engine=engine)
     assert site["paginas"] == 9 and (tmp_path / "site" / "data" / "meta.json").exists()
+
+
+def test_titulo_padroniza_maiusculas_de_tipos_e_fornecedores(engine):
+    casos = {
+        "LOCAÇÃO OU FRETAMENTO DE VEÍCULOS AUTOMOTORES": "Locação ou Fretamento de Veículos Automotores",
+        "HOSPEDAGEM ,EXCETO DO PARLAMENTAR NO DISTRITO FEDERAL.": "Hospedagem, Exceto do Parlamentar no Distrito Federal.",
+        "PASSAGEM AÉREA - SIGEPA": "Passagem Aérea - SIGEPA",
+        "TAM LINHAS AEREAS S/A.": "TAM Linhas Aereas S/A.",
+        "AUTO POSTO 104 NORTE LTDA": "Auto Posto 104 Norte Ltda",
+        "E SERVIÇOS DE TÁXI": "E Serviços de Táxi",  # conectivo no início continua com inicial maiúscula
+    }
+    for entrada, esperado in casos.items():
+        assert _um(engine, "SELECT gold.titulo(:t)", t=entrada) == esperado
+    assert _um(engine, "SELECT gold.titulo(NULL)") is None

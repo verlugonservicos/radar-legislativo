@@ -13,7 +13,7 @@ await seguro(document.getElementById('graf-frentes'), async () => {
   const top = frentes.slice(0, 20);
   const corta = (t) => t.replace(/^Frente Parlamentar (Mista )?(em |de |da |do |pela |pelo |para )?/i, '').slice(0, 48);
   montar(limpa('graf-frentes'), barras({
-    categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
+    gradiente: true, categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
     series: [{ name: 'Deputados', data: top.map((f) => f.membros) }],
   }), { tabela: { colunas: ['Frente', 'Deputados', 'Partidos', 'Partido com mais membros'], linhas: top.map((f) => [f.titulo, f.membros, f.partidos_distintos, f.top_partido]) } });
 });
@@ -21,16 +21,24 @@ await seguro(document.getElementById('graf-frentes'), async () => {
 await seguro(document.getElementById('graf-sankey'), async () => {
   const bp = (await dados('blocos_partidos')).filter((d) => d.membros > 0);
   if (!bp.length) { limpa('graf-sankey').innerHTML = vazio('Sem blocos vigentes com deputados em exercício.'); return; }
+  // total de deputados de cada nó (bloco = soma dos seus partidos; partido = soma nos blocos)
+  const total = new Map();
+  for (const d of bp) { total.set(d.bloco, (total.get(d.bloco) || 0) + d.membros); total.set(d.partido, (total.get(d.partido) || 0) + d.membros); }
+  const blocos = new Set(bp.map((d) => d.bloco));
   const nos = [...new Set([...bp.map((d) => d.partido), ...bp.map((d) => d.bloco)])].map((name, i) => ({ name, itemStyle: { color: PALETA[i % PALETA.length] } }));
   montar(limpa('graf-sankey'), (t) => ({
-    tooltip: { trigger: 'item', formatter: (p) => (p.dataType === 'edge' ? `${fmt.escapar(p.data.source)} → ${fmt.escapar(p.data.target)}: <b>${fmt.num(p.data.value)}</b> deputados` : fmt.escapar(p.name)) },
+    tooltip: { trigger: 'item', formatter: (p) => (p.dataType === 'edge' ? `${fmt.escapar(p.data.source)} → ${fmt.escapar(p.data.target)}: <b>${fmt.num(p.data.value)}</b> deputados`
+      : `<b>${fmt.escapar(p.name)}</b><br>${fmt.num(total.get(p.name))} deputados${blocos.has(p.name) ? ' no bloco' : ' em exercício'}`) },
     series: [{
-      type: 'sankey', left: 8, right: 140, top: 8, bottom: 8, nodeGap: 6, emphasis: { focus: 'adjacency' },
-      label: { color: t.text, fontSize: 11, formatter: (p) => (p.name.length > 28 ? `${p.name.slice(0, 26)}…` : p.name) },
+      type: 'sankey', left: 8, right: 215, top: 8, bottom: 8, nodeGap: 6, emphasis: { focus: 'adjacency' },
+      label: { color: t.text, fontSize: 11, formatter: (p) => {
+        const nome = p.name.length > 24 ? `${p.name.slice(0, 22)}…` : p.name;
+        return `{n|${nome}} {q|${fmt.num(total.get(p.name))}${blocos.has(p.name) ? ' dep.' : ''}}`;
+      }, rich: { n: { color: t.text, fontSize: 11 }, q: { color: t.accent, fontSize: 11, fontWeight: 700 } } },
       lineStyle: { color: 'gradient', opacity: 0.35 }, data: nos,
       links: bp.map((d) => ({ source: d.partido, target: d.bloco, value: d.membros })),
     }],
-  }), { tabela: { colunas: ['Partido', 'Bloco', 'Deputados'], linhas: bp.map((d) => [d.partido, d.bloco, d.membros]) } });
+  }), { tabela: { colunas: ['Partido', 'Bloco', 'Deputados do partido', 'Total do bloco'], linhas: bp.map((d) => [d.partido, d.bloco, d.membros, total.get(d.bloco)]) } });
 });
 
 const cartao = (p) => `<div class="item person"><img class="avatar" src="${fmt.escapar(p.url_foto || '')}" alt="" loading="lazy" width="36" height="36">

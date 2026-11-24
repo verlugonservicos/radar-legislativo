@@ -19,7 +19,13 @@ await seguro(document.getElementById('graf-mensal'), async () => {
   const meses = agrupar(desp, (d) => `${d.ano}-${String(d.mes).padStart(2, '0')}`).sort();
   montar(limpa('graf-mensal'), barras({
     categorias: meses.map(([k]) => `${MESES[Number(k.slice(5)) - 1]}/${k.slice(2, 4)}`), formatter: fmt.brl, rotulo: true,
-    series: [{ name: 'Valor líquido', data: meses.map(([, v]) => Math.round(v)) }],
+    series: [{
+      name: 'Valor líquido', data: meses.map(([, v]) => Math.round(v)),
+      // média dos meses carregados: referência para ver quais meses ficaram acima ou abaixo
+      markLine: { silent: true, symbol: 'none', data: [{ type: 'average', name: 'Média' }],
+        lineStyle: { type: 'dashed', width: 1.5, color: '#64748B' },
+        label: { position: 'insideEndTop', formatter: (p) => `Média: ${fmt.brl(p.value)}`, color: '#64748B', fontWeight: 600 } },
+    }],
   }), { tabela: { colunas: ['Mês', 'Valor líquido'], linhas: meses.map(([k, v]) => [k, fmt.brlCheio(v)]) } });
 });
 
@@ -33,7 +39,7 @@ await seguro(document.getElementById('kv-quarentena'), async () => {
 await seguro(document.getElementById('graf-tipos'), async () => {
   const tipos = agrupar(desp, (d) => d.tipo_despesa).sort((a, b) => b[1] - a[1]).slice(0, 12);
   montar(limpa('graf-tipos'), barras({
-    categorias: tipos.map(([t]) => (t.length > 38 ? `${t.slice(0, 36)}…` : t)), horizontal: true, formatter: fmt.brl, rotulo: true,
+    gradiente: true, categorias: tipos.map(([t]) => (t.length > 38 ? `${t.slice(0, 36)}…` : t)), horizontal: true, formatter: fmt.brl, rotulo: true,
     series: [{ name: 'Valor líquido', data: tipos.map(([, v]) => Math.round(v)) }],
   }), { tabela: { colunas: ['Tipo', 'Valor líquido'], linhas: tipos.map(([t, v]) => [t, fmt.brlCheio(v)]) } });
 });
@@ -41,7 +47,7 @@ await seguro(document.getElementById('graf-tipos'), async () => {
 await seguro(document.getElementById('graf-fornecedores'), async () => {
   const f = (await dados('fornecedores')).slice(0, 15);
   montar(limpa('graf-fornecedores'), barras({
-    categorias: f.map((d) => (d.nome.length > 32 ? `${d.nome.slice(0, 30)}…` : d.nome)), horizontal: true, formatter: fmt.brl, rotulo: true,
+    gradiente: true, categorias: f.map((d) => (d.nome.length > 32 ? `${d.nome.slice(0, 30)}…` : d.nome)), horizontal: true, formatter: fmt.brl, rotulo: true,
     series: [{ name: 'Valor líquido', data: f.map((d) => d.valor) }],
   }), { tabela: { colunas: ['Fornecedor', 'Valor', 'Notas', 'Deputados'], linhas: f.map((d) => [d.nome, fmt.brlCheio(d.valor), d.qtd, d.deputados]) } });
 });
@@ -49,7 +55,7 @@ await seguro(document.getElementById('graf-fornecedores'), async () => {
 await seguro(document.getElementById('graf-partido'), async () => {
   const ps = (await dados('partidos')).filter((p) => p.deputados >= 3).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
   montar(limpa('graf-partido'), barras({
-    categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
+    gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
     series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
   }));
 });
@@ -57,7 +63,7 @@ await seguro(document.getElementById('graf-partido'), async () => {
 await seguro(document.getElementById('graf-uf'), async () => {
   const us = (await dados('deputados_uf')).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
   montar(limpa('graf-uf'), barras({
-    categorias: us.map((u) => u.sigla_uf), formatter: fmt.brl,
+    gradiente: true, categorias: us.map((u) => u.sigla_uf), formatter: fmt.brl,
     series: [{ name: 'Gasto por deputado', data: us.map((u) => u.gasto_por_deputado) }],
   }));
 });

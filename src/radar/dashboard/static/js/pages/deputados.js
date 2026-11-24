@@ -9,7 +9,6 @@ import * as fmt from '../format.js';
 /* global echarts */
 await iniciar();
 const deps = await dados('deputados');
-const porUf = await dados('deputados_uf');
 let filtro = estado.ler();
 const selPartido = document.getElementById('f-partido');
 const selUf = document.getElementById('f-uf');
@@ -42,17 +41,35 @@ const REGIOES = {
 const CENTRO_REGIAO = { Norte: [-60.5, -4.5], Nordeste: [-40.8, -8.0], 'Centro-Oeste': [-53.5, -15.0], Sudeste: [-45.5, -20.3], Sul: [-51.8, -27.3] };
 const regiaoDe = Object.fromEntries(Object.entries(REGIOES).flatMap(([r, ufs]) => ufs.map((u) => [u, r])));
 
-/** Agrega as UFs por região: somas para deputados/gastos, médias ponderadas pelos deputados. */
-function porRegiao() {
-  return Object.keys(REGIOES).map((regiao) => {
-    const ufs = porUf.filter((u) => regiaoDe[u.sigla_uf] === regiao);
-    const dep = ufs.reduce((a, u) => a + u.deputados, 0);
-    const pond = (k) => ufs.reduce((a, u) => a + (u[k] || 0) * u.deputados, 0) / dep;
-    return {
-      regiao, deputados: dep, gasto_por_deputado: ufs.reduce((a, u) => a + u.gasto_total, 0) / dep,
-      score_atividade_medio: pond('score_atividade_medio'), presenca_votacoes_media: pond('presenca_votacoes_media'),
-    };
+const nomeUf = Object.fromEntries(geo.features.map((f) => [f.properties.sigla, f.properties.nome]));
+
+/** Indicadores de um grupo de deputados (UF ou região), já respeitando o filtro de partido. */
+function resumir(ls) {
+  const n = ls.length;
+  const comPresenca = ls.filter((d) => d.presenca_votacoes_pct !== null);
+  return n ? {
+    deputados: n,
+    gasto_total: ls.reduce((a, d) => a + (d.gasto_total || 0), 0),
+    gasto_por_deputado: ls.reduce((a, d) => a + (d.gasto_total || 0), 0) / n,
+    score_atividade_medio: ls.reduce((a, d) => a + (d.score_atividade || 0), 0) / n,
+    presenca_votacoes_media: comPresenca.length ? comPresenca.reduce((a, d) => a + d.presenca_votacoes_pct, 0) / comPresenca.length : null,
+  } : { deputados: 0, gasto_total: 0, gasto_por_deputado: null, score_atividade_medio: null, presenca_votacoes_media: null };
+}
+const doPartido = () => deps.filter((d) => !selPartido.value || d.sigla_partido === selPartido.value);
+const porUfFiltrado = () => Object.fromEntries(Object.keys(regiaoDe).map((uf) => [uf, resumir(doPartido().filter((d) => d.sigla_uf === uf))]));
+const porRegiao = () => Object.keys(REGIOES).map((regiao) => ({
+  regiao, ...resumir(doPartido().filter((d) => regiaoDe[d.sigla_uf] === regiao)),
+}));
+
+/** Etiqueta do mapa: quantidade de deputados + todos os indicadores (o do mapa em destaque). */
+function etiqueta(titulo, sub, a) {
+  const partido = selPartido.value ? ` do ${fmt.escapar(selPartido.value)}` : '';
+  if (!a.deputados) return `<b>${titulo}</b>${sub}<br>Nenhum deputado${partido} em exercício`;
+  const linhas = Object.entries(METRICAS).filter(([k]) => k !== 'deputados').map(([k, [rot, f]]) => {
+    const txt = `${rot}: ${f(a[k])}`;
+    return k === selMetrica.value ? `<b>${txt}</b>` : txt;
   });
+  return `<b>${titulo}</b>${sub}<br><b>${fmt.num(a.deputados)} deputado${a.deputados > 1 ? 's' : ''}${partido}</b> em exercício<br>${linhas.join('<br>')}`;
 }
 
 /** Interpola entre duas cores #RRGGBB (t de 0 a 1). */
@@ -79,27 +96,33 @@ function desenharMapa() {
     const serieBase = estreito ? { ...base, bottom: 52 } : base;
     const legenda = estreito ? { orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 12, itemHeight: 160 }
       : { left: 0, bottom: 8, itemHeight: 100, itemWidth: 14 };
-    const valores = porUf.map((u) => ({ name: u.sigla_uf, value: u[metrica] }));
-    const vs = valores.map((v) => v.value);
+    const ufs = porUfFiltrado();
+    const vs = Object.values(ufs).map((a) => a[metrica]).filter((v) => v !== null && v !== undefined);
+    // a UF filtrada fica destacada pela própria seleção do filtro (o 2º clique desmarca de verdade)
     mapa = montar(limpa('graf-mapa'), (t) => ({
-      tooltip: { trigger: 'item', formatter: (p) => `<b>${p.name}</b><br>${rotulo}: ${formatter(p.value)}` },
-      visualMap: { min: Math.min(...vs), max: Math.max(...vs), ...legenda, calculable: true, text: ['maior', 'menor'],
-        inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
-      series: [{ ...serieBase, data: valores, selectedMode: 'single',
+      tooltip: { trigger: 'item', formatter: (p) => etiqueta(`${nomeUf[p.name]} (${p.name})`, '', ufs[p.name]) },
+      visualMap: { min: vs.length ? Math.min(...vs) : 0, max: vs.length ? Math.max(...vs) : 1, ...legenda, calculable: true,
+        text: ['maior', 'menor'], inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
+      series: [{ ...serieBase, selectedMode: false,
+        data: Object.keys(ufs).map((uf) => ({
+          name: uf, value: ufs[uf][metrica] ?? '-',
+          ...(uf === selUf.value ? { itemStyle: { borderColor: t.text, borderWidth: 2.5 }, label: { color: t.text, fontWeight: 700 } } : {}),
+        })),
         itemStyle: { borderColor: t.surface, borderWidth: 1, areaColor: t.grid },
         emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
-        select: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
         label: { show: true, fontSize: 10, color: t.muted } }],
-    }), { tabela: { colunas: ['UF', rotulo], linhas: porUf.map((u) => [u.sigla_uf, formatter(u[metrica])]) } });
+    }), { tabela: { colunas: ['UF', 'Deputados', rotulo],
+                    linhas: Object.entries(ufs).map(([uf, a]) => [uf, a.deputados, formatter(a[metrica])]) } });
     mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
     return;
   }
   // modo região: cada UF recebe a cor da sua região (bordas internas na mesma cor "fundem" os estados);
   // os rótulos são etiquetas posicionadas no centro geográfico de cada região (scatter sobre o geo).
   const regs = porRegiao();
-  const vs = regs.map((r) => r[metrica]);
-  const [min, max] = [Math.min(...vs), Math.max(...vs)];
+  const vs = regs.map((r) => r[metrica]).filter((v) => v !== null);
+  const [min, max] = vs.length ? [Math.min(...vs), Math.max(...vs)] : [0, 1];
   const valorDe = Object.fromEntries(regs.map((r) => [r.regiao, r[metrica]]));
+  const resumoDe = Object.fromEntries(regs.map((r) => [r.regiao, r]));
   mapa = montar(limpa('graf-mapa'), (t) => {
     const hex = (c, alt) => (/^#[0-9a-f]{6}$/i.test(c) ? c : alt);
     const fundo = hex(t.grid, '#E2E8F0'); const forte = hex(t.accent, '#4F46E5'); const texto = hex(t.text, '#0F172A');
@@ -111,22 +134,23 @@ function desenharMapa() {
       geo: {
         map: 'BR', roam: false, nameProperty: 'sigla', top: 4, bottom: 4, left: 4, right: 4,
         label: { show: false }, emphasis: { disabled: true }, select: { disabled: true },
-        tooltip: { show: true, formatter: (p) => { const r = regiaoDe[p.name]; return `<b>${r}</b> (${REGIOES[r].join(', ')})<br>${rotulo}: ${formatter(valorDe[r])}`; } },
+        tooltip: { show: true, formatter: (p) => { const r = regiaoDe[p.name]; return etiqueta(r, ` (${REGIOES[r].join(', ')})`, resumoDe[r]); } },
         regions: Object.keys(regiaoDe).map((uf) => {
-          const c = cor(valorDe[regiaoDe[uf]]);
+          const v = valorDe[regiaoDe[uf]]; const c = v === null ? fundo : cor(v);
           return { name: uf, itemStyle: { areaColor: c, borderColor: borda(c), borderWidth: 0.5 } };
         }),
       },
       series: [{
         type: 'scatter', coordinateSystem: 'geo', symbolSize: 1, itemStyle: { color: 'transparent' }, z: 5,
-        tooltip: { formatter: (p) => `<b>${p.name}</b> (${REGIOES[p.name].join(', ')})<br>${rotulo}: ${formatter(valorDe[p.name])}` },
+        tooltip: { formatter: (p) => etiqueta(p.name, ` (${REGIOES[p.name].join(', ')})`, resumoDe[p.name]) },
         data: Object.entries(CENTRO_REGIAO).map(([r, coord]) => ({ name: r, value: [...coord, valorDe[r]] })),
         label: {
-          show: true, position: 'inside', formatter: (p) => `{r|${p.name}}\n{v|${formatter(p.value[2])}}`,
+          show: true, position: 'inside', formatter: (p) => `{r|${p.name}}\n{v|${formatter(p.value[2])}}\n{d|${fmt.num(resumoDe[p.name].deputados)} dep.}`,
           backgroundColor: t.surface, borderColor: t.border, borderWidth: 1, borderRadius: 8, padding: [6, 10],
           shadowColor: 'rgba(15,23,42,.18)', shadowBlur: 6, align: 'center', lineHeight: 18,
           rich: { r: { fontWeight: 700, fontSize: 13, color: t.text, align: 'center' },
-                  v: { fontSize: 13, color: t.accent, fontWeight: 700, align: 'center' } },
+                  v: { fontSize: 13, color: t.accent, fontWeight: 700, align: 'center' },
+                  d: { fontSize: 11, color: t.muted, align: 'center' } },
         },
       }],
     };
@@ -138,7 +162,7 @@ function desenharRanking() {
   ranking?.instancia.dispose();
   const top = deps.filter(passa).slice(0, 20);
   ranking = montar(limpa('graf-ranking'), barras({
-    categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
+    gradiente: true, categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
     series: [{ name: 'Score de atividade', data: top.map((d) => d.score_atividade) }],
   }));
 }
@@ -182,7 +206,7 @@ function desenharTabela() {
 
 function aplicar() {
   estado.gravar({ partidos: selPartido.value ? [selPartido.value] : [], ufs: selUf.value ? [selUf.value] : [] });
-  desenharRanking(); desenharTabela();
+  desenharMapa(); desenharRanking(); desenharTabela();
 }
 selPartido.addEventListener('change', aplicar);
 selUf.addEventListener('change', aplicar);

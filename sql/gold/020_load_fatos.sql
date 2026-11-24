@@ -158,7 +158,8 @@ ON CONFLICT (id_votacao, id_deputado) DO UPDATE SET
 -- ---------------------------------------------------------------- fato_despesa
 INSERT INTO gold.fato_despesa
 SELECT d.chave_despesa, d.id_deputado, dd.sk_deputado, d.data_documento, d.ano, d.mes,
-       dd.sigla_partido, dd.sigla_uf, d.tipo_despesa, d.nome_fornecedor, left(d.cnpj_cpf_fornecedor, 20),
+       dd.sigla_partido, dd.sigla_uf, gold.titulo(d.tipo_despesa), gold.titulo(d.nome_fornecedor),  -- iniciais maiúsculas
+       left(d.cnpj_cpf_fornecedor, 20),
        d.valor_documento, d.valor_liquido, d.valor_glosa, d.url_documento
 FROM silver.despesas d
 LEFT JOIN gold.dim_deputado dd

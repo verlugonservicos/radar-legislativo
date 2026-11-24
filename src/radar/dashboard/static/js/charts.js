@@ -82,7 +82,7 @@ function tabelaAlternativa(el, { colunas, linhas }) {
 
 // ------------------------------------------------------------------ fábricas de opções
 const grade = { left: 8, right: 16, top: 36, bottom: 8, containLabel: true };
-const eixoNum = (formatter = fmt.num) => ({ type: 'value', axisLabel: { formatter } });
+const eixoNum = (formatter = fmt.num) => ({ type: 'value', splitNumber: 4, axisLabel: { formatter, hideOverlap: true } });
 
 export function linhas({ x, series, area = false, formatter = fmt.num, xData = true }) {
   return () => ({
@@ -94,13 +94,26 @@ export function linhas({ x, series, area = false, formatter = fmt.num, xData = t
   });
 }
 
-export function barras({ categorias, series, horizontal = false, empilhado = false, formatter = fmt.num, rotulo = false }) {
+// Degradê das barras ordenadas por valor: menor = verde, intermediário = âmbar, maior = vermelho
+export const GRADIENTE = ['#16A34A', '#F59E0B', '#DC2626'];
+const valorDe = (d) => (d !== null && typeof d === 'object' ? d.value : d);
+
+export function barras({ categorias, series, horizontal = false, empilhado = false, formatter = fmt.num, rotulo = false, gradiente = false }) {
   return (t = {}) => {
     const cat = { type: 'category', data: categorias, axisLabel: { interval: 0, hideOverlap: true } };
     const val = eixoNum(formatter);
+    const comGradiente = gradiente && series.length === 1;
+    const vs = comGradiente ? series[0].data.map(valorDe).filter((v) => v !== null && v !== undefined) : [];
     return {
-      grid: { ...grade, top: series.length > 1 ? 36 : 12, right: rotulo && horizontal ? 72 : grade.right }, tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: formatter },
+      grid: { ...grade, top: series.length > 1 || comGradiente ? 36 : 12, right: rotulo && horizontal ? 72 : grade.right },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: formatter },
       legend: series.length > 1 ? { top: 0, left: 0 } : undefined,
+      visualMap: comGradiente && vs.length ? {
+        type: 'continuous', show: true, min: Math.min(...vs), max: Math.max(...vs), seriesIndex: 0,
+        dimension: horizontal ? 0 : 1, calculable: false, orient: 'horizontal', right: 0, top: 0,
+        itemWidth: 10, itemHeight: 90, text: ['maior', 'menor'], textGap: 6,
+        textStyle: { color: t.muted, fontSize: 11 }, inRange: { color: GRADIENTE },
+      } : undefined,
       xAxis: horizontal ? val : cat, yAxis: horizontal ? { ...cat, inverse: true } : val,
       series: series.map((s) => ({
         type: 'bar', stack: empilhado ? 'total' : undefined, barMaxWidth: 28, itemStyle: { borderRadius: horizontal ? [0, 4, 4, 0] : [4, 4, 0, 0] },

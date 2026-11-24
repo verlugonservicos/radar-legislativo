@@ -144,7 +144,7 @@ await seguro(document.getElementById('graf-setores'), async () => {
   const ordem = Object.entries(porSetor).sort((a, b) => b[1] - a[1]);
   const el = document.getElementById('graf-setores');
   el.classList.remove('skeleton');
-  montar(el, barras({ categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true }),
+  montar(el, barras({ gradiente: true, categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true }),
     { tabela: { colunas: ['Setor', 'Menções'], linhas: ordem } });
 });
 

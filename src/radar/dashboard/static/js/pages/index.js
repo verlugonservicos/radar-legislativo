@@ -1,7 +1,7 @@
 // Visão Executiva: KPIs da semana, série diária, temas, Top 5 e pautas críticas.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, corTema, linhas, montar } from '../charts.js';
+import { barras, corTema, montar } from '../charts.js';
 import { badgeImpacto, chipTema, kpi, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -23,16 +23,38 @@ await seguro(document.querySelector('.kpi-row'), async () => {
       valor: soma(sem, campo), anterior: soma(ant, campo), serie: ult30.map((d) => d[campo]), formatter: formatter || fmt.num,
     });
   }
+  // agrega os dias em semanas (segunda a domingo); a semana leva a data da segunda-feira
+  const segunda = (iso) => {
+    const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+    return d.toISOString().slice(0, 10);
+  };
+  const domingo = (iso) => { const d = new Date(`${iso}T00:00:00Z`); d.setUTCDate(d.getUTCDate() + 6); return d.toISOString().slice(0, 10); };
+  const semanas = new Map();
+  for (const d of k) {
+    const s = semanas.get(segunda(d.data)) || { proposicoes: 0, votacoes: 0, dias: 0 };
+    s.proposicoes += d.proposicoes; s.votacoes += d.votacoes; s.dias += 1;
+    semanas.set(segunda(d.data), s);
+  }
+  const chaves = [...semanas.keys()].sort();
   const el = document.getElementById('graf-serie');
   el.classList.remove('skeleton');
-  montar(el, linhas({
-    x: k.map((d) => d.data),
+  montar(el, (t) => ({
+    grid: { left: 8, right: 16, top: 36, bottom: 8, containLabel: true },
+    legend: { top: 0, left: 0 },
+    tooltip: {
+      trigger: 'axis',
+      formatter: (ps) => {
+        const s = chaves[ps[0].dataIndex]; const parcial = semanas.get(s).dias < 7 ? ' <i>(semana parcial)</i>' : '';
+        return `Semana de ${fmt.data(s)} a ${fmt.data(domingo(s))}${parcial}<br>${ps.map((p) => `${p.marker} ${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`;
+      },
+    },
+    xAxis: { type: 'category', data: chaves, axisLabel: { formatter: (v) => fmt.dataCurta(v), interval: 0, hideOverlap: true } },
+    yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
     series: [
-      { name: 'Proposições', data: k.map((d) => d.proposicoes) },
-      { name: 'Votações', data: k.map((d) => d.votacoes) },
+      { name: 'Proposições', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).proposicoes) },
+      { name: 'Votações', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).votacoes) },
     ],
-    area: true,
-  }), { tabela: { colunas: ['Data', 'Proposições', 'Votações'], linhas: k.map((d) => [fmt.data(d.data), d.proposicoes, d.votacoes]) } });
+  }), { tabela: { colunas: ['Semana (segunda-feira)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
 });
 
 await seguro(document.getElementById('graf-temas'), async () => {

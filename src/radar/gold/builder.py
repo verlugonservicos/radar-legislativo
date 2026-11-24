@@ -17,7 +17,13 @@ from radar.logging_setup import log_contexto
 
 log = logging.getLogger("radar.gold")
 
-DDL = ("gold/001_dimensoes.sql", "gold/002_fatos.sql", "gold/003_pontes.sql", "gold/004_ia.sql")
+DDL = (
+    "gold/001_dimensoes.sql",
+    "gold/002_fatos.sql",
+    "gold/003_pontes.sql",
+    "gold/004_ia.sql",
+    "gold/005_funcoes.sql",
+)
 CARGAS = ("gold/010_load_dimensoes.sql", "gold/020_load_fatos.sql", "gold/030_load_pontes.sql")
 TEMAS = RAIZ_PROJETO / "config" / "temas.yaml"
 

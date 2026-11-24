@@ -44,7 +44,7 @@ await seguro(document.getElementById('graf-qualidade'), async () => {
   const regras = new Map();
   for (const d of q) { const k = `${d.entidade} · ${d.regra}`; regras.set(k, (regras.get(k) || 0) + d.qtd); }
   const ls = [...regras.entries()].sort((a, b) => b[1] - a[1]);
-  montar(limpa('graf-qualidade'), barras({ categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, series: [{ name: 'Registros', data: ls.map((d) => d[1]) }] }));
+  montar(limpa('graf-qualidade'), barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, series: [{ name: 'Registros', data: ls.map((d) => d[1]) }] }));
 });
 
 await seguro(document.getElementById('graf-custos'), async () => {
@@ -53,7 +53,7 @@ await seguro(document.getElementById('graf-custos'), async () => {
   for (const d of c) porOp.set(d.operacao, (porOp.get(d.operacao) || 0) + d.custo_usd);
   const ls = [...porOp.entries()].sort((a, b) => b[1] - a[1]);
   const usd = (v) => `US$ ${v.toFixed(v < 0.01 ? 4 : 2).replace('.', ',')}`;
-  montar(limpa('graf-custos'), barras({ categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, formatter: usd, series: [{ name: 'Custo', data: ls.map((d) => d[1]) }] }));
+  montar(limpa('graf-custos'), barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, formatter: usd, series: [{ name: 'Custo', data: ls.map((d) => d[1]) }] }));
   const itens = c.filter((d) => d.operacao === 'resumo').reduce((a, d) => a + d.itens, 0);
   document.getElementById('kv-custos').innerHTML = `<dt>Total</dt><dd><strong>${usd(m.ia?.custo_total_usd || 0)}</strong></dd>
     <dt>Resumos gerados</dt><dd>${fmt.num(itens)}</dd><dt>Modelos</dt><dd>${fmt.escapar([...new Set(c.map((d) => d.modelo))].join(', '))}</dd>`;
