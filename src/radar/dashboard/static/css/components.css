@@ -139,6 +139,7 @@ table.data tr:last-child td { border-bottom: 0; }
 .drawer h3 { font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin: var(--space-6) 0 var(--space-2); }
 .kv { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-4); font-size: var(--fs-sm); margin: 0; }
 .kv dt { color: var(--text-muted); } .kv dd { margin: 0; }
+.kv--topo { margin-bottom: var(--space-3); }  /* resumo antes do gráfico: deixa o 'Ver dados em tabela' no rodapé, alinhado ao card vizinho */
 
 /* toast */
 .toast { position: fixed; right: var(--space-6); bottom: var(--space-6); z-index: 70; background: var(--text); color: var(--bg); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); font-size: var(--fs-sm); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(8px); transition: all var(--dur) var(--ease); pointer-events: none; }
