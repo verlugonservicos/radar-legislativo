@@ -43,16 +43,30 @@ await seguro(document.getElementById('graf-sankey'), async () => {
   const nosCom = (t) => nomes.map((name, i) => ({ name, depth: coluna(name),
     itemStyle: { color: PALETA[i % PALETA.length] },
     label: coluna(name) === 0 ? { position: 'left' }                    // partido: nome e número à esquerda
-      : coluna(name) === 1 ? { backgroundColor: translucido(t.surface, 0.9), padding: [2, 4], borderRadius: 4 }  // cruza as faixas
+      // federação intermediária: o rótulo vai para a coluna da direita (na altura do nó), fora das faixas
+      : coluna(name) === 1 ? { position: 'right', offset: [deslocamentoMeio(), 0] }
       : {} }));
   const el = limpa('graf-sankey');
   const COLUNA = 190;  // coluna da direita: nome da federação/bloco + somatório alinhado na borda
-  montar(el, (t) => ({
+  const ESQ = 104; const LARGURA_NO = 14;
+  // distância do nó do meio até a coluna da direita (os nós do meio ficam a meio caminho das colunas)
+  const deslocamentoMeio = () => {
+    const xDireita = el.clientWidth - COLUNA - LARGURA_NO;
+    const xMeio = ESQ + (xDireita - ESQ) / 2;
+    return xDireita - xMeio;
+  };
+  // a posição do rótulo do meio depende da largura: redesenha quando o card muda de tamanho
+  let largura = el.clientWidth; let espera;
+  new ResizeObserver(() => {
+    if (Math.abs(el.clientWidth - largura) < 8) return;
+    largura = el.clientWidth; clearTimeout(espera); espera = setTimeout(() => grafico?.redesenhar(), 150);
+  }).observe(el);
+  const grafico = montar(el, (t) => ({
     tooltip: { trigger: 'item', formatter: (p) => (p.dataType === 'edge'
       ? `${fmt.escapar(p.data.source)} → ${fmt.escapar(p.data.target)}: <b>${fmt.num(p.data.value)}</b> deputados`
       : `<b>${fmt.escapar(p.name)}</b> (${tipo(p.name)})<br>${fmt.num(total(p.name))} deputados em exercício`) },
     series: [{
-      type: 'sankey', left: 104, right: COLUNA, top: 8, bottom: 8, nodeGap: 10, nodeWidth: 14,
+      type: 'sankey', left: ESQ, right: COLUNA, top: 8, bottom: 8, nodeGap: 10, nodeWidth: LARGURA_NO,
       nodeAlign: 'right',  // federações sem bloco também vão para a coluna da direita
       emphasis: { focus: 'adjacency' }, layoutIterations: 64,
       label: {
@@ -73,11 +87,6 @@ await seguro(document.getElementById('graf-sankey'), async () => {
     }],
   }), { tabela: { colunas: ['De', 'Para', 'Deputados'], linhas: links.map((l) => [l.source, l.target, l.value]) } });
 });
-
-function translucido(hex, a) {
-  return /^#[0-9a-f]{6}$/i.test(hex)
-    ? `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${a})` : hex;
-}
 
 const cartao = (p) => `<div class="item person"><img class="avatar" src="${fmt.escapar(p.url_foto || '')}" alt="" loading="lazy" width="36" height="36">
   <div><div class="item__title">${fmt.escapar(p.nome)}</div><div class="muted" style="font-size:var(--fs-xs)">${fmt.escapar(p.titulo)}${p.bancada ? ` · ${fmt.escapar(p.bancada)}` : ''}<br>${fmt.escapar(p.sigla_partido || '')}-${fmt.escapar(p.sigla_uf || '')}</div></div></div>`;
