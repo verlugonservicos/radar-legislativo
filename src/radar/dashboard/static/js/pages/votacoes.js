@@ -73,7 +73,7 @@ const GRUPOS = [
 await seguro(document.getElementById('graf-dispersao'), async () => {
   const ps = partidos.filter((p) => p.fidelidade_pct !== null && p.governismo_pct !== null);
   const maxDep = Math.max(...ps.map((p) => p.deputados));
-  const minX = Math.max(0, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 3) / 15) * 15);  // eixo de 15 em 15
+  const minX = Math.max(0, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 3) / 20) * 20);  // eixo de 20 em 20
   const elDisp = limpa('graf-dispersao');
   const estreito = elDisp.clientWidth < 480;
   const TOPO = estreito ? 92 : 48;      // a legenda quebra em 3 linhas no celular
@@ -126,7 +126,7 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
     legend: { top: 0, left: 0, itemWidth: 10, itemHeight: 10, icon: 'circle' },
     tooltip: { formatter: (p) => `<b>${fmt.escapar(p.data[3])}</b> · ${fmt.num(p.data[2])} deputados<br>Fidelidade ao partido: ${fmt.pct(p.data[0])}<br>Governismo: ${fmt.pct(p.data[1])}` },
     dataZoom: [{ type: 'inside', xAxisIndex: 0, filterMode: 'none' }, { type: 'inside', yAxisIndex: 0, filterMode: 'none' }],
-    xAxis: { type: 'value', name: 'Fidelidade ao partido (%)', nameLocation: 'middle', nameGap: 26, min: minX, max: 101.5, interval: 15,
+    xAxis: { type: 'value', name: 'Fidelidade ao partido (%)', nameLocation: 'middle', nameGap: 26, min: minX, max: 101.5, interval: 20,
       axisLabel: { showMaxLabel: false }, nameTextStyle: { color: t.muted } },
     yAxis: { type: 'value', name: 'Governismo (%)', nameLocation: 'middle', nameRotate: 90, nameGap: 36, max: 102,
       min: Math.max(0, Math.floor((Math.min(...ps.map((p) => p.governismo_pct)) - 6) / 10) * 10),
