@@ -149,62 +149,83 @@ await seguro(document.getElementById('graf-gauge'), async () => {
     <dt>Custo de IA</dt><dd>US$ ${fmt.num1(ia.custo_total_usd)} no total</dd>`;
 });
 
-await seguro(document.getElementById('graf-tramitacao'), async () => {
+// Os gráficos abaixo também respeitam o filtro de temas (botões no topo da página)
+const [tramitacao, setores, projetosPartido, partidos] = await Promise.all(
+  [dados('tramitacao_tema'), dados('setores'), dados('projetos_partido'), dados('partidos')]);
+const vazioEm = (id) => { const el = document.getElementById(id); el.classList.remove('skeleton'); el.innerHTML = vazio(); };
+
+// Tempo de tramitação: comparação entre temas, então não some com nenhum — com filtro ativo, os temas
+// escolhidos ficam em destaque e os demais esmaecidos (o tempo de um tema sozinho não diz se é lento)
+function desenharTramitacao() {
   // ordenado pela mediana: tramitação mais lenta em vermelho, mais rápida em verde
-  const tr = (await dados('tramitacao_tema')).filter((d) => d.tema !== 'Outros')
+  const tr = tramitacao.filter((d) => d.tema !== 'Outros')
     .sort((a, b) => (b.mediana_dias ?? -1) - (a.mediana_dias ?? -1));
   const el = document.getElementById('graf-tramitacao');
   el.classList.remove('skeleton');
+  const opac = (d) => (passa(d.tema) ? 1 : 0.2);
   montar(el, barras({
     categorias: tr.map((d) => d.tema), horizontal: true, formatter: (v) => `${fmt.num(v)} dias`, gradiente: true,
     series: [
-      { name: 'Mediana', data: tr.map((d) => d.mediana_dias) },
-      { name: 'Percentil 90', data: tr.map((d) => d.p90_dias), itemStyle: { color: 'rgba(148,163,184,.55)' } },
+      { name: 'Mediana', data: tr.map((d) => ({ value: d.mediana_dias, itemStyle: { opacity: opac(d) } })) },
+      { name: 'Percentil 90', data: tr.map((d) => ({ value: d.p90_dias, itemStyle: { opacity: opac(d) } })), itemStyle: { color: 'rgba(148,163,184,.55)' } },
     ],
   }), { tabela: { colunas: ['Tema', 'Proposições', 'Mediana (dias)', 'P90 (dias)'], linhas: tr.map((d) => [d.tema, d.qtd, d.mediana_dias, d.p90_dias]) } });
-});
+}
 
-// Projetos por partido (autor principal): total ou por deputado; o tooltip mostra o maior autor, porque
-// um só deputado pode responder por boa parte do partido
+// Projetos por partido (autor principal): total ou por deputado, somados só nos temas filtrados; o
+// tooltip mostra o maior autor, porque um só deputado pode responder por boa parte do partido
 let modoProjetos = 'total';
-async function desenharProjetos() {
+function desenharProjetos() {
   const porDep = modoProjetos === 'por-deputado';
-  const valor = (p) => (porDep ? Math.round((10 * p.projetos) / p.deputados) / 10 : p.projetos);
-  const ps = (await dados('partidos')).filter((p) => p.deputados > 0).sort((a, b) => valor(b) - valor(a));
-  const qtd = Object.fromEntries(ps.map((p) => [p.sigla_partido, p]));
+  const deputados = Object.fromEntries(partidos.map((p) => [p.sigla_partido, p.deputados]));
+  const agg = {};
+  for (const d of projetosPartido) {
+    if (!passa(d.tema) || !deputados[d.sigla_partido]) continue;
+    const a = (agg[d.sigla_partido] ??= { sigla: d.sigla_partido, deputados: deputados[d.sigla_partido], projetos: 0, autores: {} });
+    a.projetos += d.qtd; a.autores[d.nome] = (a.autores[d.nome] || 0) + d.qtd;
+  }
+  for (const a of Object.values(agg)) [a.maior, a.maiorQtd] = Object.entries(a.autores).sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0]))[0];
+  const valor = (a) => (porDep ? Math.round((10 * a.projetos) / a.deputados) / 10 : a.projetos);
+  const ps = Object.values(agg).sort((a, b) => valor(b) - valor(a));
+  if (!ps.length) { vazioEm('graf-projetos'); return; }
   const formatter = porDep ? fmt.num1 : fmt.num;
   const el = document.getElementById('graf-projetos'); el.classList.remove('skeleton');
   montar(el, (t) => {
-    const op = barras({ categorias: ps.map((p) => p.sigla_partido), horizontal: true, rotulo: true, formatter, gradiente: 'invertido',
+    const op = barras({ categorias: ps.map((a) => a.sigla), horizontal: true, rotulo: true, formatter, gradiente: 'invertido',
                         series: [{ name: porDep ? 'Projetos por deputado' : 'Projetos', data: ps.map(valor) }] })(t);
-    op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(qtd[s].deputados)})` };
+    op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(agg[s].deputados)})` };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
-      const p = qtd[xs[0].name];
-      const maior = p.projetos_maior_autor ? `<br>Maior autor: ${fmt.escapar(p.projetos_maior_autor)} (${fmt.num(p.projetos_maior_autor_qtd)}, ${fmt.pct(p.projetos ? (100 * p.projetos_maior_autor_qtd) / p.projetos : 0)} do partido)` : '';
-      return `<b>${fmt.escapar(p.sigla_partido)}</b> · ${fmt.num(p.deputados)} ${p.deputados === 1 ? 'deputado' : 'deputados'}<br>Projetos: <b>${fmt.num(p.projetos)}</b> · ${fmt.num1(p.projetos / p.deputados)} por deputado${maior}`;
+      const a = agg[xs[0].name];
+      return `<b>${fmt.escapar(a.sigla)}</b> · ${fmt.num(a.deputados)} ${a.deputados === 1 ? 'deputado' : 'deputados'}`
+        + `<br>Projetos: <b>${fmt.num(a.projetos)}</b> · ${fmt.num1(a.projetos / a.deputados)} por deputado`
+        + `<br>Maior autor: ${fmt.escapar(a.maior)} (${fmt.num(a.maiorQtd)}, ${fmt.pct((100 * a.maiorQtd) / a.projetos)} do partido)`;
     } };
     return op;
   }, { tabela: { colunas: ['Partido', 'Deputados', 'Projetos', 'Por deputado', 'Maior autor'],
-                 linhas: ps.map((p) => [p.sigla_partido, p.deputados, p.projetos, fmt.num1(p.projetos / p.deputados), p.projetos_maior_autor ? `${p.projetos_maior_autor} (${p.projetos_maior_autor_qtd})` : '—']) } });
+                 linhas: ps.map((a) => [a.sigla, a.deputados, a.projetos, fmt.num1(a.projetos / a.deputados), `${a.maior} (${a.maiorQtd})`]) } });
 }
 document.querySelectorAll('#projetos-modo button').forEach((b) => b.addEventListener('click', () => {
   modoProjetos = b.dataset.modo;
   document.querySelectorAll('#projetos-modo button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
   desenharProjetos();
 }));
-await seguro(document.getElementById('graf-projetos'), desenharProjetos);
 
-await seguro(document.getElementById('graf-setores'), async () => {
-  const set = await dados('setores');
+function desenharSetores() {
   const porSetor = {};
-  for (const d of set) if (passa(d.tema)) porSetor[d.setor] = (porSetor[d.setor] || 0) + d.qtd;
+  for (const d of setores) if (passa(d.tema)) porSetor[d.setor] = (porSetor[d.setor] || 0) + d.qtd;
   const ordem = Object.entries(porSetor).sort((a, b) => b[1] - a[1]);
+  if (!ordem.length) { vazioEm('graf-setores'); return; }
   const el = document.getElementById('graf-setores');
   el.classList.remove('skeleton');
   montar(el, barras({ gradiente: 'invertido', categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true }),
     { tabela: { colunas: ['Setor', 'Menções'], linhas: ordem } });
-});
+}
+
+await seguro(document.getElementById('graf-tramitacao'), desenharTramitacao);
+await seguro(document.getElementById('graf-projetos'), desenharProjetos);
+await seguro(document.getElementById('graf-setores'), desenharSetores);
 
 estado.aoMudar((novo) => {
   filtro = novo; desenharFiltro(); desenharArea(); desenharTreemap(); desenharTabela();
+  desenharTramitacao(); desenharProjetos(); desenharSetores();
 });

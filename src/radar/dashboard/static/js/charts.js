@@ -108,7 +108,8 @@ export const GRADIENTE = DALTONICO ? ['#0072B2', '#D9C27E', '#D55E00'] : ['#16A3
 /** Cor do degradê para um valor (mesma escala do visualMap): útil onde não há visualMap, como no treemap. */
 export function corGradiente(v, min, max, invertido = false) {
   const cores = (invertido ? [...GRADIENTE].reverse() : GRADIENTE).map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
-  const f = max > min ? Math.min(1, Math.max(0, (v - min) / (max - min))) * (cores.length - 1) : 0;
+  // um só valor (ex.: filtro com um tema): usa a ponta "maior" da escala
+  const f = max > min ? Math.min(1, Math.max(0, (v - min) / (max - min))) * (cores.length - 1) : cores.length - 1;
   const i = Math.min(cores.length - 2, Math.floor(f)); const r = f - i;
   return `rgb(${cores[i].map((c, k) => Math.round(c + (cores[i + 1][k] - c) * r)).join(',')})`;
 }

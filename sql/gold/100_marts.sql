@@ -18,7 +18,7 @@ DROP MATERIALIZED VIEW IF EXISTS
     gold.mart_fornecedores, gold.mart_despesas_outliers, gold.mart_agenda, gold.mart_pauta_critica,
     gold.mart_articulacao, gold.mart_blocos_partidos, gold.mart_liderancas, gold.mart_top_relevantes,
     gold.mart_operacao, gold.mart_cobertura, gold.mart_qualidade, gold.mart_custos_ia,
-    gold.mart_funil_camadas, gold.mart_setores
+    gold.mart_funil_camadas, gold.mart_setores, gold.mart_projetos_partido
     CASCADE;
 
 -- ------------------------------------------------------------------ data de referência
@@ -107,6 +107,21 @@ SELECT s.setor, coalesce(p.tema_ia, 'Outros') AS tema, count(*)::int AS qtd,
 FROM gold.fato_proposicao p, unnest(p.setores_afetados) AS s(setor)
 GROUP BY 1, 2;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_setores ON gold.mart_setores (setor, tema);
+
+-- Projetos apresentados (últimas 26 semanas) por partido × tema × deputado: o painel soma por partido
+-- respeitando o filtro de tema e acha o maior autor. Mesmo critério de mart_partidos.projetos: só o
+-- autor principal (1º signatário) e só PL, PLP, PEC e PDL; partido atual do deputado.
+CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_projetos_partido AS
+SELECT d.sigla_partido, coalesce(p.tema_ia, 'Outros') AS tema, d.id_deputado, d.nome,
+       count(DISTINCT a.id_proposicao)::int AS qtd
+FROM gold.ponte_proposicao_autor a
+JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
+JOIN gold.fato_proposicao p USING (id_proposicao)
+CROSS JOIN gold.vw_data_referencia r
+WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
+  AND p.data_apresentacao > r.data_ref - 182 AND d.sigla_partido IS NOT NULL
+GROUP BY 1, 2, 3, 4;
+CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_projetos_partido ON gold.mart_projetos_partido (sigla_partido, tema, id_deputado);
 
 -- Top 5 dos últimos 7 dias por relevância
 CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_top_relevantes AS
