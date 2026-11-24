@@ -166,8 +166,7 @@ function desenharMapa() {
                  linhas: regs.map((r) => [r.regiao, REGIOES[r.regiao].join(', '), r.deputados, formatter(r[metrica])]) } });
 }
 
-// Top 25: o gráfico ocupa a altura do card (acompanha o mapa ao lado), com o eixo preso embaixo e a
-// legenda de cores numa faixa larga no topo
+// Top 25: o gráfico ocupa a altura do card (acompanha o mapa ao lado), com o eixo preso embaixo
 const QTD_RANKING = 25;
 function desenharRanking() {
   ranking?.instancia.dispose();
@@ -178,10 +177,7 @@ function desenharRanking() {
       gradiente: 'invertido', categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
       series: [{ name: 'Score de atividade', data: top.map((d) => d.score_atividade) }],
     })(t);
-    // legenda de cores: faixa horizontal larga, alinhada à esquerda no topo, com os rótulos nas pontas
-    op.visualMap = { ...op.visualMap, left: 0, right: 'auto', top: 0, itemHeight: Math.min(320, el.clientWidth * 0.55), itemWidth: 12,
-      text: ['maior', 'menor'], textGap: 8 };
-    op.grid = { ...op.grid, top: 34, bottom: 4 };
+    op.grid = { ...op.grid, bottom: 4 };  // legenda de cores no padrão dos demais (canto superior direito)
     return op;
   });
 }
