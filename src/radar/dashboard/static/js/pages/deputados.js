@@ -124,6 +124,27 @@ function etiquetaUfSelecionada(inst, t, ufs) {
   inst.setOption({ graphic: [{ id: 'uf-sel', type: 'group', z: 100, children: filhos }] }, { replaceMerge: ['graphic'] });
 }
 
+// Destaques do painel ao lado do mapa: 5 maiores e 5 menores UFs (ou as regiões) na métrica escolhida,
+// com a cor da mesma escala do mapa; no modo UF, clicar num item filtra a página por aquela UF
+function desenharDestaques(itens, formatter, rotulo, metrica) {
+  const el = document.getElementById('destaques-mapa');
+  const vs = itens.filter((i) => i.valor !== null && i.valor !== undefined).sort((a, b) => b.valor - a.valor);
+  if (!vs.length) { el.innerHTML = ''; return; }
+  const [min, max] = [vs[vs.length - 1].valor, vs[0].valor];
+  const cor = (v) => cor3(coresDe(metrica), max > min ? (v - min) / (max - min) : 1);
+  const item = (i) => `<li>${modoMapa === 'uf' ? `<button type="button" data-uf="${fmt.escapar(i.chave)}">` : '<span>'}`
+    + `<span class="barra" style="background:${cor(i.valor)}"></span>${fmt.escapar(i.nome)}${modoMapa === 'uf' ? '</button>' : '</span>'}`
+    + `<span class="valor">${formatter(i.valor)}</span></li>`;
+  const n = modoMapa === 'uf' ? 5 : 2;
+  const totalDeps = itens.reduce((t, i) => t + (i.deputados || 0), 0);
+  el.innerHTML = `<p class="painel-mapa__nota">${fmt.escapar(rotulo)} · ${fmt.num(totalDeps)} deputados${selPartido.value ? ` do ${fmt.escapar(selPartido.value)}` : ''}</p>`
+    + `<div><h3>Maiores</h3><ol>${vs.slice(0, n).map(item).join('')}</ol></div>`
+    + `<div><h3>Menores</h3><ol>${vs.slice(-n).reverse().map(item).join('')}</ol></div>`;
+  el.querySelectorAll('button[data-uf]').forEach((b) => b.addEventListener('click', () => {
+    selUf.value = selUf.value === b.dataset.uf ? '' : b.dataset.uf; aplicar();
+  }));
+}
+
 function desenharMapa() {
   const [rotulo, formatter] = METRICAS[selMetrica.value];
   const metrica = selMetrica.value;
@@ -154,6 +175,8 @@ function desenharMapa() {
                     linhas: Object.entries(ufs).map(([uf, a]) => [uf, a.deputados, formatter(a[metrica])]) },
           depois: (inst, t) => etiquetaUfSelecionada(inst, t, ufs) });
     mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
+    desenharDestaques(Object.entries(ufs).map(([uf, a]) => ({ chave: uf, nome: `${nomeUf[uf]} (${uf})`, valor: a[metrica], deputados: a.deputados })),
+                      formatter, rotulo, metrica);
     return;
   }
   // modo região: cada UF recebe a cor da sua região (bordas internas na mesma cor "fundem" os estados);
@@ -199,6 +222,7 @@ function desenharMapa() {
     };
   }, { tabela: { colunas: ['Região', 'UFs', 'Deputados', rotulo],
                  linhas: regs.map((r) => [r.regiao, REGIOES[r.regiao].join(', '), r.deputados, formatter(r[metrica])]) } });
+  desenharDestaques(regs.map((r) => ({ chave: r.regiao, nome: r.regiao, valor: r[metrica], deputados: r.deputados })), formatter, rotulo, metrica);
 }
 
 // Top 20: o gráfico ocupa a altura do card (acompanha o mapa ao lado), com o eixo preso embaixo
