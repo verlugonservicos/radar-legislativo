@@ -31,9 +31,9 @@
     <div class="painel-mapa__destaques" id="destaques-mapa" aria-live="polite"></div>
   </aside>
   {% call card("ranking", "Top 20 Deputados por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos 20 deputados mais ativos", "chart--ranking chart--preenche") }}{% endcall %}
-  {% call card("projetos-deputado", "Top 20 deputados por projetos apresentados", "Últimas 26 semanas · autor principal (1º signatário) · PL, PLP, PEC e PDL · respeita os filtros do painel", "span-6", termo="proposicao") %}{{ grafico("graf-projetos-deputado", "Barras dos 20 deputados com mais projetos apresentados", "chart--ranking") }}{% endcall %}
+  {% call card("projetos-deputado", "Top 20 Deputados por projetos apresentados", "Últimas 26 semanas · autor principal (1º signatário) · PL, PLP, PEC e PDL · respeita os filtros do painel", "span-6", termo="proposicao") %}{{ grafico("graf-projetos-deputado", "Barras dos 20 deputados com mais projetos apresentados", "chart--ranking") }}{% endcall %}
   {% call card("gasto-partido", "Top 20 Gasto da cota por partido", "Valor líquido dos deputados em exercício no período carregado · respeita os filtros do painel", "span-6", termo="cota") %}{{ grafico("graf-gasto-partido", "Barras do gasto da cota parlamentar por partido", "chart--ranking") }}{% endcall %}
-  {% call card("gasto-deputado", "Top 20 deputados por gasto da cota", "Valor líquido no período carregado · respeita os filtros do painel", "span-6", termo="cota") %}{{ grafico("graf-gasto-deputado", "Barras dos 20 deputados com maior gasto da cota", "chart--ranking chart--estica") }}{% endcall %}
+  {% call card("gasto-deputado", "Top 20 Deputados por gasto da cota", "Valor líquido no período carregado · respeita os filtros do painel", "span-6", termo="cota") %}{{ grafico("graf-gasto-deputado", "Barras dos 20 deputados com maior gasto da cota", "chart--ranking chart--estica") }}{% endcall %}
   {% call card("tabela", "Deputados em exercício", "Clique para ver o perfil", "span-12") %}<div id="tabela-deputados"></div>{% endcall %}
 </div>
 {% endblock %}

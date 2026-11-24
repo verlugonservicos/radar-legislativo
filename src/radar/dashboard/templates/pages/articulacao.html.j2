@@ -2,7 +2,7 @@
 {% from "partials/componentes.html.j2" import card, grafico %}
 {% block conteudo %}
 <div class="grid">
-  {% call card("frentes", "Top 20 frentes parlamentares", "Por número de deputados em exercício", "span-6", termo="frente") %}{{ grafico("graf-frentes", "Barras das 20 maiores frentes parlamentares", "chart--xl") }}{% endcall %}
+  {% call card("frentes", "Top 20 Frentes parlamentares", "Por número de deputados em exercício", "span-6", termo="frente") %}{{ grafico("graf-frentes", "Barras das 20 maiores frentes parlamentares", "chart--xl") }}{% endcall %}
   {% call card("sankey", "Partidos nos blocos", "Partido → federação → bloco · deputados em exercício por partido (à esquerda) e somatório de cada federação e bloco (à direita) · (%) = parcela da Câmara, somando 100% com 'Sem bloco' · a federação PSDB CIDADANIA já está contada no bloco", "span-6", termo="partido-bloco") %}{{ grafico("graf-sankey", "Diagrama de fluxo dos partidos para as federações e os blocos", "chart--xl") }}{% endcall %}
   {% call card("mesa", "Mesa Diretora", "Composição vigente", "span-12", termo="mesa") %}<div class="people" id="lista-mesa"></div>{% endcall %}
   {% call card("lideres", "Lideranças", "Líderes de partido, bloco, governo, oposição, maioria e minoria", "span-12", termo="lideranca") %}<div class="people" id="lista-lideres"></div>{% endcall %}
