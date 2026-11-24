@@ -4,8 +4,8 @@
 <div class="grid">
   {% call card("dia", "Votações por dia", "Aprovadas × rejeitadas · últimos 90 dias", "span-7", termo="votacao") %}{{ grafico("graf-dia", "Barras empilhadas de votações aprovadas e rejeitadas por dia") }}{% endcall %}
   {% call card("participacao", "Participação por partido", "Presença média dos deputados em exercício nas votações nominais do Plenário", "span-5", termo="participacao") %}{{ grafico("graf-participacao", "Barras de participação por partido", "chart--lg") }}{% endcall %}
-  {% call card("dispersao", "Fidelidade × governismo", "Cada bolha é um partido; o tamanho é o número de deputados · role o mouse sobre o gráfico para ampliar", "span-6", termo="fidelidade") %}{{ grafico("graf-dispersao", "Dispersão de fidelidade partidária e governismo por partido", "chart--lg") }}{% endcall %}
-  {% call card("heatmap", "Concordância entre partidos", "% das votações em que os dois partidos votaram igual (voto da maioria, Sim/Não) · partidos com 5+ deputados, ordenados por governismo", "span-6", termo="concordancia") %}{{ grafico("graf-heatmap", "Mapa de calor de concordância entre partidos", "chart--lg") }}{% endcall %}
+  {% call card("dispersao", "Fidelidade × governismo", "Cada bolha é um partido; o tamanho é o número de deputados · role o mouse sobre o gráfico para ampliar", "span-6", termo="fidelidade") %}{{ grafico("graf-dispersao", "Dispersão de fidelidade partidária e governismo por partido", "chart--xl") }}{% endcall %}
+  {% call card("heatmap", "Concordância entre partidos", "% das votações em que os dois partidos votaram igual (voto da maioria, Sim/Não) · partidos com 5+ deputados, ordenados por governismo", "span-6", termo="concordancia") %}{{ grafico("graf-heatmap", "Mapa de calor de concordância entre partidos", "chart--xl") }}{% endcall %}
   {% call card("tabela", "Indicadores por partido", "Deputados em exercício", "span-12") %}<div id="tabela-partidos"></div>{% endcall %}
 </div>
 {% endblock %}
