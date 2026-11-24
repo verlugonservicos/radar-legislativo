@@ -73,15 +73,14 @@ const GRUPOS = [
 await seguro(document.getElementById('graf-dispersao'), async () => {
   const ps = partidos.filter((p) => p.fidelidade_pct !== null && p.governismo_pct !== null);
   const maxDep = Math.max(...ps.map((p) => p.deputados));
-  const minX = Math.max(0, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 3) / 5) * 5);
+  const minX = Math.max(0, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 3) / 15) * 15);  // eixo de 15 em 15
   const elDisp = limpa('graf-dispersao');
   const estreito = elDisp.clientWidth < 480;
-  const COLUNA = estreito ? 120 : 130;  // margem direita: coluna de nomes do aglomerado perto de 100%
   const TOPO = estreito ? 92 : 48;      // a legenda quebra em 3 linhas no celular
 
-  // Posicionamento dos nomes sem sobreposição: perto de 100% de fidelidade o nome vai para a coluna
-  // da direita; nos demais, testa posições em volta da bolha (8 direções, 3 distâncias) e fica com a
-  // primeira que não encosta em outro nome nem em outra bolha. Afastado da bolha, ganha linha-guia.
+  // Posicionamento dos nomes sem sobreposição: prefere o lado esquerdo da bolha (à esquerda, depois
+  // acima/abaixo à esquerda, em distâncias crescentes); só sem espaço tenta os outros lados. Fica com a
+  // primeira posição que não encosta em outro nome nem em outra bolha; afastado, ganha linha-guia.
   const ocupados = [];
   let bolhas = [];
   const cruza = (a, b) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
@@ -89,7 +88,8 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
     const nx = Math.max(r.x, Math.min(c.x, r.x + r.w)); const ny = Math.max(r.y, Math.min(c.y, r.y + r.h));
     return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + 2) ** 2;
   };
-  const DIRECOES = [[0, -1], [1, 0], [-1, 0], [0, 1], [1, -1], [-1, -1], [1, 1], [-1, 1]];
+  const DIRECOES = [[-1, 0], [-1, -1], [-1, 1], [0, -1], [0, 1], [1, 0], [1, -1], [1, 1]];
+  const DESLOCAMENTOS = [0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5];  // passos verticais (em alturas de rótulo) para o aglomerado
   function posicionarRotulo(p) {
     const inst = echarts.getInstanceByDom(elDisp);
     if (p.seriesIndex === 0 && p.dataIndex === 0) {  // começo de um novo desenho: recalcula o mapa de ocupação
@@ -102,12 +102,17 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
     const largura = elDisp.clientWidth; const altura = elDisp.clientHeight;
     const cx = p.rect.x + p.rect.width / 2; const cy = p.rect.y + p.rect.height / 2; const raio = p.rect.width / 2;
     const lw = p.labelRect.width; const lh = p.labelRect.height;
-    if (cx > largura - COLUNA - 70) return { x: largura - COLUNA + (estreito ? 6 : 14), align: 'left', moveOverlap: 'shiftY' };
-    for (const d of [raio + 4, raio + 22, raio + 42]) {
-      for (const [ux, uy] of DIRECOES) {
-        const ax = cx + ux * d; const ay = cy + uy * d;
+    // ordem: lado esquerdo (perto → longe), depois esquerdo deslocado na vertical (aglomerado perto de
+    // 100%), e só então os outros lados
+    const tentativas = [];
+    for (const d of [raio + 4, raio + 22, raio + 42]) for (const dir of DIRECOES.slice(0, 3)) tentativas.push([d, dir, 0]);
+    for (const d of [raio + 22, raio + 42, raio + 70, raio + 100]) for (const k of DESLOCAMENTOS.slice(1)) tentativas.push([d, [-1, 0], k]);
+    for (const d of [raio + 4, raio + 22, raio + 42]) for (const dir of DIRECOES.slice(3)) tentativas.push([d, dir, 0]);
+    for (const [d, [ux, uy], k] of tentativas) {
+      {
+        const ax = cx + ux * d; const ay = cy + uy * d + k * (lh + 2);
         const r = { x: ux > 0 ? ax : ux < 0 ? ax - lw : ax - lw / 2, y: uy > 0 ? ay : uy < 0 ? ay - lh : ay - lh / 2, w: lw, h: lh };
-        const dentro = r.x >= 4 && r.y >= TOPO - 6 && r.x + r.w <= largura - COLUNA && r.y + r.h <= altura - 40;
+        const dentro = r.x >= 40 && r.y >= TOPO - 6 && r.x + r.w <= largura - 4 && r.y + r.h <= altura - 40;
         if (dentro && !ocupados.some((o) => cruza(r, o)) && !bolhas.some((c) => cruzaCirculo(r, c))) {
           ocupados.push(r);
           return { x: r.x, y: r.y, align: 'left', verticalAlign: 'top' };
@@ -117,11 +122,11 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
     return { moveOverlap: 'shiftY' };  // sem posição livre: deixa o ECharts afastar na vertical
   }
   montar(elDisp, (t) => ({
-    grid: { left: 20, right: COLUNA, top: TOPO, bottom: 36, containLabel: true },
+    grid: { left: 20, right: 12, top: TOPO, bottom: 36, containLabel: true },
     legend: { top: 0, left: 0, itemWidth: 10, itemHeight: 10, icon: 'circle' },
     tooltip: { formatter: (p) => `<b>${fmt.escapar(p.data[3])}</b> · ${fmt.num(p.data[2])} deputados<br>Fidelidade ao partido: ${fmt.pct(p.data[0])}<br>Governismo: ${fmt.pct(p.data[1])}` },
     dataZoom: [{ type: 'inside', xAxisIndex: 0, filterMode: 'none' }, { type: 'inside', yAxisIndex: 0, filterMode: 'none' }],
-    xAxis: { type: 'value', name: 'Fidelidade ao partido (%)', nameLocation: 'middle', nameGap: 26, min: minX, max: 101.5,
+    xAxis: { type: 'value', name: 'Fidelidade ao partido (%)', nameLocation: 'middle', nameGap: 26, min: minX, max: 101.5, interval: 15,
       axisLabel: { showMaxLabel: false }, nameTextStyle: { color: t.muted } },
     yAxis: { type: 'value', name: 'Governismo (%)', nameLocation: 'middle', nameRotate: 90, nameGap: 36, max: 102,
       min: Math.max(0, Math.floor((Math.min(...ps.map((p) => p.governismo_pct)) - 6) / 10) * 10),
