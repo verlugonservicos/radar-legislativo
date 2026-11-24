@@ -37,12 +37,20 @@ function desenharArea() {
   graficos.area?.instancia.dispose();
   if (!temas.length) { el.innerHTML = vazio(); return; }
   const serie = (t) => semanas.map((s) => ts.filter((d) => d.tema === t && d.inicio_semana === s).reduce((a, d) => a + d.qtd, 0));
-  graficos.area = montar(el, () => ({
+  // degradê pelo total do período: tema com mais proposições em verde, com menos em vermelho (como no
+  // treemap); a pilha vai do maior (base) ao menor (topo) e um filete separa as faixas de cor parecida
+  const series = temas.map((t) => ({ t, data: serie(t) })).map((x) => ({ ...x, total: x.data.reduce((a, v) => a + v, 0) }))
+    .sort((a, b) => b.total - a.total);
+  const [min, max] = [Math.min(...series.map((x) => x.total)), Math.max(...series.map((x) => x.total))];
+  graficos.area = montar(el, (tm) => ({
     grid: { left: 8, right: 16, top: 64, bottom: 8, containLabel: true }, tooltip: { trigger: 'axis' },
     legend: { type: 'scroll', top: 0, left: 0 },
     xAxis: { type: 'category', data: semanas, boundaryGap: false, axisLabel: { formatter: fmt.dataCurta } },
     yAxis: { type: 'value', axisLabel: { formatter: fmt.num } },
-    series: temas.map((t) => ({ name: t, type: 'line', stack: 'total', areaStyle: { opacity: 0.85 }, showSymbol: false, lineStyle: { width: 0 }, color: corTema(t), data: serie(t) })),
+    series: series.map((x) => ({
+      name: x.t, type: 'line', stack: 'total', areaStyle: { opacity: 0.9 }, showSymbol: false,
+      lineStyle: { width: 0.6, color: tm.surface }, color: corGradiente(x.total, min, max, true), data: x.data,
+    })),
   }));
 }
 
