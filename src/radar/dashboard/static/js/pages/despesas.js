@@ -31,20 +31,40 @@ await seguro(document.getElementById('kv-quarentena'), async () => {
     <dt>Valor dos documentos</dt><dd><strong>${fmt.brlCheio(valor)}</strong></dd><dt>Regra</dt><dd>valor do documento ≥ 0</dd>`;
 });
 
+// % do total da cota no período (todos os tipos), com 2 casas, entre parênteses ao lado de cada barra
+const todosTipos = await dados('despesas_tipo');
+const totalCota = todosTipos.reduce((t, d) => t + (d.valor_liquido || 0), 0);
+const pctCota = (v) => fmt.pct2(totalCota ? (100 * v) / totalCota : 0);
+const comPct = (op) => {
+  op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pctCota(x.value)})` };
+  op.grid = { ...op.grid, right: 132 };
+  return op;
+};
+
 await seguro(document.getElementById('graf-tipos'), async () => {
-  const tipos = (await dados('despesas_tipo')).slice(0, 12).map((d) => [d.tipo_despesa, d.valor_liquido]);
-  montar(limpa('graf-tipos'), barras({
-    gradiente: true, categorias: tipos.map(([t]) => (t.length > 38 ? `${t.slice(0, 36)}…` : t)), horizontal: true, formatter: fmt.brl, rotulo: true,
-    series: [{ name: 'Valor líquido', data: tipos.map(([, v]) => Math.round(v)) }],
-  }), { tabela: { colunas: ['Tipo', 'Valor líquido'], linhas: tipos.map(([t, v]) => [t, fmt.brlCheio(v)]) } });
+  const tipos = todosTipos.slice(0, 12).map((d) => [d.tipo_despesa, d.valor_liquido]);
+  montar(limpa('graf-tipos'), (t) => {
+    const op = comPct(barras({
+      gradiente: true, categorias: tipos.map(([tp]) => (tp.length > 38 ? `${tp.slice(0, 36)}…` : tp)), horizontal: true, formatter: fmt.brl, rotulo: true,
+      series: [{ name: 'Valor líquido', data: tipos.map(([, v]) => Math.round(v)) }],
+    })(t));
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: (ps) => `<b>${fmt.escapar(tipos[ps[0].dataIndex][0])}</b><br>${fmt.brlCheio(ps[0].value)} (${pctCota(ps[0].value)} do total da cota)` };
+    return op;
+  }, { tabela: { colunas: ['Tipo', 'Valor líquido', '% do total'], linhas: tipos.map(([tp, v]) => [tp, fmt.brlCheio(v), pctCota(v)]) } });
 });
 
 await seguro(document.getElementById('graf-fornecedores'), async () => {
   const f = (await dados('fornecedores')).slice(0, 15);
-  montar(limpa('graf-fornecedores'), barras({
-    gradiente: true, categorias: f.map((d) => (d.nome.length > 32 ? `${d.nome.slice(0, 30)}…` : d.nome)), horizontal: true, formatter: fmt.brl, rotulo: true,
-    series: [{ name: 'Valor líquido', data: f.map((d) => d.valor) }],
-  }), { tabela: { colunas: ['Fornecedor', 'Valor', 'Notas', 'Deputados'], linhas: f.map((d) => [d.nome, fmt.brlCheio(d.valor), d.qtd, d.deputados]) } });
+  montar(limpa('graf-fornecedores'), (t) => {
+    const op = comPct(barras({
+      gradiente: true, categorias: f.map((d) => (d.nome.length > 32 ? `${d.nome.slice(0, 30)}…` : d.nome)), horizontal: true, formatter: fmt.brl, rotulo: true,
+      series: [{ name: 'Valor líquido', data: f.map((d) => d.valor) }],
+    })(t));
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: (ps) => `<b>${fmt.escapar(f[ps[0].dataIndex].nome)}</b><br>${fmt.brlCheio(ps[0].value)} (${pctCota(ps[0].value)} do total da cota)` };
+    return op;
+  }, { tabela: { colunas: ['Fornecedor', 'Valor', '% do total', 'Notas', 'Deputados'], linhas: f.map((d) => [d.nome, fmt.brlCheio(d.valor), pctCota(d.valor), d.qtd, d.deputados]) } });
 });
 
 await seguro(document.getElementById('graf-partido'), async () => {
