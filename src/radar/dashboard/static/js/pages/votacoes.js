@@ -1,7 +1,7 @@
-// Votações e Partidos: votações por dia, participação, fidelidade × governismo e concordância.
+// Votações e Partidos: votações por semana, participação, fidelidade × governismo e concordância.
 /* global echarts */
 import { iniciar, seguro } from '../app.js';
-import { dados } from '../data.js';
+import { dados, meta } from '../data.js';
 import { barras, montar } from '../charts.js';
 import { Tabela } from '../ui.js';
 import * as fmt from '../format.js';
@@ -10,16 +10,45 @@ await iniciar();
 const partidos = await dados('partidos');
 const limpa = (id) => { const el = document.getElementById(id); el.classList.remove('skeleton'); return el; };
 
+// Votações por semana (segunda a domingo): a Câmara vota em 2 a 4 dias por semana e para no recesso e
+// na campanha eleitoral; por dia, o eixo escondia esses intervalos. Semanas sem votação aparecem em zero.
 await seguro(document.getElementById('graf-dia'), async () => {
-  const v = await dados('votacoes_dia');
-  montar(limpa('graf-dia'), (t) => barras({
-    categorias: v.map((d) => fmt.dataCurta(d.data)), empilhado: true,
-    series: [
-      { name: 'Aprovadas', data: v.map((d) => d.aprovadas), itemStyle: { color: t.positive } },
-      { name: 'Rejeitadas', data: v.map((d) => d.rejeitadas), itemStyle: { color: t.negative } },
-      { name: 'Sem resultado', data: v.map((d) => d.total - d.aprovadas - d.rejeitadas), itemStyle: { color: t.grid } },
-    ],
-  })(t), { tabela: { colunas: ['Data', 'Total', 'Aprovadas', 'Rejeitadas', 'Nominais'], linhas: v.map((d) => [fmt.data(d.data), d.total, d.aprovadas, d.rejeitadas, d.nominais]) } });
+  const [v, m] = await Promise.all([dados('votacoes_dia'), meta()]);
+  const DIA = 86_400_000;
+  const iso = (ms) => new Date(ms).toISOString().slice(0, 10);
+  const segunda = (s) => { const ms = Date.parse(`${s}T00:00:00Z`); return iso(ms - ((new Date(ms).getUTCDay() + 6) % 7) * DIA); };
+  const fim = Date.parse(`${m.periodo.fim}T00:00:00Z`);
+  const semanas = new Map();
+  for (let ms = Date.parse(`${segunda(iso(fim - 89 * DIA))}T00:00:00Z`); ms <= fim; ms += 7 * DIA) {
+    semanas.set(iso(ms), { aprovadas: 0, rejeitadas: 0, sem: 0, nominais: 0, dias: 0 });
+  }
+  for (const d of v) {
+    const s = semanas.get(segunda(d.data));
+    if (!s) continue;
+    s.aprovadas += d.aprovadas; s.rejeitadas += d.rejeitadas; s.sem += d.total - d.aprovadas - d.rejeitadas;
+    s.nominais += d.nominais; s.dias += 1;
+  }
+  const chaves = [...semanas.keys()];
+  const total = (s) => s.aprovadas + s.rejeitadas + s.sem;
+  montar(limpa('graf-dia'), (t) => {
+    const op = barras({
+      categorias: chaves.map((c) => fmt.dataCurta(c)), empilhado: true,
+      series: [
+        { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive } },
+        { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas), itemStyle: { color: t.negative } },
+        { name: 'Sem resultado', data: chaves.map((c) => semanas.get(c).sem), itemStyle: { color: t.grid } },
+      ],
+    })(t);
+    op.tooltip.formatter = (ps) => {
+      const s = semanas.get(chaves[ps[0].dataIndex]);
+      const cab = `<b>Semana de ${fmt.data(chaves[ps[0].dataIndex])}</b><br>`;
+      if (!total(s)) return `${cab}Sem votações`;
+      return `${cab}${ps.map((p) => `${p.marker}${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`
+        + `<br>Total: <b>${fmt.num(total(s))}</b> em ${s.dias} ${s.dias === 1 ? 'dia' : 'dias'} com votação`;
+    };
+    return op;
+  }, { tabela: { colunas: ['Semana (segunda-feira)', 'Total', 'Aprovadas', 'Rejeitadas', 'Nominais', 'Dias com votação'],
+                 linhas: chaves.map((c) => { const s = semanas.get(c); return [fmt.data(c), total(s), s.aprovadas, s.rejeitadas, s.nominais, s.dias]; }) } });
 });
 
 await seguro(document.getElementById('graf-participacao'), async () => {
