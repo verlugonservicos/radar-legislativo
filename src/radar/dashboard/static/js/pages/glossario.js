@@ -23,7 +23,7 @@ filtrar();
 
 function destacar() {
   document.querySelectorAll('.glossario__item.is-alvo').forEach((el) => el.classList.remove('is-alvo'));
-  const alvo = location.hash && document.getElementById(location.hash.slice(1));
+  const alvo = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
   if (alvo?.classList.contains('glossario__item')) { alvo.classList.add('is-alvo'); alvo.scrollIntoView({ block: 'center' }); }
 }
 window.addEventListener('hashchange', destacar);
