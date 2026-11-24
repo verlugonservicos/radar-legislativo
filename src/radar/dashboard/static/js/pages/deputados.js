@@ -1,7 +1,7 @@
 // Deputados: mapa por UF, ranking de atividade, tabela e perfil em drawer.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, montar } from '../charts.js';
+import { barras, GRADIENTE, montar } from '../charts.js';
 import { abrirDrawer, Tabela } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
@@ -78,6 +78,11 @@ function misturar(c1, c2, t) {
   return `#${a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, '0')).join('')}`;
 }
 
+// Mesma regra de cores do ranking: maior = verde, menor = vermelho (âmbar no meio).
+// Exceção: gasto por deputado segue a regra da página de Despesas (maior = vermelho).
+const coresDe = (metrica) => (metrica === 'gasto_por_deputado' ? GRADIENTE : [...GRADIENTE].reverse());
+const cor3 = (cores, t) => (t < 0.5 ? misturar(cores[0], cores[1], t * 2) : misturar(cores[1], cores[2], (t - 0.5) * 2));
+
 let modoMapa = 'uf';
 document.querySelectorAll('#mapa-agrupamento button').forEach((b) => b.addEventListener('click', () => {
   modoMapa = b.dataset.modo;
@@ -102,7 +107,7 @@ function desenharMapa() {
     mapa = montar(limpa('graf-mapa'), (t) => ({
       tooltip: { trigger: 'item', formatter: (p) => etiqueta(`${nomeUf[p.name]} (${p.name})`, '', ufs[p.name]) },
       visualMap: { min: vs.length ? Math.min(...vs) : 0, max: vs.length ? Math.max(...vs) : 1, ...legenda, calculable: true,
-        text: ['maior', 'menor'], inRange: { color: [t.grid, t.accent] }, textStyle: { color: t.muted }, formatter },
+        text: ['maior', 'menor'], inRange: { color: coresDe(metrica) }, textStyle: { color: t.muted }, formatter },
       series: [{ ...serieBase, selectedMode: false,
         data: Object.keys(ufs).map((uf) => ({
           name: uf, value: ufs[uf][metrica] ?? '-',
@@ -125,9 +130,8 @@ function desenharMapa() {
   const resumoDe = Object.fromEntries(regs.map((r) => [r.regiao, r]));
   mapa = montar(limpa('graf-mapa'), (t) => {
     const hex = (c, alt) => (/^#[0-9a-f]{6}$/i.test(c) ? c : alt);
-    const fundo = hex(t.grid, '#E2E8F0'); const forte = hex(t.accent, '#4F46E5'); const texto = hex(t.text, '#0F172A');
-    // a menor região já começa com 30% da cor de destaque: nunca some no fundo do card
-    const cor = (v) => misturar(fundo, forte, 0.3 + 0.7 * (max > min ? (v - min) / (max - min) : 1));
+    const fundo = hex(t.grid, '#E2E8F0'); const texto = hex(t.text, '#0F172A');
+    const cor = (v) => cor3(coresDe(metrica), max > min ? (v - min) / (max - min) : 1);
     const borda = (c) => misturar(c, texto, 0.18);
     return {
       tooltip: { trigger: 'item' },
