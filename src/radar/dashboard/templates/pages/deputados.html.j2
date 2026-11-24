@@ -25,7 +25,7 @@
     </header>
     {{ grafico("graf-mapa", "Mapa do Brasil por unidade da federação ou região", "chart--mapa") }}
   </section>
-  {% call card("ranking", "Top 20 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos 20 deputados mais ativos", "chart--ranking") }}{% endcall %}
+  {% call card("ranking", "Top 20 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos deputados mais ativos", "chart--ranking chart--preenche") }}{% endcall %}
   {% call card("gasto-partido", "Gasto da cota por partido", "Valor líquido dos deputados em exercício no período carregado · respeita os filtros acima", "span-6", termo="cota") %}{{ grafico("graf-gasto-partido", "Barras do gasto da cota parlamentar por partido", "chart--ranking") }}{% endcall %}
   {% call card("gasto-deputado", "Top 20 deputados por gasto da cota", "Valor líquido no período carregado · respeita os filtros acima", "span-6", termo="cota") %}{{ grafico("graf-gasto-deputado", "Barras dos 20 deputados com maior gasto da cota", "chart--ranking") }}{% endcall %}
   {% call card("tabela", "Deputados em exercício", "Clique para ver o perfil", "span-12") %}<div id="tabela-deputados"></div>{% endcall %}
