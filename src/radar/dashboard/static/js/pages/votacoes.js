@@ -136,7 +136,7 @@ await seguro(document.getElementById('graf-heatmap'), async () => {
     // dimensão 2 = % de concordância (a 3 é o nº de votações em comum)
     visualMap: { seriesIndex: 0, dimension: 2, min: vmin, max: 100, calculable: false, orient: 'vertical', right: 8, top: 8,
       itemWidth: 14, itemHeight: 160, text: ['100% votam igual', `${vmin}%`], textGap: 8,
-      inRange: { color: ['#DC2626', '#F59E0B', '#4F46E5'] }, textStyle: { color: t.muted } },
+      inRange: { color: ['#DC2626', '#F59E0B', '#475569'] }, textStyle: { color: t.muted } },
     series: [
       { type: 'heatmap', data: pontos, itemStyle: { borderColor: t.surface, borderWidth: 1 },
         label: { show: el.clientWidth >= 420, formatter: (p) => Math.round(p.data.value[2]), fontSize: 9 },

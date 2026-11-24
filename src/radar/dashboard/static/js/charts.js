@@ -7,7 +7,7 @@ const montados = new Set();
 let coresTemas = {};
 export const definirCoresTemas = (temas) => { coresTemas = Object.fromEntries(temas.map((t) => [t.nome, t.cor])); };
 export const corTema = (nome) => coresTemas[nome] || '#94A3B8';
-export const PALETA = ['#4F46E5', '#0EA5E9', '#F59E0B', '#10B981', '#EC4899', '#8B5CF6', '#EF4444', '#14B8A6', '#84CC16', '#F97316', '#64748B', '#A855F7'];
+export const PALETA = ['#334155', '#0EA5E9', '#F59E0B', '#10B981', '#EC4899', '#0891B2', '#EF4444', '#14B8A6', '#84CC16', '#F97316', '#64748B', '#B45309'];
 
 function css(nome) { return getComputedStyle(document.documentElement).getPropertyValue(nome).trim(); }
 function temaAtual() {
