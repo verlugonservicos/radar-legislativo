@@ -154,6 +154,24 @@ autorias AS (
     FROM gold.ponte_proposicao_autor a JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
     GROUP BY 1
 ),
+-- projetos apresentados nas últimas 26 semanas: só o autor principal (1º signatário, sem dupla contagem
+-- de coautorias) e só PL, PLP, PEC e PDL (requerimentos e indicações ficam de fora)
+projetos_dep AS (
+    SELECT d.sigla_partido, d.nome, count(DISTINCT a.id_proposicao) AS qtd
+    FROM gold.ponte_proposicao_autor a
+    JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
+    JOIN gold.fato_proposicao p USING (id_proposicao)
+    CROSS JOIN gold.vw_data_referencia r
+    WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
+      AND p.data_apresentacao > r.data_ref - 182
+    GROUP BY 1, 2
+),
+projetos AS (
+    SELECT sigla_partido, sum(qtd) AS projetos,
+           (array_agg(nome ORDER BY qtd DESC, nome))[1] AS projetos_maior_autor,
+           max(qtd) AS projetos_maior_autor_qtd
+    FROM projetos_dep GROUP BY 1
+),
 discursos AS (SELECT sigla_partido, count(*) AS discursos FROM gold.fato_discurso GROUP BY 1),
 gastos AS (SELECT sigla_partido, sum(valor_liquido) AS gasto_total FROM gold.fato_despesa GROUP BY 1),
 presenca AS (                         -- média da presença de cada deputado em exercício (partido atual)
@@ -167,11 +185,14 @@ SELECT dep.sigla_partido, dep.deputados::int,
        presenca.participacao_pct,
        votos.fidelidade_pct, votos.governismo_pct,
        coalesce(autorias.autorias, 0)::int AS autorias,
+       coalesce(projetos.projetos, 0)::int AS projetos,
+       projetos.projetos_maior_autor, coalesce(projetos.projetos_maior_autor_qtd, 0)::int AS projetos_maior_autor_qtd,
        coalesce(discursos.discursos, 0)::int AS discursos,
        coalesce(gastos.gasto_total, 0)::numeric(14,2) AS gasto_total,
        round(coalesce(gastos.gasto_total, 0) / dep.deputados, 2) AS gasto_por_deputado
 FROM dep CROSS JOIN nominais n
 LEFT JOIN votos USING (sigla_partido) LEFT JOIN autorias USING (sigla_partido)
+LEFT JOIN projetos USING (sigla_partido)
 LEFT JOIN discursos USING (sigla_partido) LEFT JOIN gastos USING (sigla_partido)
 LEFT JOIN presenca USING (sigla_partido);
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_partidos ON gold.mart_partidos (sigla_partido);
