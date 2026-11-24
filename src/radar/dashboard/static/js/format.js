@@ -20,6 +20,14 @@ export const pct2 = (v) => (vazio(v) ? '—' : `${nf2.format(v)}%`);
 export const pctFrac = (v) => (vazio(v) ? '—' : `${nf1.format(v * 100)}%`);
 export const data = (iso) => (iso ? dtf.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`)) : '—');
 export const dataCurta = (iso) => (iso ? dtfShort.format(new Date(`${iso.slice(0, 10)}T00:00:00Z`)).replace('.', '') : '—');
+/** Número da semana no ano (ISO 8601: semanas de segunda a domingo; a semana 1 contém a primeira quinta-feira). */
+export function semanaAno(iso) {
+  const d = new Date(`${iso.slice(0, 10)}T00:00:00Z`);
+  const dia = (d.getUTCDay() + 6) % 7;            // segunda = 0
+  d.setUTCDate(d.getUTCDate() - dia + 3);         // quinta-feira da mesma semana
+  const inicioAno = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+  return 1 + Math.round(((d - inicioAno) / 86_400_000 - 3 + ((inicioAno.getUTCDay() + 6) % 7)) / 7);
+}
 export const dataHora = (iso) => (iso ? dtfTime.format(new Date(iso)) : '—');
 export function relativo(iso) {
   if (!iso) return '—';

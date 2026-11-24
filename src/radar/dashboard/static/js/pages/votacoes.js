@@ -32,7 +32,7 @@ await seguro(document.getElementById('graf-dia'), async () => {
   const total = (s) => s.aprovadas + s.rejeitadas + s.sem;
   montar(limpa('graf-dia'), (t) => {
     const op = barras({
-      categorias: chaves.map((c) => fmt.dataCurta(c)), empilhado: true,
+      categorias: chaves.map((c) => `S${fmt.semanaAno(c)}`), empilhado: true,  // nº da semana no ano (ISO)
       series: [
         { name: 'Aprovadas', data: chaves.map((c) => semanas.get(c).aprovadas), itemStyle: { color: t.positive } },
         { name: 'Rejeitadas', data: chaves.map((c) => semanas.get(c).rejeitadas), itemStyle: { color: t.negative } },
@@ -41,14 +41,16 @@ await seguro(document.getElementById('graf-dia'), async () => {
     })(t);
     op.tooltip.formatter = (ps) => {
       const s = semanas.get(chaves[ps[0].dataIndex]);
-      const cab = `<b>Semana de ${fmt.data(chaves[ps[0].dataIndex])}</b><br>`;
+      const seg = chaves[ps[0].dataIndex];
+      const dom = new Date(Date.parse(`${seg}T00:00:00Z`) + 6 * DIA).toISOString().slice(0, 10);
+      const cab = `<b>Semana ${fmt.semanaAno(seg)}</b> · ${fmt.dataCurta(seg)} a ${fmt.dataCurta(dom)}<br>`;
       if (!total(s)) return `${cab}Sem votações`;
       return `${cab}${ps.map((p) => `${p.marker}${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`
         + `<br>Total: <b>${fmt.num(total(s))}</b> em ${s.dias} ${s.dias === 1 ? 'dia' : 'dias'} com votação`;
     };
     return op;
-  }, { tabela: { colunas: ['Semana (segunda-feira)', 'Total', 'Aprovadas', 'Rejeitadas', 'Nominais', 'Dias com votação'],
-                 linhas: chaves.map((c) => { const s = semanas.get(c); return [fmt.data(c), total(s), s.aprovadas, s.rejeitadas, s.nominais, s.dias]; }) } });
+  }, { tabela: { colunas: ['Semana', 'Início (segunda)', 'Total', 'Aprovadas', 'Rejeitadas', 'Nominais', 'Dias com votação'],
+                 linhas: chaves.map((c) => { const s = semanas.get(c); return [`S${fmt.semanaAno(c)}`, fmt.data(c), total(s), s.aprovadas, s.rejeitadas, s.nominais, s.dias]; }) } });
 });
 
 await seguro(document.getElementById('graf-participacao'), async () => {
