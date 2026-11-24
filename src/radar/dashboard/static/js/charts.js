@@ -156,11 +156,12 @@ export function sparkline(valores, cor) {
   });
 }
 
-export function gauge({ valor, max = 100, rotulo, formatter = fmt.pct }) {
+// gradiente: true pinta o arco pelo valor (0 = vermelho, metade = âmbar, máximo = verde)
+export function gauge({ valor, max = 100, rotulo, formatter = fmt.pct, gradiente = false }) {
   return (t) => ({
     series: [{
       type: 'gauge', startAngle: 210, endAngle: -30, min: 0, max, radius: '95%', center: ['50%', '58%'],
-      progress: { show: true, width: 14, roundCap: true, itemStyle: { color: t.accent } },
+      progress: { show: true, width: 14, roundCap: true, itemStyle: { color: gradiente ? corGradiente(valor, 0, max, true) : t.accent } },
       axisLine: { lineStyle: { width: 14, color: [[1, t.grid]] }, roundCap: true },
       pointer: { show: false }, axisTick: { show: false }, splitLine: { show: false }, axisLabel: { show: false },
       title: { offsetCenter: [0, '38%'], color: t.muted, fontSize: 12 },

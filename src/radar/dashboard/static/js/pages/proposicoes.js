@@ -132,7 +132,7 @@ await seguro(document.getElementById('graf-gauge'), async () => {
   const el = document.getElementById('graf-gauge');
   el.classList.remove('skeleton');
   const ia = m.ia || {};
-  montar(el, gauge({ valor: Math.round((ia.acuracia_sem_vazamento || 0) * 1000) / 10, rotulo: 'sem vazamento' }));
+  montar(el, gauge({ valor: Math.round((ia.acuracia_sem_vazamento || 0) * 1000) / 10, rotulo: 'sem vazamento', gradiente: true }));
   document.getElementById('kv-ia').innerHTML = `
     <dt>Base inteira</dt><dd>${fmt.pctFrac(ia.acuracia)} de ${fmt.num(ia.avaliadas)} proposições</dd>
     <dt>Classificadas</dt><dd>${fmt.pctFrac(ia.cobertura)} (limiar ${fmt.num1((ia.limiar || 0) * 100)}%)</dd>
