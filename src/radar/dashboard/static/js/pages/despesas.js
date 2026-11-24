@@ -67,6 +67,17 @@ await seguro(document.getElementById('graf-fornecedores'), async () => {
   }, { tabela: { colunas: ['Fornecedor', 'Valor', '% do total', 'Notas', 'Deputados'], linhas: f.map((d) => [d.nome, fmt.brlCheio(d.valor), pctCota(d.valor), d.qtd, d.deputados]) } });
 });
 
+// diferença para a média nacional de gasto por deputado (gasto total ÷ deputados), com sinal e 2 casas:
+// acompanha o tamanho da barra (acima da média = positivo); a média vira uma linha tracejada no gráfico
+const desvio = (v, media) => { const d = media ? (100 * (v - media)) / media : 0; return `${d > 0 ? '+' : d < 0 ? '−' : ''}${fmt.pct2(Math.abs(d))}`; };
+const comMedia = (op, media, t) => {
+  op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${desvio(x.value, media)})` };
+  op.series[0].markLine = { silent: true, symbol: 'none', lineStyle: { color: t.muted, type: 'dashed', width: 1 },
+    label: { formatter: `média ${fmt.brl(media)}`, color: t.muted, fontSize: 10, position: 'end' }, data: [{ xAxis: media }] };
+  op.grid = { ...op.grid, right: 132 };
+  return op;
+};
+
 await seguro(document.getElementById('graf-partido'), async () => {
   const todos = await dados('partidos');
   const ps = todos.filter((p) => p.deputados >= 3).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
@@ -74,23 +85,24 @@ await seguro(document.getElementById('graf-partido'), async () => {
   // % = fatia do partido no gasto total da cota (todos os partidos), como no gráfico por UF
   const total = todos.reduce((s, p) => s + (p.gasto_total || 0), 0);
   const pct = (p) => fmt.pct2(total ? (100 * (p.gasto_total || 0)) / total : 0);
+  const media = total / todos.reduce((s, p) => s + p.deputados, 0);
   montar(limpa('graf-partido'), (t) => {
     const op = barras({
       gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
       series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
     })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(dep[s])})` };  // nº de deputados
-    // sem % no rótulo: a barra é média por deputado e o % (fatia do gasto total) depende do tamanho da
-    // bancada — barra maior com % menor confundia; o % fica só no tooltip e na tabela, como "gasto total"
-    op.grid = { ...op.grid, right: 84 };
+    // o % do rótulo é a diferença para a média nacional (a fatia do gasto total, que depende do tamanho
+    // da bancada, confundia ao lado da barra: fica só no tooltip e na tabela)
+    comMedia(op, media, t);
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const p = ps[xs[0].dataIndex];
       return `<b>${fmt.escapar(p.sigla_partido)}</b> · ${fmt.num(p.deputados)} deputados<br>Por deputado: <b>${fmt.brl(p.gasto_por_deputado)}</b>`
-        + `<br>Gasto total: ${fmt.brlCheio(p.gasto_total)} (${pct(p)} do total da cota)`;
+        + ` (${desvio(p.gasto_por_deputado, media)} vs. média ${fmt.brl(media)})<br>Gasto total: ${fmt.brlCheio(p.gasto_total)} (${pct(p)} do total da cota)`;
     } };
     return op;
-  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado', 'Gasto total', '% do total'],
-                 linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado), fmt.brlCheio(p.gasto_total), pct(p)]) } });
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado', 'vs. média nacional', 'Gasto total', '% do total'],
+                 linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado), desvio(p.gasto_por_deputado, media), fmt.brlCheio(p.gasto_total), pct(p)]) } });
 });
 
 await seguro(document.getElementById('graf-uf'), async () => {
@@ -99,6 +111,7 @@ await seguro(document.getElementById('graf-uf'), async () => {
   const us = (await dados('deputados_uf')).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
   const pctsUf = fmt.pctsExatos(us.map((u) => u.gasto_total || 0));  // as 27 UFs: fecha 100,00%
   const pct = (u) => pctsUf[us.indexOf(u)];
+  const media = us.reduce((s, u) => s + (u.gasto_total || 0), 0) / us.reduce((s, u) => s + u.deputados, 0);
   const porUf = Object.fromEntries(us.map((u) => [u.sigla_uf, u]));
   montar(limpa('graf-uf'), (t) => {
     const op = barras({
@@ -106,16 +119,16 @@ await seguro(document.getElementById('graf-uf'), async () => {
       series: [{ name: 'Gasto por deputado', data: us.map((u) => u.gasto_por_deputado) }],
     })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(porUf[s].deputados)})` };
-    // sem % no rótulo (mesmo motivo do gráfico por partido): o % do gasto total fica no tooltip e na tabela
-    op.grid = { ...op.grid, right: 84 };
+    // % do rótulo = diferença para a média nacional (mesmo critério do gráfico por partido)
+    comMedia(op, media, t);
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => {
       const u = us[ps[0].dataIndex];
       return `<b>${fmt.escapar(u.sigla_uf)}</b> · ${fmt.num(u.deputados)} deputados<br>Por deputado: <b>${fmt.brl(u.gasto_por_deputado)}</b>`
-        + `<br>Gasto total: ${fmt.brlCheio(u.gasto_total)} (${pct(u)} do total da cota)`;
+        + ` (${desvio(u.gasto_por_deputado, media)} vs. média ${fmt.brl(media)})<br>Gasto total: ${fmt.brlCheio(u.gasto_total)} (${pct(u)} do total da cota)`;
     } };
     return op;
-  }, { tabela: { colunas: ['UF', 'Deputados', 'Gasto por deputado', 'Gasto total', '% do total'],
-                 linhas: us.map((u) => [u.sigla_uf, u.deputados, fmt.brl(u.gasto_por_deputado), fmt.brlCheio(u.gasto_total), pct(u)]) } });
+  }, { tabela: { colunas: ['UF', 'Deputados', 'Gasto por deputado', 'vs. média nacional', 'Gasto total', '% do total'],
+                 linhas: us.map((u) => [u.sigla_uf, u.deputados, fmt.brl(u.gasto_por_deputado), desvio(u.gasto_por_deputado, media), fmt.brlCheio(u.gasto_total), pct(u)]) } });
 });
 
 await seguro(document.getElementById('tabela-outliers'), async () => {

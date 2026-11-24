@@ -204,7 +204,15 @@ projetos AS (
     FROM projetos_dep GROUP BY 1
 ),
 discursos AS (SELECT sigla_partido, count(*) AS discursos FROM gold.fato_discurso GROUP BY 1),
-gastos AS (SELECT sigla_partido, sum(valor_liquido) AS gasto_total FROM gold.fato_despesa GROUP BY 1),
+-- gasto dos deputados EM EXERCÍCIO, pelo partido atual (o mesmo universo do denominador e de
+-- mart_deputados_uf). Antes somava todo gasto com a sigla, inclusive de quem saiu do mandato ou trocou de
+-- partido, e dividia só pelos atuais: a média por deputado do partido ficava inflada e não batia com a por UF.
+gastos AS (
+    SELECT d.sigla_partido, sum(f.valor_liquido) AS gasto_total
+    FROM gold.fato_despesa f
+    JOIN silver.deputados d ON d.id_deputado = f.id_deputado AND d.situacao = 'Exercício'
+    GROUP BY 1
+),
 presenca AS (                         -- média da presença de cada deputado em exercício (partido atual)
     SELECT d.sigla_partido,
            round(avg(100.0 * (SELECT count(*) FROM plenario pl WHERE pl.id_deputado = d.id_deputado)
