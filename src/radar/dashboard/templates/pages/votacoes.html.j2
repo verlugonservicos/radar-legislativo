@@ -2,7 +2,7 @@
 {% from "partials/componentes.html.j2" import card, grafico %}
 {% block conteudo %}
 <div class="grid">
-  {% call card("dia", "Votações por semana", "Aprovadas × rejeitadas · últimos 90 dias · semanas de segunda a domingo", "span-7", termo="votacao") %}{{ grafico("graf-dia", "Barras empilhadas de votações aprovadas e rejeitadas por semana") }}{% endcall %}
+  {% call card("dia", "Votações por semana", "Aprovadas × rejeitadas · últimos 90 dias · semanas de segunda a domingo", "span-7", termo="votacao") %}{{ grafico("graf-dia", "Barras empilhadas de votações aprovadas e rejeitadas por semana", "chart--lg chart--estica") }}{% endcall %}
   {% call card("participacao", "Participação por partido", "Presença média dos deputados em exercício nas votações nominais do Plenário", "span-5", termo="participacao") %}{{ grafico("graf-participacao", "Barras de participação por partido", "chart--lg") }}{% endcall %}
   {% call card("dispersao", "Fidelidade × governismo", "Cada bolha é um partido; o tamanho é o número de deputados · role o mouse sobre o gráfico para ampliar", "span-6", termo="fidelidade") %}{{ grafico("graf-dispersao", "Dispersão de fidelidade partidária e governismo por partido", "chart--xl") }}{% endcall %}
   {% call card("heatmap", "Concordância entre partidos", "% das votações em que os dois partidos votaram igual (voto da maioria, Sim/Não) · partidos com 5+ deputados, ordenados por governismo", "span-6", termo="concordancia") %}{{ grafico("graf-heatmap", "Mapa de calor de concordância entre partidos", "chart--xl") }}{% endcall %}
