@@ -38,29 +38,46 @@ await seguro(document.getElementById('graf-sankey'), async () => {
   const total = (n) => Math.max(entra.get(n) || 0, sai.get(n) || 0);
   const tipo = (n) => (ehFederacao(n) ? 'federação' : entra.has(n) ? 'bloco' : 'partido');
   const nomes = [...new Set(links.flatMap((l) => [l.source, l.target]))];
-  const nos = nomes.map((name, i) => ({ name, depth: tipo(name) === 'partido' ? 0 : tipo(name) === 'federação' ? 1 : 2,
+  // colunas: partidos (0) · federações que entram num bloco (1) · destinos finais, à direita (2)
+  const coluna = (n) => (tipo(n) === 'partido' ? 0 : sai.has(n) ? 1 : 2);
+  const nosCom = (t) => nomes.map((name, i) => ({ name, depth: coluna(name),
     itemStyle: { color: PALETA[i % PALETA.length] },
-    // partidos: nome à esquerda da barra, fora das faixas (o número das faixas fica livre)
-    ...(tipo(name) === 'partido' ? { label: { position: 'left' } } : {}) }));
-  montar(limpa('graf-sankey'), (t) => ({
+    label: coluna(name) === 0 ? { position: 'left' }                    // partido: nome e número à esquerda
+      : coluna(name) === 1 ? { backgroundColor: translucido(t.surface, 0.9), padding: [2, 4], borderRadius: 4 }  // cruza as faixas
+      : {} }));
+  const el = limpa('graf-sankey');
+  const COLUNA = 190;  // coluna da direita: nome da federação/bloco + somatório alinhado na borda
+  montar(el, (t) => ({
     tooltip: { trigger: 'item', formatter: (p) => (p.dataType === 'edge'
       ? `${fmt.escapar(p.data.source)} → ${fmt.escapar(p.data.target)}: <b>${fmt.num(p.data.value)}</b> deputados`
       : `<b>${fmt.escapar(p.name)}</b> (${tipo(p.name)})<br>${fmt.num(total(p.name))} deputados em exercício`) },
     series: [{
-      type: 'sankey', left: 120, right: 210, top: 8, bottom: 8, nodeGap: 10, nodeWidth: 16, nodeAlign: 'left',
+      type: 'sankey', left: 104, right: COLUNA, top: 8, bottom: 8, nodeGap: 10, nodeWidth: 14,
+      nodeAlign: 'right',  // federações sem bloco também vão para a coluna da direita
       emphasis: { focus: 'adjacency' }, layoutIterations: 64,
-      label: { color: t.text, fontSize: 11, formatter: (p) => {
-        const nome = p.name.length > 30 ? `${p.name.slice(0, 28)}…` : p.name;
-        return `{n|${nome}} {q|${fmt.num(total(p.name))}}`;
-      }, rich: { n: { color: t.text, fontSize: 11 }, q: { color: t.accent, fontSize: 11, fontWeight: 700 } } },
-      // o número de deputados escrito dentro de cada faixa de ligação
-      // (só nas faixas com espessura para o número; as finas ficam com o número ao lado do partido)
-      edgeLabel: { show: true, formatter: (p) => (p.data.value >= 8 ? fmt.num(p.data.value) : ''), fontSize: 12, fontWeight: 700,
-        color: t.text, textBorderColor: t.surface, textBorderWidth: 3 },
-      lineStyle: { color: 'gradient', opacity: 0.35 }, data: nos, links,
+      label: {
+        color: t.text, fontSize: 11,
+        formatter: (p) => {
+          if (tipo(p.name) === 'partido') return `{n|${p.name}} {q|${fmt.num(total(p.name))}}`;
+          const nome = p.name.length > 24 ? `${p.name.slice(0, 22)}…` : p.name;
+          return `{d|${nome}}{s|${fmt.num(total(p.name))}}`;
+        },
+        rich: {
+          n: { color: t.text, fontSize: 11 }, q: { color: t.accent, fontSize: 11, fontWeight: 700 },
+          // nome com largura fixa + somatório alinhado à direita: os totais formam uma coluna na borda
+          d: { color: t.text, fontSize: 11, width: COLUNA - 52, overflow: 'truncate' },
+          s: { color: t.accent, fontSize: 12, fontWeight: 700, width: 36, align: 'right' },
+        },
+      },
+      lineStyle: { color: 'gradient', opacity: 0.35 }, data: nosCom(t), links,
     }],
   }), { tabela: { colunas: ['De', 'Para', 'Deputados'], linhas: links.map((l) => [l.source, l.target, l.value]) } });
 });
+
+function translucido(hex, a) {
+  return /^#[0-9a-f]{6}$/i.test(hex)
+    ? `rgba(${parseInt(hex.slice(1, 3), 16)},${parseInt(hex.slice(3, 5), 16)},${parseInt(hex.slice(5, 7), 16)},${a})` : hex;
+}
 
 const cartao = (p) => `<div class="item person"><img class="avatar" src="${fmt.escapar(p.url_foto || '')}" alt="" loading="lazy" width="36" height="36">
   <div><div class="item__title">${fmt.escapar(p.nome)}</div><div class="muted" style="font-size:var(--fs-xs)">${fmt.escapar(p.titulo)}${p.bancada ? ` · ${fmt.escapar(p.bancada)}` : ''}<br>${fmt.escapar(p.sigla_partido || '')}-${fmt.escapar(p.sigla_uf || '')}</div></div></div>`;
