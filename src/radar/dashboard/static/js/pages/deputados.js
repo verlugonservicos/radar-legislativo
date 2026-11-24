@@ -245,7 +245,9 @@ function desenharRanking() {
       gradiente: 'invertido', categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
       series: [{ name: 'Score de atividade', data: top.map((d) => d.score_atividade) }],
     })(t);
-    op.grid = { ...op.grid, bottom: 4 };  // legenda de cores no padrão dos demais (canto superior direito)
+    // enquadramento: eixo até 100 (o score vai de 0 a 100) e margens laterais justas ao rótulo "97,0"
+    op.grid = { ...op.grid, left: 0, right: 44, bottom: 4 };
+    op.xAxis = { ...op.xAxis, max: 100, axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };
     return op;
   }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Score de atividade'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.num1(d.score_atividade)]) } });
 }
@@ -263,7 +265,9 @@ function desenharGastos() {
   const pct = (v) => fmt.pct2(total ? (100 * v) / total : 0);  // 2 casas: no Top 20 por deputado, os valores ficam abaixo de 1%
   const comPct = (op) => {
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(x.value)})` };
-    op.grid = { ...op.grid, right: 132 };
+    // enquadramento: nomes encostados à esquerda, eixo até o maior valor e margem direita justa ao rótulo
+    op.grid = { ...op.grid, left: 0, right: 124 };
+    op.xAxis = { ...op.xAxis, max: 'dataMax', axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: false } };
     return op;
   };
   gastoPartido = montar(limpa('graf-gasto-partido'), (t) => {
@@ -285,7 +289,7 @@ function desenharGastos() {
     const bruto = Math.max(...top.map((d) => d.gasto_total || 0)) / 3;
     const ordem = 10 ** Math.floor(Math.log10(bruto || 1));
     const passo = [1, 2, 2.5, 5, 10].map((m) => m * ordem).find((v) => v >= bruto);
-    op.xAxis = { ...op.xAxis, interval: passo, max: Math.ceil((3 * bruto) / passo) * passo };
+    op.xAxis = { ...op.xAxis, interval: passo };  // termina no maior valor (comPct), com marcas a cada 'passo'
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)} (${pct(ps[0].value)} do total dos ${fmt.num(ls.length)} deputados)` };
     return op;
@@ -315,7 +319,10 @@ function desenharProjetosDeputado() {
     const op = barras({ categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true,
                         gradiente: 'invertido', series: [{ name: 'Projetos', data: top.map((d) => porDep[d.id_deputado].total) }] })(t);
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pctProj(x.value)})` };
-    op.grid = { ...op.grid, right: 112 };
+    // enquadramento: eixo termina no maior valor (sem a sobra até a próxima marca) e margem direita justa ao
+    // rótulo mais longo ("536 (19,51%)"); a esquerda encosta nos nomes
+    op.grid = { ...op.grid, left: 0, right: 96 };
+    op.xAxis = { ...op.xAxis, max: 'dataMax', axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: false } };
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const d = top[xs[0].dataIndex]; const a = porDep[d.id_deputado];
       const temas = Object.entries(a.temas).sort((x, y) => y[1] - x[1]).slice(0, 3)
