@@ -13,6 +13,7 @@ DATASETS: dict[str, str] = {
     ),
     "tramitacao_tema": "SELECT * FROM gold.mart_tramitacao_tema ORDER BY mediana_dias DESC",
     "setores": "SELECT * FROM gold.mart_setores ORDER BY qtd DESC",
+    "lotes_autoria": "SELECT * FROM gold.mart_lotes_autoria ORDER BY data, qtd DESC",
     "projetos_partido": "SELECT sigla_partido, tema, id_deputado, nome, qtd FROM gold.mart_projetos_partido ORDER BY qtd DESC",
     "top_relevantes": "SELECT * FROM gold.mart_top_relevantes ORDER BY posicao",
     "partidos": "SELECT * FROM gold.mart_partidos ORDER BY deputados DESC",

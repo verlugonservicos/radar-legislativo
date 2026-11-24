@@ -218,3 +218,28 @@ export function seletorPeriodo(el, atual, aoMudar) {
     aoMudar(Number(b.dataset.d));
   }));
 }
+
+// ------------------------------------------------------------------ notas de divergência
+/** Texto da nota sobre lotes atípicos de autoria (mart_lotes_autoria): um parágrafo por dia. */
+export function textoLotes(lotes) {
+  const porDia = {};
+  for (const l of lotes) (porDia[l.data] ??= []).push(l);
+  return Object.entries(porDia).map(([dia, ls]) => {
+    const total = ls.reduce((t, l) => t + l.qtd, 0);
+    const quem = ls.map((l) => `${fmt.escapar(l.nome)} (${fmt.escapar(l.sigla_partido)}-${fmt.escapar(l.sigla_uf)}), ${fmt.num(l.qtd)}`).join('; ');
+    return `Em ${fmt.data(dia)}, ${ls.length === 1 ? 'um deputado protocolou' : `${ls.length} deputados protocolaram`} ${fmt.num(total)} projetos num só dia — ${quem}. `
+      + 'O pico é real (conferido na API da Câmara), não erro de dados.';
+  }).join(' ');
+}
+/** Põe (ou tira, com html vazio) uma nota de divergência logo abaixo do cabeçalho do card do gráfico. */
+export function notaDivergencia(elGrafico, html) {
+  const card = elGrafico?.closest('.card');
+  if (!card) return;
+  let nota = card.querySelector(':scope > .card__nota');
+  if (!html) { nota?.remove(); return; }
+  if (!nota) {
+    nota = document.createElement('p'); nota.className = 'card__nota'; nota.setAttribute('role', 'note');
+    card.querySelector(':scope > .card__head').after(nota);
+  }
+  nota.innerHTML = `<strong>Nota:</strong> ${html}`;
+}

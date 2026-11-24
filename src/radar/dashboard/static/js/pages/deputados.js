@@ -2,7 +2,7 @@
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, GRADIENTE, montar } from '../charts.js';
-import { abrirDrawer, Tabela, vazio } from '../ui.js';
+import { abrirDrawer, notaDivergencia, Tabela, textoLotes, vazio } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
 
@@ -10,6 +10,7 @@ import * as fmt from '../format.js';
 await iniciar();
 const deps = await dados('deputados');
 const projetosPartido = await dados('projetos_partido');
+const lotes = await dados('lotes_autoria');
 let filtro = estado.ler();
 const selPartido = document.getElementById('f-partido');
 const selUf = document.getElementById('f-uf');
@@ -279,6 +280,9 @@ function desenharProjetosDeputado() {
   const top = deps.filter((d) => passa(d) && porDep[d.id_deputado])
     .sort((a, b) => porDep[b.id_deputado].total - porDep[a.id_deputado].total || a.nome.localeCompare(b.nome)).slice(0, 20);
   const el = limpa('graf-projetos-deputado');
+  // nota só quando os autores do lote aparecem no ranking filtrado
+  const ids = new Set(top.map((d) => d.id_deputado));
+  notaDivergencia(el, textoLotes(lotes.filter((l) => ids.has(l.id_deputado))));
   if (!top.length) { el.innerHTML = vazio(); return; }
   projetosDeputado = montar(el, (t) => {
     const op = barras({ categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true,

@@ -18,7 +18,7 @@ DROP MATERIALIZED VIEW IF EXISTS
     gold.mart_fornecedores, gold.mart_despesas_outliers, gold.mart_agenda, gold.mart_pauta_critica,
     gold.mart_articulacao, gold.mart_blocos_partidos, gold.mart_liderancas, gold.mart_top_relevantes,
     gold.mart_operacao, gold.mart_cobertura, gold.mart_qualidade, gold.mart_custos_ia,
-    gold.mart_funil_camadas, gold.mart_setores, gold.mart_projetos_partido
+    gold.mart_funil_camadas, gold.mart_setores, gold.mart_projetos_partido, gold.mart_lotes_autoria
     CASCADE;
 
 -- ------------------------------------------------------------------ data de referência
@@ -122,6 +122,22 @@ WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
   AND p.data_apresentacao > r.data_ref - 182 AND d.sigla_partido IS NOT NULL
 GROUP BY 1, 2, 3, 4;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_projetos_partido ON gold.mart_projetos_partido (sigla_partido, tema, id_deputado);
+
+-- Lotes atípicos de autoria: dia em que um mesmo deputado protocolou 50+ projetos como autor principal
+-- (últimas 26 semanas). Alimenta as notas de divergência dos painéis (ex.: 17/07/2026, 890 PLs de dois
+-- deputados), para quem lê não confundir o pico com erro de dados.
+CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_lotes_autoria AS
+SELECT p.data_apresentacao AS data, d.id_deputado, d.nome, d.sigla_partido, d.sigla_uf,
+       count(DISTINCT a.id_proposicao)::int AS qtd
+FROM gold.ponte_proposicao_autor a
+JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
+JOIN gold.fato_proposicao p USING (id_proposicao)
+CROSS JOIN gold.vw_data_referencia r
+WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
+  AND p.data_apresentacao > r.data_ref - 182
+GROUP BY 1, 2, 3, 4, 5
+HAVING count(DISTINCT a.id_proposicao) >= 50;
+CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_lotes_autoria ON gold.mart_lotes_autoria (data, id_deputado);
 
 -- Top 5 dos últimos 7 dias por relevância
 CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_top_relevantes AS

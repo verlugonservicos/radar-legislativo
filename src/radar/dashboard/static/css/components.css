@@ -6,6 +6,8 @@
 .card__head { display: flex; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-4); }
 .card__title { margin: 0; font-size: var(--fs-md); font-weight: 650; }
 .card__sub { margin: 2px 0 0; color: var(--text-muted); font-size: var(--fs-sm); }
+.card__nota { margin: calc(-1 * var(--space-2)) 0 var(--space-3); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm);
+  background: var(--warning-soft); color: var(--text); font-size: var(--fs-xs); line-height: 1.45; }
 .card__actions { margin-left: auto; display: flex; gap: var(--space-1); flex: none; }
 .btn {
   display: inline-flex; align-items: center; gap: var(--space-2); font: inherit; font-size: var(--fs-xs); font-weight: 600;

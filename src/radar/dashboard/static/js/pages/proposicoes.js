@@ -2,7 +2,7 @@
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, corGradiente, corTema, gauge, montar } from '../charts.js';
-import { abrirDrawer, badgeImpacto, chipTema, Tabela, vazio } from '../ui.js';
+import { abrirDrawer, badgeImpacto, chipTema, notaDivergencia, Tabela, textoLotes, vazio } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
 
@@ -235,6 +235,10 @@ function desenharSetores() {
     return op;
   }, { tabela: { colunas: ['Setor', 'Menções', '% do total'], linhas: ordem.map(([s, v]) => [s, v, pct(v)]) } });
 }
+
+// notas de divergência: lotes atípicos de autoria explicam o pico de julho e o topo dos partidos
+const lotes = await dados('lotes_autoria');
+if (lotes.length) for (const id of ['graf-area', 'graf-projetos']) notaDivergencia(document.getElementById(id), textoLotes(lotes));
 
 await seguro(document.getElementById('graf-tramitacao'), desenharTramitacao);
 await seguro(document.getElementById('graf-projetos'), desenharProjetos);
