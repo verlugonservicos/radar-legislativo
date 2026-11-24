@@ -66,9 +66,11 @@ const translucido = (hex, a) => (/^#[0-9a-f]{6}$/i.test(hex)
 const GRUPOS = [
   // cores neutras de propósito: verde/vermelho aqui soaria como julgamento político (governo = bom,
   // oposição = ruim); o degradê verde/vermelho fica para métricas de desempenho (gasto, participação)
-  { nome: 'Alinhados ao governo (≥ 60%)', teste: (g) => g >= 60, cor: () => '#0284C7' },
-  { nome: 'Intermediários (40–60%)', teste: (g) => g >= 40 && g < 60, cor: () => '#F59E0B' },
-  { nome: 'Distantes do governo (< 40%)', teste: (g) => g < 40, cor: () => '#475569' },
+  // faixas: ≥ 80% alinhados, 60–80% intermediários, < 60% distantes (o grafite segue o tema, para não
+  // sumir no fundo escuro)
+  { nome: 'Alinhados ao governo (≥ 80%)', teste: (g) => g >= 80, cor: () => '#0284C7' },
+  { nome: 'Intermediários (60–80%)', teste: (g) => g >= 60 && g < 80, cor: () => '#F59E0B' },
+  { nome: 'Distantes do governo (< 60%)', teste: (g) => g < 60, cor: (t) => t.muted },
 ];
 
 await seguro(document.getElementById('graf-dispersao'), async () => {
