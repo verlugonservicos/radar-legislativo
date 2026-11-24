@@ -13,7 +13,7 @@
   </select>
 </div>
 <div class="grid">
-  <section class="card span-6" aria-labelledby="mapa-t">
+  <section class="card span-12" aria-labelledby="mapa-t">
     <header class="card__head">
       <div><h2 class="card__title" id="mapa-t">Brasil por UF ou região</h2><p class="card__sub">Métrica selecionada acima · no modo UF, clique num estado para filtrar</p></div>
       <div class="card__actions">
@@ -23,12 +23,12 @@
         </div>
       </div>
     </header>
-    {{ grafico("graf-mapa", "Mapa do Brasil por unidade da federação ou região", "chart--mapa") }}
+    {{ grafico("graf-mapa", "Mapa do Brasil por unidade da federação ou região", "chart--mapa chart--mapa-centro") }}
   </section>
-  {% call card("ranking", "Top 25 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos 25 deputados mais ativos", "chart--ranking chart--preenche") }}{% endcall %}
-  {% call card("projetos-deputado", "Top 25 deputados por projetos apresentados", "Últimas 26 semanas · autor principal (1º signatário) · PL, PLP, PEC e PDL · respeita os filtros acima", "span-6", termo="proposicao") %}{{ grafico("graf-projetos-deputado", "Barras dos 25 deputados com mais projetos apresentados", "chart--ranking") }}{% endcall %}
+  {% call card("ranking", "Top 20 por score de atividade", "Média dos percentis de autorias, presença, eventos e discursos (0–100)", "span-6", termo="score-atividade") %}{{ grafico("graf-ranking", "Ranking dos 20 deputados mais ativos", "chart--ranking chart--preenche") }}{% endcall %}
+  {% call card("projetos-deputado", "Top 20 deputados por projetos apresentados", "Últimas 26 semanas · autor principal (1º signatário) · PL, PLP, PEC e PDL · respeita os filtros acima", "span-6", termo="proposicao") %}{{ grafico("graf-projetos-deputado", "Barras dos 20 deputados com mais projetos apresentados", "chart--ranking") }}{% endcall %}
+  {% call card("gasto-partido", "Gasto da cota por partido", "Valor líquido dos deputados em exercício no período carregado · respeita os filtros acima", "span-6", termo="cota") %}{{ grafico("graf-gasto-partido", "Barras do gasto da cota parlamentar por partido", "chart--ranking") }}{% endcall %}
   {% call card("gasto-deputado", "Top 20 deputados por gasto da cota", "Valor líquido no período carregado · respeita os filtros acima", "span-6", termo="cota") %}{{ grafico("graf-gasto-deputado", "Barras dos 20 deputados com maior gasto da cota", "chart--ranking chart--estica") }}{% endcall %}
-  {% call card("gasto-partido", "Gasto da cota por partido", "Valor líquido dos deputados em exercício no período carregado · respeita os filtros acima", "span-12", termo="cota") %}{{ grafico("graf-gasto-partido", "Barras do gasto da cota parlamentar por partido", "chart--ranking") }}{% endcall %}
   {% call card("tabela", "Deputados em exercício", "Clique para ver o perfil", "span-12") %}<div id="tabela-deputados"></div>{% endcall %}
 </div>
 {% endblock %}

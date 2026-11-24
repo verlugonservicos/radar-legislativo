@@ -31,6 +31,7 @@
 .chart { width: 100%; height: 320px; }
 .chart--lg { height: 420px; } .chart--sm { height: 240px; } .chart--xl { height: 520px; } .chart--mapa { height: auto; aspect-ratio: 4 / 5; max-height: 820px; }   /* proporção do Brasil */
 .chart--ranking { height: 640px; }
+.chart--mapa-centro { max-width: 656px; margin-inline: auto; }  /* mapa sozinho na linha: centralizado, na proporção do Brasil */
 /* cresce o pouco que falta para o rodapé ("Ver dados em tabela") alinhar com o card vizinho, cujo
    subtítulo ocupa mais linhas; o teto evita esticar quando a tabela do vizinho é aberta */
 .chart--estica { flex: 1 0 auto; }

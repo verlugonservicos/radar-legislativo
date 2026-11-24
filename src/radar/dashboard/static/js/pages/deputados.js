@@ -201,8 +201,8 @@ function desenharMapa() {
                  linhas: regs.map((r) => [r.regiao, REGIOES[r.regiao].join(', '), r.deputados, formatter(r[metrica])]) } });
 }
 
-// Top 25: o gráfico ocupa a altura do card (acompanha o mapa ao lado), com o eixo preso embaixo
-const QTD_RANKING = 25;
+// Top 20: o gráfico ocupa a altura do card (acompanha o mapa ao lado), com o eixo preso embaixo
+const QTD_RANKING = 20;
 function desenharRanking() {
   ranking?.instancia.dispose();
   const el = limpa('graf-ranking');
@@ -214,7 +214,7 @@ function desenharRanking() {
     })(t);
     op.grid = { ...op.grid, bottom: 4 };  // legenda de cores no padrão dos demais (canto superior direito)
     return op;
-  });
+  }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Score de atividade'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.num1(d.score_atividade)]) } });
 }
 
 // Gastos da cota (mesmo critério do mapa para gasto: maior = vermelho), respeitando partido e UF
@@ -243,7 +243,7 @@ function desenharGastos() {
   }), { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Gasto da cota'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.brlCheio(d.gasto_total)]) } });
 }
 
-// Top 25 deputados por projetos apresentados (autor principal; mesmo critério do gráfico por partido na
+// Top 20 deputados por projetos apresentados (autor principal; mesmo critério do gráfico por partido na
 // página de Proposições), respeitando os filtros de partido e UF; o tooltip mostra os temas principais
 let projetosDeputado;
 function desenharProjetosDeputado() {
@@ -253,7 +253,7 @@ function desenharProjetosDeputado() {
     a.total += r.qtd; a.temas[r.tema] = (a.temas[r.tema] || 0) + r.qtd;
   }
   const top = deps.filter((d) => passa(d) && porDep[d.id_deputado])
-    .sort((a, b) => porDep[b.id_deputado].total - porDep[a.id_deputado].total || a.nome.localeCompare(b.nome)).slice(0, 25);
+    .sort((a, b) => porDep[b.id_deputado].total - porDep[a.id_deputado].total || a.nome.localeCompare(b.nome)).slice(0, 20);
   const el = limpa('graf-projetos-deputado');
   if (!top.length) { el.innerHTML = vazio(); return; }
   projetosDeputado = montar(el, (t) => {
