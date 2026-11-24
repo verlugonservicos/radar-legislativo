@@ -72,15 +72,32 @@ await seguro(document.getElementById('graf-partido'), async () => {
   montar(limpa('graf-partido'), barras({
     gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, formatter: fmt.brl, rotulo: true,
     series: [{ name: 'Gasto por deputado', data: ps.map((p) => p.gasto_por_deputado) }],
-  }));
+  }), { tabela: { colunas: ['Partido', 'Deputados', 'Gasto por deputado'], linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.brl(p.gasto_por_deputado)]) } });
 });
 
 await seguro(document.getElementById('graf-uf'), async () => {
+  // barras horizontais (como o gráfico por partido), com o nº de deputados ao lado da UF; o % é a fatia
+  // da UF no gasto total da cota (a média por deputado não soma 100%, o gasto total soma)
   const us = (await dados('deputados_uf')).sort((a, b) => b.gasto_por_deputado - a.gasto_por_deputado);
-  montar(limpa('graf-uf'), barras({
-    gradiente: true, categorias: us.map((u) => u.sigla_uf), formatter: fmt.brl,
-    series: [{ name: 'Gasto por deputado', data: us.map((u) => u.gasto_por_deputado) }],
-  }));
+  const total = us.reduce((s, u) => s + (u.gasto_total || 0), 0);
+  const pct = (u) => fmt.pct2(total ? (100 * (u.gasto_total || 0)) / total : 0);
+  const porUf = Object.fromEntries(us.map((u) => [u.sigla_uf, u]));
+  montar(limpa('graf-uf'), (t) => {
+    const op = barras({
+      gradiente: true, categorias: us.map((u) => u.sigla_uf), horizontal: true, rotulo: true, formatter: fmt.brl,
+      series: [{ name: 'Gasto por deputado', data: us.map((u) => u.gasto_por_deputado) }],
+    })(t);
+    op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(porUf[s].deputados)})` };
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.brl(x.value)} (${pct(us[x.dataIndex])})` };
+    op.grid = { ...op.grid, right: 132 };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => {
+      const u = us[ps[0].dataIndex];
+      return `<b>${fmt.escapar(u.sigla_uf)}</b> · ${fmt.num(u.deputados)} deputados<br>Por deputado: <b>${fmt.brl(u.gasto_por_deputado)}</b>`
+        + `<br>Gasto total: ${fmt.brlCheio(u.gasto_total)} (${pct(u)} do total da cota)`;
+    } };
+    return op;
+  }, { tabela: { colunas: ['UF', 'Deputados', 'Gasto por deputado', 'Gasto total', '% do total'],
+                 linhas: us.map((u) => [u.sigla_uf, u.deputados, fmt.brl(u.gasto_por_deputado), fmt.brlCheio(u.gasto_total), pct(u)]) } });
 });
 
 await seguro(document.getElementById('tabela-outliers'), async () => {
