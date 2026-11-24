@@ -2,13 +2,14 @@
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
 import { barras, GRADIENTE, montar } from '../charts.js';
-import { abrirDrawer, Tabela } from '../ui.js';
+import { abrirDrawer, Tabela, vazio } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
 
 /* global echarts */
 await iniciar();
 const deps = await dados('deputados');
+const projetosPartido = await dados('projetos_partido');
 let filtro = estado.ler();
 const selPartido = document.getElementById('f-partido');
 const selUf = document.getElementById('f-uf');
@@ -242,6 +243,32 @@ function desenharGastos() {
   }), { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Gasto da cota'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.brlCheio(d.gasto_total)]) } });
 }
 
+// Top 25 deputados por projetos apresentados (autor principal; mesmo critério do gráfico por partido na
+// página de Proposições), respeitando os filtros de partido e UF; o tooltip mostra os temas principais
+let projetosDeputado;
+function desenharProjetosDeputado() {
+  const porDep = {};
+  for (const r of projetosPartido) {
+    const a = (porDep[r.id_deputado] ??= { total: 0, temas: {} });
+    a.total += r.qtd; a.temas[r.tema] = (a.temas[r.tema] || 0) + r.qtd;
+  }
+  const top = deps.filter((d) => passa(d) && porDep[d.id_deputado])
+    .sort((a, b) => porDep[b.id_deputado].total - porDep[a.id_deputado].total || a.nome.localeCompare(b.nome)).slice(0, 25);
+  const el = limpa('graf-projetos-deputado');
+  if (!top.length) { el.innerHTML = vazio(); return; }
+  projetosDeputado = montar(el, (t) => {
+    const op = barras({ categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true,
+                        gradiente: 'invertido', series: [{ name: 'Projetos', data: top.map((d) => porDep[d.id_deputado].total) }] })(t);
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
+      const d = top[xs[0].dataIndex]; const a = porDep[d.id_deputado];
+      const temas = Object.entries(a.temas).sort((x, y) => y[1] - x[1]).slice(0, 3)
+        .map(([tema, n]) => `${fmt.escapar(tema)}: ${fmt.num(n)}`).join('<br>');
+      return `<b>${fmt.escapar(d.nome)}</b> (${fmt.escapar(d.sigla_partido)}-${fmt.escapar(d.sigla_uf)})<br>Projetos: <b>${fmt.num(a.total)}</b><br><i>Principais temas</i><br>${temas}`;
+    } };
+    return op;
+  }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Projetos'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, porDep[d.id_deputado].total]) } });
+}
+
 function perfil(d) {
   abrirDrawer(`<div class="person"><img class="avatar" style="width:72px;height:72px" src="${fmt.escapar(d.url_foto)}" alt="" loading="lazy">
     <div><h2>${fmt.escapar(d.nome)}</h2><p class="muted">${fmt.escapar(d.sigla_partido)} · ${fmt.escapar(d.sigla_uf)}</p></div></div>
@@ -281,7 +308,7 @@ function desenharTabela() {
 
 function aplicar() {
   estado.gravar({ partidos: selPartido.value ? [selPartido.value] : [], ufs: selUf.value ? [selUf.value] : [] });
-  desenharMapa(); desenharRanking(); desenharGastos(); desenharTabela();
+  desenharMapa(); desenharRanking(); desenharProjetosDeputado(); desenharGastos(); desenharTabela();
 }
 selPartido.addEventListener('change', aplicar);
 selUf.addEventListener('change', aplicar);
@@ -289,5 +316,6 @@ selMetrica.addEventListener('change', desenharMapa);
 
 await seguro(document.getElementById('graf-mapa'), desenharMapa);
 await seguro(document.getElementById('graf-ranking'), desenharRanking);
+await seguro(document.getElementById('graf-projetos-deputado'), desenharProjetosDeputado);
 await seguro(document.getElementById('graf-gasto-partido'), desenharGastos);
 await seguro(document.getElementById('tabela-deputados'), desenharTabela);
