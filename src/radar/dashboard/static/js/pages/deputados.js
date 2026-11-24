@@ -30,6 +30,8 @@ const METRICAS = {
 let mapa; let ranking; let tabela;
 const geo = await fetch('static/geo/brasil-ufs.json').then((r) => r.json());
 echarts.registerMap('BR', geo);
+// proporção correta do mapa: cosseno da latitude média do país (caixa -33,7° a +5,3° → média -14,2°)
+const ASPECTO_BR = 0.969;
 // caixa (lng/lat) de cada UF: centro para a etiqueta da UF selecionada e tamanho para saber se cabe dentro
 const caixaUf = Object.fromEntries(geo.features.map((f) => {
   const pts = (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates).flat(2);
@@ -149,14 +151,17 @@ function desenharDestaques(itens, formatter, rotulo, metrica) {
 function desenharMapa() {
   const [rotulo, formatter] = METRICAS[selMetrica.value];
   const metrica = selMetrica.value;
-  const base = { type: 'map', map: 'BR', roam: false, nameProperty: 'sigla',
-                 top: 4, bottom: 4, left: 4, right: 4 };  // preenche a área (que tem a proporção do Brasil, 4:5)
+  // aspectScale = cos(latitude média do Brasil, -14,2°) ≈ 0,97: o padrão do ECharts (0,75) achatava o país
+  // na horizontal (largura/altura 0,75 em vez de 0,97). A área do gráfico é quase quadrada (CSS .chart--mapa).
+  // layoutCenter/layoutSize mantêm a proporção (top/left/right/bottom juntos esticariam o mapa até a caixa)
+  const base = { type: 'map', map: 'BR', roam: false, nameProperty: 'sigla', aspectScale: ASPECTO_BR,
+                 layoutCenter: ['50%', '50%'], layoutSize: '98%' };
   // tela estreita: legenda na horizontal, abaixo do mapa (não cobre os estados)
   const estreito = document.getElementById('graf-mapa').clientWidth < 480;
   const legenda = estreito ? { orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 12, itemHeight: 160 }
     : { left: 0, bottom: 8, itemHeight: 100, itemWidth: 14 };
   if (modoMapa === 'uf') {
-    const serieBase = estreito ? { ...base, bottom: 52 } : base;
+    const serieBase = estreito ? { ...base, layoutCenter: ['50%', '45%'], layoutSize: '86%' } : base;
     const ufs = porUfFiltrado();
     const vs = Object.values(ufs).map((a) => a[metrica]).filter((v) => v !== null && v !== undefined);
     // a UF filtrada fica destacada pela própria seleção do filtro (o 2º clique desmarca de verdade)
@@ -199,7 +204,8 @@ function desenharMapa() {
       visualMap: { min, max, ...legenda, calculable: false, seriesIndex: 0, dimension: 2,
         text: [`maior · ${formatter(max)}`, `menor · ${formatter(min)}`], inRange: { color: coresDe(metrica) }, textStyle: { color: t.muted }, formatter },
       geo: {
-        map: 'BR', roam: false, nameProperty: 'sigla', top: 4, bottom: estreito ? 52 : 4, left: 4, right: 4,
+        map: 'BR', roam: false, nameProperty: 'sigla', aspectScale: ASPECTO_BR,
+        layoutCenter: ['50%', estreito ? '45%' : '50%'], layoutSize: estreito ? '86%' : '98%',
         label: { show: false }, emphasis: { disabled: true }, select: { disabled: true },
         tooltip: { show: true, formatter: (p) => { const r = regiaoDe[p.name]; return etiqueta(r, ` (${REGIOES[r].join(', ')})`, resumoDe[r]); } },
         regions: Object.keys(regiaoDe).map((uf) => {
