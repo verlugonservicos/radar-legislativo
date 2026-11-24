@@ -187,6 +187,7 @@ function desenharProjetos() {
   for (const a of Object.values(agg)) [a.maior, a.maiorQtd] = Object.entries(a.autores).sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0]))[0];
   const valor = (a) => (porDep ? Math.round((10 * a.projetos) / a.deputados) / 10 : a.projetos);
   const ps = Object.values(agg).sort((a, b) => valor(b) - valor(a));
+  const totalProjetos = ps.reduce((t, a) => t + a.projetos, 0);
   if (!ps.length) { vazioEm('graf-projetos'); return; }
   const formatter = porDep ? fmt.num1 : fmt.num;
   const el = document.getElementById('graf-projetos'); el.classList.remove('skeleton');
@@ -194,15 +195,20 @@ function desenharProjetos() {
     const op = barras({ categorias: ps.map((a) => a.sigla), horizontal: true, rotulo: true, formatter, gradiente: 'invertido',
                         series: [{ name: porDep ? 'Projetos por deputado' : 'Projetos', data: ps.map(valor) }] })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(agg[s].deputados)})` };
+    // no modo Total, cada barra mostra também a fatia do total de projetos (dos temas filtrados)
+    if (!porDep) {
+      op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${fmt.pct((100 * x.value) / totalProjetos)})` };
+      op.grid = { ...op.grid, right: 104 };  // espaço para o rótulo mais longo ("707 (24,3%)")
+    }
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const a = agg[xs[0].name];
       return `<b>${fmt.escapar(a.sigla)}</b> · ${fmt.num(a.deputados)} ${a.deputados === 1 ? 'deputado' : 'deputados'}`
-        + `<br>Projetos: <b>${fmt.num(a.projetos)}</b> · ${fmt.num1(a.projetos / a.deputados)} por deputado`
+        + `<br>Projetos: <b>${fmt.num(a.projetos)}</b> (${fmt.pct((100 * a.projetos) / totalProjetos)} do total) · ${fmt.num1(a.projetos / a.deputados)} por deputado`
         + `<br>Maior autor: ${fmt.escapar(a.maior)} (${fmt.num(a.maiorQtd)}, ${fmt.pct((100 * a.maiorQtd) / a.projetos)} do partido)`;
     } };
     return op;
-  }, { tabela: { colunas: ['Partido', 'Deputados', 'Projetos', 'Por deputado', 'Maior autor'],
-                 linhas: ps.map((a) => [a.sigla, a.deputados, a.projetos, fmt.num1(a.projetos / a.deputados), `${a.maior} (${a.maiorQtd})`]) } });
+  }, { tabela: { colunas: ['Partido', 'Deputados', 'Projetos', '% do total', 'Por deputado', 'Maior autor'],
+                 linhas: ps.map((a) => [a.sigla, a.deputados, a.projetos, fmt.pct((100 * a.projetos) / totalProjetos), fmt.num1(a.projetos / a.deputados), `${a.maior} (${a.maiorQtd})`]) } });
 }
 document.querySelectorAll('#projetos-modo button').forEach((b) => b.addEventListener('click', () => {
   modoProjetos = b.dataset.modo;
