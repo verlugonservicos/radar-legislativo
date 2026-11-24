@@ -29,7 +29,7 @@ await seguro(document.getElementById('graf-calendario'), async () => {
 
 await seguro(document.getElementById('graf-orgaos'), async () => {
   const o = contar(ag.filter((d) => d.orgao), (d) => d.orgao).slice(0, 15);
-  montar(limpa('graf-orgaos'), barras({ gradiente: true, categorias: o.map((d) => d[0]), horizontal: true, rotulo: true, series: [{ name: 'Eventos', data: o.map((d) => d[1]) }] }));
+  montar(limpa('graf-orgaos'), barras({ gradiente: 'invertido', categorias: o.map((d) => d[0]), horizontal: true, rotulo: true, series: [{ name: 'Eventos', data: o.map((d) => d[1]) }] }));
 });
 
 await seguro(document.getElementById('graf-tipos'), async () => {

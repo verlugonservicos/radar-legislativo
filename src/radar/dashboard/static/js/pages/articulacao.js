@@ -13,7 +13,7 @@ await seguro(document.getElementById('graf-frentes'), async () => {
   const top = frentes.slice(0, 20);
   const corta = (t) => t.replace(/^Frente Parlamentar (Mista )?(em |de |da |do |pela |pelo |para )?/i, '').slice(0, 48);
   montar(limpa('graf-frentes'), barras({
-    gradiente: true, categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
+    gradiente: 'invertido', categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
     series: [{ name: 'Deputados', data: top.map((f) => f.membros) }],
   }), { tabela: { colunas: ['Frente', 'Deputados', 'Partidos', 'Partido com mais membros'], linhas: top.map((f) => [f.titulo, f.membros, f.partidos_distintos, f.top_partido]) } });
 });

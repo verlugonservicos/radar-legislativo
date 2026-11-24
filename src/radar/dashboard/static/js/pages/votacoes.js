@@ -25,7 +25,7 @@ await seguro(document.getElementById('graf-dia'), async () => {
 await seguro(document.getElementById('graf-participacao'), async () => {
   const ps = partidos.filter((p) => p.participacao_pct !== null).sort((a, b) => b.participacao_pct - a.participacao_pct);
   montar(limpa('graf-participacao'), barras({
-    gradiente: true, categorias: ps.map((p) => p.sigla_partido), horizontal: true, rotulo: true, formatter: fmt.pct,
+    gradiente: 'invertido', categorias: ps.map((p) => p.sigla_partido), horizontal: true, rotulo: true, formatter: fmt.pct,
     series: [{ name: 'Participação', data: ps.map((p) => p.participacao_pct) }],
   }), { tabela: { colunas: ['Partido', 'Participação'], linhas: ps.map((p) => [p.sigla_partido, fmt.pct(p.participacao_pct)]) } });
 });

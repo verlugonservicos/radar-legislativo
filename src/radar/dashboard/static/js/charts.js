@@ -95,6 +95,7 @@ export function linhas({ x, series, area = false, formatter = fmt.num, xData = t
 }
 
 // Degradê das barras ordenadas por valor: menor = verde, intermediário = âmbar, maior = vermelho
+// (com gradiente: 'invertido', o contrário)
 export const GRADIENTE = ['#16A34A', '#F59E0B', '#DC2626'];
 const valorDe = (d) => (d !== null && typeof d === 'object' ? d.value : d);
 
@@ -112,7 +113,8 @@ export function barras({ categorias, series, horizontal = false, empilhado = fal
         type: 'continuous', show: true, min: Math.min(...vs), max: Math.max(...vs), seriesIndex: 0,
         dimension: horizontal ? 0 : 1, calculable: false, orient: 'horizontal', right: 0, top: 0,
         itemWidth: 10, itemHeight: 90, text: ['maior', 'menor'], textGap: 6,
-        textStyle: { color: t.muted, fontSize: 11 }, inRange: { color: GRADIENTE },
+        // gradiente: 'invertido' = maior em verde (quando mais é melhor: atividade, participação, membros)
+        textStyle: { color: t.muted, fontSize: 11 }, inRange: { color: gradiente === 'invertido' ? [...GRADIENTE].reverse() : GRADIENTE },
       } : undefined,
       xAxis: horizontal ? val : cat, yAxis: horizontal ? { ...cat, inverse: true } : val,
       series: series.map((s) => ({

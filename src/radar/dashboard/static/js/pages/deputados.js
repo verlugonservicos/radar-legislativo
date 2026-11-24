@@ -162,7 +162,7 @@ function desenharRanking() {
   ranking?.instancia.dispose();
   const top = deps.filter(passa).slice(0, 20);
   ranking = montar(limpa('graf-ranking'), barras({
-    gradiente: true, categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
+    gradiente: 'invertido', categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.num1,
     series: [{ name: 'Score de atividade', data: top.map((d) => d.score_atividade) }],
   }));
 }
