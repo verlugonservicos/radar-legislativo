@@ -28,6 +28,12 @@ const METRICAS = {
 let mapa; let ranking; let tabela;
 const geo = await fetch('static/geo/brasil-ufs.json').then((r) => r.json());
 echarts.registerMap('BR', geo);
+// caixa (lng/lat) de cada UF: centro para a etiqueta da UF selecionada e tamanho para saber se cabe dentro
+const caixaUf = Object.fromEntries(geo.features.map((f) => {
+  const pts = (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates).flat(2);
+  const xs = pts.map((p) => p[0]); const ys = pts.map((p) => p[1]);
+  return [f.properties.sigla, [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]];
+}));
 
 // UF → região (IBGE) e a UF que recebe o rótulo da região no mapa
 const REGIOES = {
@@ -90,6 +96,33 @@ document.querySelectorAll('#mapa-agrupamento button').forEach((b) => b.addEventL
   desenharMapa();
 }));
 
+// UF selecionada: etiqueta com o nº de deputados no centro do estado; se o estado é pequeno na tela
+// (DF, SE, AL…), a etiqueta vai para o lado (mar, a leste) com uma linha-guia até o estado
+function etiquetaUfSelecionada(inst, t, ufs) {
+  const uf = selUf.value;
+  if (!uf || !caixaUf[uf] || !ufs[uf]) { inst.setOption({ graphic: [{ id: 'uf-sel', type: 'group', children: [] }] }, { replaceMerge: ['graphic'] }); return; }
+  const [x0, y0, x1, y1] = caixaUf[uf];
+  const [ax, ay] = inst.convertToPixel({ seriesIndex: 0 }, [x0, y1]);
+  const [bx, by] = inst.convertToPixel({ seriesIndex: 0 }, [x1, y0]);
+  const [cx, cy] = inst.convertToPixel({ seriesIndex: 0 }, [(x0 + x1) / 2, (y0 + y1) / 2]);
+  const n = ufs[uf].deputados;
+  const texto = `${uf} · ${fmt.num(n)} ${n === 1 ? 'deputado' : 'deputados'}`;
+  const largura = texto.length * 6.6 + 16; const altura = 24;
+  const cabe = Math.abs(bx - ax) > largura + 8 && Math.abs(by - ay) > altura + 8;
+  const W = inst.getWidth();
+  let lx = cx; let ly = cy;
+  if (!cabe) {  // fora do estado: à direita (mar) se couber, senão à esquerda; um pouco acima para não cobrir vizinhos
+    lx = Math.max(ax, bx) + 24 + largura / 2 <= W - 4 ? Math.max(ax, bx) + 24 + largura / 2 : Math.min(ax, bx) - 24 - largura / 2;
+    ly = cy - 18;
+  }
+  const filhos = [];
+  if (!cabe) filhos.push({ type: 'line', silent: true, z: 100, shape: { x1: cx, y1: cy, x2: lx - Math.sign(lx - cx) * largura / 2, y2: ly }, style: { stroke: t.text, lineWidth: 1 } });
+  filhos.push({ type: 'rect', silent: true, z: 100, shape: { x: lx - largura / 2, y: ly - altura / 2, width: largura, height: altura, r: 6 },
+                style: { fill: t.surface, stroke: t.border, shadowColor: 'rgba(15,23,42,.18)', shadowBlur: 6 } });
+  filhos.push({ type: 'text', silent: true, z: 101, x: lx, y: ly, style: { text: texto, align: 'center', verticalAlign: 'middle', fontSize: 12, fontWeight: 700, fill: t.text } });
+  inst.setOption({ graphic: [{ id: 'uf-sel', type: 'group', z: 100, children: filhos }] }, { replaceMerge: ['graphic'] });
+}
+
 function desenharMapa() {
   const [rotulo, formatter] = METRICAS[selMetrica.value];
   const metrica = selMetrica.value;
@@ -117,7 +150,8 @@ function desenharMapa() {
         emphasis: { label: { show: true, color: t.text }, itemStyle: { areaColor: t.warning } },
         label: { show: true, fontSize: 10, color: t.muted } }],
     }), { tabela: { colunas: ['UF', 'Deputados', rotulo],
-                    linhas: Object.entries(ufs).map(([uf, a]) => [uf, a.deputados, formatter(a[metrica])]) } });
+                    linhas: Object.entries(ufs).map(([uf, a]) => [uf, a.deputados, formatter(a[metrica])]) },
+          depois: (inst, t) => etiquetaUfSelecionada(inst, t, ufs) });
     mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
     return;
   }
