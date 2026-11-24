@@ -121,7 +121,12 @@ table.data tr:last-child td { border-bottom: 0; }
 .strip { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; padding: var(--space-3) var(--space-5); border-radius: var(--radius-lg); background: var(--accent-soft); color: var(--text); font-size: var(--fs-sm); }
 .strip strong { font-variant-numeric: tabular-nums; }
 .people { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
-.coverage { display: grid; grid-template-columns: repeat(auto-fill, minmax(14px, 1fr)); gap: 4px; }
+.coverage { display: grid; grid-template-columns: repeat(auto-fill, 16px); gap: 4px; }
+.cobertura__total { margin: 0 0 var(--space-4); font-size: var(--fs-md); }
+.cobertura__grupos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-6); }
+.cobertura__grupo--largo { grid-column: 1 / -1; }
+.cobertura__nome { display: flex; justify-content: space-between; font-size: var(--fs-xs); margin-bottom: 6px; color: var(--text-muted); }
+@media (max-width: 480px) { .cobertura__grupos { grid-template-columns: 1fr; } }
 .coverage span { aspect-ratio: 1; border-radius: 3px; background: var(--positive); }
 .coverage span.is-warn { background: var(--warning); } .coverage span.is-err { background: var(--negative); }
 

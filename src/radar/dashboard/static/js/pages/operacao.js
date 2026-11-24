@@ -26,9 +26,15 @@ await seguro(document.getElementById('grade-cobertura'), async () => {
   const cob = await dados('cobertura');
   const grupos = [...new Set(cob.map((c) => c.grupo))];
   const classe = (s) => (s === 'ok' ? '' : s === 'erro' || s === 'falha' ? 'is-err' : 'is-warn');
-  document.getElementById('grade-cobertura').innerHTML = `<p style="margin-top:0"><strong>${m.cobertura}</strong> endpoints com status ok</p>${grupos.map((g) => `
-    <div style="margin-bottom:var(--space-3)"><div class="muted" style="font-size:var(--fs-xs);margin-bottom:4px">${fmt.escapar(g)}</div>
-    <div class="coverage" role="list">${cob.filter((c) => c.grupo === g).map((c) => `<span role="listitem" class="${classe(c.status)}" title="${fmt.escapar(c.endpoint)}: ${fmt.escapar(c.status)} · ${fmt.num(c.linhas_bronze)} linhas na Bronze" aria-label="${fmt.escapar(c.endpoint)}: ${fmt.escapar(c.status)}"></span>`).join('')}</div></div>`).join('')}`;
+  // grupos em 2 colunas (o grupo grande, "referencias", ocupa a linha toda), com "ok/total" ao lado do nome
+  const grupo = (g) => {
+    const cs = cob.filter((c) => c.grupo === g); const ok = cs.filter((c) => c.status === 'ok').length;
+    return `<div class="cobertura__grupo${cs.length > 12 ? ' cobertura__grupo--largo' : ''}">
+      <div class="cobertura__nome"><span>${fmt.escapar(g)}</span><span class="muted">${ok}/${cs.length}</span></div>
+      <div class="coverage" role="list">${cs.map((c) => `<span role="listitem" class="${classe(c.status)}" title="${fmt.escapar(c.endpoint)}: ${fmt.escapar(c.status)} · ${fmt.num(c.linhas_bronze)} linhas na Bronze" aria-label="${fmt.escapar(c.endpoint)}: ${fmt.escapar(c.status)}"></span>`).join('')}</div></div>`;
+  };
+  document.getElementById('grade-cobertura').innerHTML = `<p class="cobertura__total"><strong>${m.cobertura}</strong> endpoints com status ok</p>
+    <div class="cobertura__grupos">${grupos.map(grupo).join('')}</div>`;
 });
 
 await seguro(document.getElementById('graf-funil'), async () => {
