@@ -65,10 +65,20 @@ await seguro(document.getElementById('graf-temas'), async () => {
   const el = document.getElementById('graf-temas');
   el.classList.remove('skeleton');
   if (!ordem.length) { el.innerHTML = vazio(); return; }
-  montar(el, barras({
-    categorias: ordem.map(([t]) => t), horizontal: true, rotulo: true,
-    series: [{ name: 'Proposições', data: ordem.map(([t, v]) => ({ value: v, itemStyle: { color: corTema(t) } })) }],
-  }), { tabela: { colunas: ['Tema', 'Proposições'], linhas: ordem } });
+  // % do total das 4 semanas, com 2 casas, entre parênteses (mesmo padrão dos outros gráficos de barras)
+  const total = ordem.reduce((t, [, v]) => t + v, 0);
+  const pct = (v) => fmt.pct2(total ? (100 * v) / total : 0);
+  montar(el, (t) => {
+    const op = barras({
+      categorias: ordem.map(([tm]) => tm), horizontal: true, rotulo: true,
+      series: [{ name: 'Proposições', data: ordem.map(([tm, v]) => ({ value: v, itemStyle: { color: corTema(tm) } })) }],
+    })(t);
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pct(x.value)})` };
+    op.grid = { ...op.grid, right: 104 };
+    op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
+      formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Proposições: <b>${fmt.num(ps[0].value)}</b> (${pct(ps[0].value)} do total)` };
+    return op;
+  }, { tabela: { colunas: ['Tema', 'Proposições', '% do total'], linhas: ordem.map(([tm, v]) => [tm, v, pct(v)]) } });
 });
 
 await seguro(document.getElementById('lista-top'), async () => {
