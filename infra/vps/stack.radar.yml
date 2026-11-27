@@ -10,7 +10,6 @@
 services:
   runner:
     image: radar-runner:${RADAR_VERSAO:-latest}
-    env_file: ../../.env
     environment:
       DASHBOARD_OUT_DIR: site
       GH_DEPLOY_KEY_PATH: /run/secrets/gh_deploy_key
@@ -21,6 +20,9 @@ services:
       GIT_COMMITTER_NAME: verlugonservicos
       GIT_COMMITTER_EMAIL: 342045083+verlugonservicos@users.noreply.github.com
     volumes:
+      # .env como arquivo (lido pelo pydantic-settings), não como env_file: o Docker manteria as aspas
+      # dos valores entre aspas
+      - /opt/portfolio/radar-legislativo/.env:/app/.env:ro
       - /opt/portfolio/radar-legislativo/data:/app/data
       - /opt/portfolio/radar-legislativo/site:/app/site
     secrets:
