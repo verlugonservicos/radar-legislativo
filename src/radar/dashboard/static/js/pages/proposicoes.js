@@ -1,7 +1,7 @@
 // Proposições e Temas: área por tema/semana, acurácia da IA, treemap, tramitação, setores e tabela.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, corGradiente, corTema, gauge, montar } from '../charts.js';
+import { barras, corGradiente, corTema, gauge, linhaMedia, mediaDe, montar } from '../charts.js';
 import { abrirDrawer, badgeImpacto, chipTema, notaDivergencia, Tabela, textoLotes, vazio } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
@@ -165,13 +165,15 @@ function desenharTramitacao() {
   const el = document.getElementById('graf-tramitacao');
   el.classList.remove('skeleton');
   const opac = (d) => (passa(d.tema) ? 1 : 0.2);
-  montar(el, barras({
-    categorias: tr.map((d) => d.tema), horizontal: true, formatter: (v) => `${fmt.num(v)} dias`, gradiente: true,
+  const dias = (v) => `${fmt.num(v)} dias`;
+  // linha = média das medianas de todos os temas (a referência de "tema típico")
+  montar(el, (t) => linhaMedia(barras({
+    categorias: tr.map((d) => d.tema), horizontal: true, formatter: dias, gradiente: true,
     series: [
       { name: 'Mediana', data: tr.map((d) => ({ value: d.mediana_dias, itemStyle: { opacity: opac(d) } })) },
       { name: 'Percentil 90', data: tr.map((d) => ({ value: d.p90_dias, itemStyle: { opacity: opac(d) } })), itemStyle: { color: 'rgba(148,163,184,.55)' } },
     ],
-  }), { tabela: { colunas: ['Tema', 'Proposições', 'Mediana (dias)', 'P90 (dias)'], linhas: tr.map((d) => [d.tema, d.qtd, d.mediana_dias, d.p90_dias]) } });
+  })(t), mediaDe(tr.map((d) => d.mediana_dias)), t, { formatter: dias, rotulo: 'média das medianas' }), { tabela: { colunas: ['Tema', 'Proposições', 'Mediana (dias)', 'P90 (dias)'], linhas: tr.map((d) => [d.tema, d.qtd, d.mediana_dias, d.p90_dias]) } });
 }
 
 // Projetos por partido (autor principal): total ou por deputado, somados só nos temas filtrados; o
@@ -203,6 +205,7 @@ function desenharProjetos() {
       op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pcts[x.dataIndex]})` };
       op.grid = { ...op.grid, right: 112 };  // espaço para o rótulo mais longo ("707 (24,58%)")
     }
+    linhaMedia(op, mediaDe(ps.map(valor)), t, { formatter });  // média entre todos os partidos
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const a = agg[xs[0].name];
       return `<b>${fmt.escapar(a.sigla)}</b> · ${fmt.num(a.deputados)} ${a.deputados === 1 ? 'deputado' : 'deputados'}`
@@ -232,6 +235,7 @@ function desenharSetores() {
     const op = barras({ gradiente: 'invertido', categorias: ordem.map((d) => d[0]), horizontal: true, series: [{ name: 'Menções', data: ordem.map((d) => d[1]) }], rotulo: true })(t);
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pctsSet[x.dataIndex]})` };
     op.grid = { ...op.grid, right: 124 };
+    linhaMedia(op, mediaDe(ordem.map((d) => d[1])), t);  // média de menções por setor
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => `<b>${fmt.escapar(xs[0].name)}</b><br>Menções: <b>${fmt.num(xs[0].value)}</b> (${pctsSet[xs[0].dataIndex]} do total)` };
     return op;
   }, { tabela: { colunas: ['Setor', 'Menções', '% do total'], linhas: ordem.map(([s, v], i) => [s, v, pctsSet[i]]) } });

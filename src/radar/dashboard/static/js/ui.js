@@ -85,7 +85,7 @@ export const vazio = (msg = 'Sem dados para os filtros selecionados') => `<div c
 export function erro(el, e) { if (el) el.innerHTML = vazio(`Não foi possível carregar os dados (${e.message}).`); console.error(e); }
 
 /** KPI com valor, variação (Δ%) e sparkline. */
-export function kpi(el, { valor, anterior, serie, formatter = fmt.num, dica }) {
+export function kpi(el, { valor, anterior, serie, formatter = fmt.num, dica, comparacao = 'vs. 7 dias antes', rotuloSerie = 'Tendência diária' }) {
   if (!el) return;
   const delta = anterior ? ((valor - anterior) / anterior) * 100 : null;
   const classe = delta === null || Math.abs(delta) < 0.5 ? 'is-flat' : delta > 0 ? 'is-up' : 'is-down';
@@ -93,10 +93,10 @@ export function kpi(el, { valor, anterior, serie, formatter = fmt.num, dica }) {
   el.querySelector('.kpi__value').textContent = formatter(valor);
   el.querySelector('.kpi__delta').className = `kpi__delta ${classe}`;
   el.querySelector('.kpi__delta').innerHTML = delta === null ? '<small>sem base de comparação</small>'
-    : `${seta} ${fmt.num1(Math.abs(delta))}% <small>vs. 7 dias antes</small>`;
+    : `${seta} ${fmt.num1(Math.abs(delta))}% <small>${comparacao}</small>`;
   if (dica) el.querySelector('.kpi__hint').textContent = dica;
   const spark = el.querySelector('.kpi__spark');
-  if (spark && serie?.length) { spark.classList.remove('skeleton'); montar(spark, sparkline(serie)); spark.setAttribute('aria-label', 'Tendência diária'); }
+  if (spark && serie?.length) { spark.classList.remove('skeleton'); montar(spark, sparkline(serie)); spark.setAttribute('aria-label', rotuloSerie); }
 }
 
 // ------------------------------------------------------------------ tabela

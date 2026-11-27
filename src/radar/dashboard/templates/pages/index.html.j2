@@ -12,7 +12,7 @@
   {{ kpi("kpi-relevantes", "Proposições relevantes", "Relevância ≥ 0,50 · 7 dias") }}
   {{ kpi("kpi-votacoes", "Votações", "Plenário e comissões · 7 dias") }}
   {{ kpi("kpi-eventos", "Eventos", "Sessões e reuniões · 7 dias") }}
-  {{ kpi("kpi-despesas", "Despesas da cota", "Valor líquido · 7 dias (notas chegam com atraso)") }}
+  {{ kpi("kpi-despesas", "Despesas da cota", "Valor líquido · último mês fechado (notas chegam com até 90 dias de atraso)") }}
 </div>
 <div class="grid" style="margin-top:var(--space-6)">
   {% call card("serie", "Proposições × votações por semana", "Últimos 90 dias · S-NN = número da semana no ano (segunda a domingo)", "span-7") %}{{ grafico("graf-serie", "Linha semanal de proposições apresentadas e votações", "chart--lg") }}{% endcall %}

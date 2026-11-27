@@ -2,7 +2,7 @@
 /* global echarts */
 import { iniciar, seguro } from '../app.js';
 import { dados, meta } from '../data.js';
-import { barras, GRADIENTE, montar } from '../charts.js';
+import { barras, GRADIENTE, linhaMedia, mediaDe, montar } from '../charts.js';
 import { Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -46,6 +46,8 @@ await seguro(document.getElementById('graf-dia'), async () => {
         { name: 'Sem resultado', data: chaves.map((c) => semanas.get(c).sem), itemStyle: { color: t.grid } },
       ],
     })(t);
+    // média de votações por semana no período (semanas sem votação contam como zero)
+    linhaMedia(op, mediaDe(chaves.map((c) => total(semanas.get(c)))), t, { eixo: 'y', rotulo: 'média semanal', formatter: fmt.num1 });
     op.tooltip.formatter = (ps) => {
       const s = semanas.get(chaves[ps[0].dataIndex]);
       const seg = chaves[ps[0].dataIndex];
@@ -69,6 +71,9 @@ await seguro(document.getElementById('graf-participacao'), async () => {
       series: [{ name: 'Participação', data: ps.map((p) => p.participacao_pct) }],
     })(t);
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (s) => `${s} (${fmt.num(dep[s])})` };  // nº de deputados
+    // média da Câmara: ponderada pelo nº de deputados (como a média nacional do gasto por deputado)
+    const nDep = ps.reduce((a, p) => a + p.deputados, 0);
+    linhaMedia(op, nDep ? ps.reduce((a, p) => a + p.participacao_pct * p.deputados, 0) / nDep : null, t, { formatter: fmt.pct });
     return op;
   }, { tabela: { colunas: ['Partido', 'Deputados', 'Participação'], linhas: ps.map((p) => [p.sigla_partido, p.deputados, fmt.pct(p.participacao_pct)]) } });
 });
@@ -90,7 +95,9 @@ const GRUPOS = [
 await seguro(document.getElementById('graf-dispersao'), async () => {
   const ps = partidos.filter((p) => p.fidelidade_pct !== null && p.governismo_pct !== null);
   const maxDep = Math.max(...ps.map((p) => p.deputados));
-  const minX = Math.max(0, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 3) / 20) * 20);  // eixo de 20 em 20
+  // eixo de 70 a 100 (pedido do usuário, 27/11): a fidelidade mínima fica perto de 80%, então abrir em 0 ou
+  // 20 espremia as bolhas na direita; se algum partido cair abaixo de 70, o eixo desce de 5 em 5
+  const minX = Math.min(70, Math.floor((Math.min(...ps.map((p) => p.fidelidade_pct)) - 2) / 5) * 5);
   const elDisp = limpa('graf-dispersao');
   const estreito = elDisp.clientWidth < 480;
   const TOPO = estreito ? 92 : 48;      // a legenda quebra em 3 linhas no celular
@@ -144,7 +151,7 @@ await seguro(document.getElementById('graf-dispersao'), async () => {
     tooltip: { formatter: (p) => `<b>${fmt.escapar(p.data[3])}</b> · ${fmt.num(p.data[2])} deputados<br>Fidelidade ao partido: ${fmt.pct(p.data[0])}<br>Governismo: ${fmt.pct(p.data[1])}` },
     dataZoom: [{ type: 'inside', xAxisIndex: 0, filterMode: 'none' }, { type: 'inside', yAxisIndex: 0, filterMode: 'none' }],
     // sem título no eixo X (o subtítulo do card diz que o horizontal é a fidelidade): o gráfico usa o espaço
-    xAxis: { type: 'value', min: minX, max: 101.5, interval: 20, axisLabel: { showMaxLabel: false, formatter: (v) => `${v}%` } },
+    xAxis: { type: 'value', min: minX, max: 101, interval: 5, axisLabel: { showMaxLabel: false, formatter: (v) => `${v}%` } },
     yAxis: { type: 'value', name: 'Governismo (%)', nameLocation: 'middle', nameRotate: 90, nameGap: 36, max: 102,
       min: Math.max(0, Math.floor((Math.min(...ps.map((p) => p.governismo_pct)) - 6) / 10) * 10),
       axisLabel: { showMaxLabel: false }, nameTextStyle: { color: t.muted } },

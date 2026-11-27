@@ -1,7 +1,7 @@
 // Operação e Qualidade: execuções, banco, cobertura, funil, rejeições e custos de IA.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, montar, rosca } from '../charts.js';
+import { barras, montar, rosca, linhaMedia, mediaDe } from '../charts.js';
 import { badgeStatus, Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -22,6 +22,7 @@ await seguro(document.getElementById('graf-execucoes'), async () => {
       series: [{ name: 'Duração', data: ops.map((e) => ({ value: e.duracao_s, itemStyle: { color: { success: t.positive, partial: t.warning, failed: t.negative }[e.status] || t.muted } })) }],
     })(t);
     op.yAxis = { ...op.yAxis, interval: passo * 60, max: Math.ceil(maiorMin / passo) * passo * 60 };
+    linhaMedia(op, mediaDe(ops.map((e) => e.duracao_s)), t, { eixo: 'y', formatter: min });  // duração média das execuções
     return op;
   }, { tabela: { colunas: ['Execução', 'Modo', 'Status', 'Duração (min)'], linhas: ops.map((e) => [e.id_execucao, e.modo, e.status, Math.round(e.duracao_s / 60)]) } });
 });
@@ -64,12 +65,18 @@ await seguro(document.getElementById('grade-cobertura'), async () => {
 
 await seguro(document.getElementById('graf-funil'), async () => {
   const f = await dados('funil_camadas');
-  montar(limpa('graf-funil'), barras({
-    categorias: f.map((d) => d.entidade),
-    series: [{ name: 'Bronze', data: f.map((d) => d.bronze), itemStyle: { color: COR_CAMADA.bronze } },
-             { name: 'Silver', data: f.map((d) => d.silver), itemStyle: { color: COR_CAMADA.silver } },
-             { name: 'Gold', data: f.map((d) => d.gold), itemStyle: { color: COR_CAMADA.gold } }],
-  }), { tabela: { colunas: ['Entidade', 'Bronze', 'Silver', 'Gold', 'Rejeitados'], linhas: f.map((d) => [d.entidade, d.bronze, d.silver, d.gold, d.rejeitados]) } });
+  // média de registros por entidade na Gold (camada final); as médias de Bronze e Silver ficavam quase
+  // iguais e os três rótulos se sobrepunham
+  montar(limpa('graf-funil'), (t) => {
+    const op = barras({
+      categorias: f.map((d) => d.entidade),
+      series: [{ name: 'Bronze', data: f.map((d) => d.bronze), itemStyle: { color: COR_CAMADA.bronze } },
+               { name: 'Silver', data: f.map((d) => d.silver), itemStyle: { color: COR_CAMADA.silver } },
+               { name: 'Gold', data: f.map((d) => d.gold), itemStyle: { color: COR_CAMADA.gold } }],
+    })(t);
+    linhaMedia(op, mediaDe(f.map((d) => d.gold)), t, { eixo: 'y', serie: 2, rotulo: 'média Gold por entidade' });
+    return op;
+  }, { tabela: { colunas: ['Entidade', 'Bronze', 'Silver', 'Gold', 'Rejeitados'], linhas: f.map((d) => [d.entidade, d.bronze, d.silver, d.gold, d.rejeitados]) } });
 });
 
 // barras horizontais com o % do total entre parênteses (2 casas), no padrão dos demais painéis
@@ -79,6 +86,7 @@ function comPercentual(id, ls, formatter, nome, sufixo) {
     const op = barras({ gradiente: true, categorias: ls.map((d) => d[0]), horizontal: true, rotulo: true, formatter, series: [{ name: nome, data: ls.map((d) => d[1]) }] })(t);
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${formatter(x.value)} (${pcts[x.dataIndex]})` };
     op.grid = { ...op.grid, right: 120 };
+    linhaMedia(op, mediaDe(ls.map((d) => d[1])), t, { formatter });
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>${nome}: <b>${formatter(ps[0].value)}</b> (${pcts[ps[0].dataIndex]} ${sufixo})` };
     return op;
   }, { tabela: { colunas: ['Item', nome, '% do total'], linhas: ls.map(([n, v], i) => [n, formatter(v), pcts[i]]) } });

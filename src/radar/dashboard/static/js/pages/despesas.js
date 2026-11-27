@@ -1,8 +1,8 @@
 // Despesas da Cota: série mensal, tipos, fornecedores, partido, UF, outliers e quarentena.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, montar } from '../charts.js';
-import { Tabela } from '../ui.js';
+import { barras, montar, linhaMedia, mediaDe } from '../charts.js';
+import { notaDivergencia, Tabela } from '../ui.js';
 import * as fmt from '../format.js';
 
 await iniciar();
@@ -10,7 +10,9 @@ const limpa = (id) => { const el = document.getElementById(id); el.classList.rem
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 
 await seguro(document.getElementById('graf-mensal'), async () => {
-  const meses = (await dados('despesas_mensal')).map((d) => [`${d.ano}-${String(d.mes).padStart(2, '0')}`, d.valor_liquido]);
+  const brutos = await dados('despesas_mensal');
+  const meses = brutos.map((d) => [`${d.ano}-${String(d.mes).padStart(2, '0')}`, d.valor_liquido]);
+  notaDivergencia(document.getElementById('graf-mensal'), notaMensal(brutos));
   montar(limpa('graf-mensal'), barras({
     categorias: meses.map(([k]) => `${MESES[Number(k.slice(5)) - 1]}/${k.slice(2, 4)}`), formatter: fmt.brl, rotulo: true,
     gradiente: true,
@@ -23,6 +25,27 @@ await seguro(document.getElementById('graf-mensal'), async () => {
     }],
   }), { tabela: { colunas: ['Mês', 'Valor líquido'], linhas: meses.map(([k, v]) => [k, fmt.brlCheio(v)]) } });
 });
+
+// Nota gerada dos dados: meses em que a divulgação da atividade parlamentar despenca (vedação eleitoral:
+// a Câmara não reembolsa divulgação nos 120 dias antes da eleição) e meses recentes ainda incompletos
+function notaMensal(ms) {
+  const nome = (d) => `${MESES[d.mes - 1]}/${String(d.ano).slice(2)}`;
+  const partes = [];
+  // queda = menos de 20% do maior mês; o último mês (parcial) fica de fora da comparação
+  const comparaveis = ms.slice(0, -1);
+  const maior = Math.max(0, ...comparaveis.map((d) => d.divulgacao || 0));
+  const baixos = comparaveis.filter((d) => maior && (d.divulgacao || 0) < 0.2 * maior);
+  if (baixos.length) {
+    const antes = ms[ms.indexOf(baixos[0]) - 1];
+    partes.push(`de ${nome(baixos[0])} a ${nome(baixos.at(-1))} a divulgação da atividade parlamentar caiu para ${baixos.map((d) => fmt.brl(d.divulgacao || 0)).join(' / ')}`
+      + (antes ? ` (era ${fmt.brl(antes.divulgacao || 0)} em ${nome(antes)})` : '')
+      + ': em ano eleitoral a Câmara não reembolsa divulgação nos 120 dias antes da eleição; as passagens também caem durante a campanha');
+  }
+  const hoje = new Date();
+  const recentes = ms.filter((d) => (hoje.getFullYear() - d.ano) * 12 + (hoje.getMonth() + 1 - d.mes) <= 2);
+  if (recentes.length) partes.push(`${recentes.map(nome).join(', ')} ainda estão incompletos: as notas chegam com até 90 dias de atraso`);
+  return partes.length ? `${partes.join('. ')}.` : '';
+}
 
 await seguro(document.getElementById('kv-quarentena'), async () => {
   const q = (await dados('qualidade')).filter((d) => d.entidade === 'despesas');
@@ -48,6 +71,7 @@ await seguro(document.getElementById('graf-tipos'), async () => {
       gradiente: true, categorias: tipos.map(([tp]) => (tp.length > 38 ? `${tp.slice(0, 36)}…` : tp)), horizontal: true, formatter: fmt.brl, rotulo: true,
       series: [{ name: 'Valor líquido', data: tipos.map(([, v]) => Math.round(v)) }],
     })(t));
+    linhaMedia(op, mediaDe(todosTipos.map((d) => d.valor_liquido || 0)), t, { formatter: fmt.brl });  // média de todos os tipos
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(tipos[ps[0].dataIndex][0])}</b><br>${fmt.brlCheio(ps[0].value)} (${pctCota(ps[0].value)} do total da cota)` };
     return op;
@@ -55,12 +79,14 @@ await seguro(document.getElementById('graf-tipos'), async () => {
 });
 
 await seguro(document.getElementById('graf-fornecedores'), async () => {
-  const f = (await dados('fornecedores')).slice(0, 15);
+  const todosForn = await dados('fornecedores');
+  const f = todosForn.slice(0, 15);
   montar(limpa('graf-fornecedores'), (t) => {
     const op = comPct(barras({
       gradiente: true, categorias: f.map((d) => (d.nome.length > 32 ? `${d.nome.slice(0, 30)}…` : d.nome)), horizontal: true, formatter: fmt.brl, rotulo: true,
       series: [{ name: 'Valor líquido', data: f.map((d) => d.valor) }],
     })(t));
+    linhaMedia(op, mediaDe(todosForn.map((d) => d.valor || 0)), t, { formatter: fmt.brl, rotulo: `média dos ${todosForn.length} maiores` });
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(f[ps[0].dataIndex].nome)}</b><br>${fmt.brlCheio(ps[0].value)} (${pctCota(ps[0].value)} do total da cota)` };
     return op;

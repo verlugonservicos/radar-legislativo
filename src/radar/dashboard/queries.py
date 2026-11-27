@@ -23,7 +23,10 @@ DATASETS: dict[str, str] = {
     "deputados_uf": "SELECT * FROM gold.mart_deputados_uf ORDER BY sigla_uf",
     # resumos prontos para a página (o mart detalhado passa de 1 MB com vários meses carregados)
     "despesas_mensal": (
-        "SELECT ano, mes, sum(qtd)::int AS qtd, sum(valor_liquido) AS valor_liquido "
+        "SELECT ano, mes, sum(qtd)::int AS qtd, sum(valor_liquido) AS valor_liquido, "
+        # divulgação e passagens: explicam as quedas do ano eleitoral na nota do gráfico mensal
+        "sum(valor_liquido) FILTER (WHERE tipo_despesa ILIKE '%DIVULGA%') AS divulgacao, "
+        "sum(valor_liquido) FILTER (WHERE tipo_despesa ILIKE '%PASSAGE%') AS passagens "
         "FROM gold.mart_despesas GROUP BY 1, 2 ORDER BY 1, 2"
     ),
     "despesas_tipo": (

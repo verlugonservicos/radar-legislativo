@@ -1,7 +1,7 @@
 // Visão Executiva: KPIs da semana, série diária, temas, Top 5 e pautas críticas.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, corTema, montar } from '../charts.js';
+import { barras, corTema, montar, linhaMedia, mediaDe } from '../charts.js';
 import { badgeImpacto, chipTema, kpi, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -16,11 +16,28 @@ await seguro(document.querySelector('.kpi-row'), async () => {
   const sem = k.slice(-7); const ant = k.slice(-14, -7); const ult30 = k.slice(-30);
   const def = [
     ['kpi-proposicoes', 'proposicoes'], ['kpi-relevantes', 'proposicoes_relevantes'],
-    ['kpi-votacoes', 'votacoes'], ['kpi-eventos', 'eventos'], ['kpi-despesas', 'valor_despesas', fmt.brl],
+    ['kpi-votacoes', 'votacoes'], ['kpi-eventos', 'eventos'],
   ];
   for (const [id, campo, formatter] of def) {
     kpi(document.getElementById(id), {
       valor: soma(sem, campo), anterior: soma(ant, campo), serie: ult30.map((d) => d[campo]), formatter: formatter || fmt.num,
+    });
+  }
+  // Despesas da cota: por mês fechado, não 7 dias. A nota fiscal chega à Câmara com até ~90 dias de atraso,
+  // então os últimos 7 dias (pela data do documento) davam quase zero. Usa o último mês completo antes do mês
+  // de referência e compara com o anterior; o mini-gráfico mostra os meses.
+  const mensal = await dados('despesas_mensal');
+  const ref = m.periodo?.fim?.slice(0, 7) || new Date().toISOString().slice(0, 7);
+  const chave = (d) => `${d.ano}-${String(d.mes).padStart(2, '0')}`;
+  const fechados = mensal.filter((d) => chave(d) < ref);
+  const ultimo = fechados.at(-1); const penultimo = fechados.at(-2);
+  if (ultimo) {
+    const MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    const nome = (d) => `${MES[d.mes - 1]}/${String(d.ano).slice(2)}`;
+    kpi(document.getElementById('kpi-despesas'), {
+      valor: ultimo.valor_liquido, anterior: penultimo?.valor_liquido, serie: fechados.slice(-6).map((d) => d.valor_liquido),
+      formatter: fmt.brl, comparacao: penultimo ? `vs. ${nome(penultimo)}` : '', rotuloSerie: 'Tendência mensal',
+      dica: `Valor líquido · ${nome(ultimo)} (último mês fechado; notas chegam com até 90 dias de atraso)`,
     });
   }
   // agrega os dias em semanas (segunda a domingo); a semana leva a data da segunda-feira
@@ -37,7 +54,13 @@ await seguro(document.querySelector('.kpi-row'), async () => {
   const chaves = [...semanas.keys()].sort();
   const el = document.getElementById('graf-serie');
   el.classList.remove('skeleton');
-  montar(el, (t) => ({
+  // média semanal de cada série (linha tracejada; semanas parciais entram no cálculo)
+  const comMedias = (op, t) => {
+    linhaMedia(op, mediaDe(chaves.map((c) => semanas.get(c).proposicoes)), t, { eixo: 'y', serie: 0, rotulo: 'média proposições', formatter: fmt.num });
+    linhaMedia(op, mediaDe(chaves.map((c) => semanas.get(c).votacoes)), t, { eixo: 'y', serie: 1, rotulo: 'média votações', formatter: fmt.num });
+    return op;
+  };
+  montar(el, (t) => comMedias({
     grid: { left: 8, right: 16, top: 36, bottom: 8, containLabel: true },
     legend: { top: 0, left: 0 },
     tooltip: {
@@ -53,7 +76,7 @@ await seguro(document.querySelector('.kpi-row'), async () => {
       { name: 'Proposições', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).proposicoes) },
       { name: 'Votações', type: 'line', smooth: true, symbolSize: 7, areaStyle: { opacity: 0.18 }, data: chaves.map((c) => semanas.get(c).votacoes) },
     ],
-  }), { tabela: { colunas: ['Semana', 'Início (segunda)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [`S-${fmt.semanaAno(c)}`, fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
+  }, t), { tabela: { colunas: ['Semana', 'Início (segunda)', 'Proposições', 'Votações'], linhas: chaves.map((c) => [`S-${fmt.semanaAno(c)}`, fmt.data(c), semanas.get(c).proposicoes, semanas.get(c).votacoes]) } });
 });
 
 await seguro(document.getElementById('graf-temas'), async () => {

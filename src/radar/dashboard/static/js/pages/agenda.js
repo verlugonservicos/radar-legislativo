@@ -1,7 +1,7 @@
 // Agenda e Órgãos: calendário de eventos, órgãos, tipos/presença, pauta crítica e tabela.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, montar } from '../charts.js';
+import { barras, montar, linhaMedia, mediaDe } from '../charts.js';
 import { chipTema, Tabela, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -38,13 +38,15 @@ await seguro(document.getElementById('graf-calendario'), async () => {
 
 await seguro(document.getElementById('graf-orgaos'), async () => {
   const comOrgao = ag.filter((d) => d.orgao);
-  const o = contar(comOrgao, (d) => d.orgao).slice(0, 15);
+  const todosOrgaos = contar(comOrgao, (d) => d.orgao);
+  const o = todosOrgaos.slice(0, 15);
   // % do total de eventos com órgão no período (não só dos 15), com 2 casas
   const pct = (v) => fmt.pct2(comOrgao.length ? (100 * v) / comOrgao.length : 0);
   montar(limpa('graf-orgaos'), (t) => {
     const op = barras({ gradiente: 'invertido', categorias: o.map((d) => d[0]), horizontal: true, rotulo: true, series: [{ name: 'Eventos', data: o.map((d) => d[1]) }] })(t);
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pct(x.value)})` };
     op.grid = { ...op.grid, right: 104 };
+    linhaMedia(op, mediaDe(todosOrgaos.map((d) => d[1])), t, { formatter: fmt.num1 });  // média de todos os órgãos
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Eventos: <b>${fmt.num(ps[0].value)}</b> (${pct(ps[0].value)} do total de ${fmt.num(comOrgao.length)})` };
     return op;

@@ -1,7 +1,7 @@
 // Articulação Política: frentes, partidos nos blocos (sankey), Mesa Diretora e lideranças.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, montar, PALETA } from '../charts.js';
+import { barras, montar, PALETA, linhaMedia, mediaDe } from '../charts.js';
 import { Tabela, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -18,6 +18,7 @@ await seguro(document.getElementById('graf-frentes'), async () => {
       gradiente: 'invertido', categorias: top.map((f) => corta(f.titulo)), horizontal: true, rotulo: true,
       series: [{ name: 'Deputados', data: top.map((f) => f.membros) }],
     })(t);
+    linhaMedia(op, mediaDe(frentes.map((f) => f.membros)), t, { formatter: fmt.num1 });  // média de todas as frentes
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const f = top[xs[0].dataIndex];
       return `<b>${fmt.escapar(f.titulo)}</b><br>Deputados: <b>${fmt.num(f.membros)}</b>`

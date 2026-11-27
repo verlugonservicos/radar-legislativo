@@ -1,7 +1,7 @@
 // Deputados: mapa por UF, ranking de atividade, tabela e perfil em drawer.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, GRADIENTE, montar } from '../charts.js';
+import { GRADIENTE, barras, linhaMedia, mediaDe, montar } from '../charts.js';
 import { abrirDrawer, notaDivergencia, Tabela, textoLotes, vazio } from '../ui.js';
 import * as estado from '../state.js';
 import * as fmt from '../format.js';
@@ -248,6 +248,8 @@ function desenharRanking() {
     // enquadramento: eixo até 100 (o score vai de 0 a 100) e margens laterais justas ao rótulo "97,0"
     op.grid = { ...op.grid, left: 0, right: 44, bottom: 4 };
     op.xAxis = { ...op.xAxis, ...eixoAte(100, 5), axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };  // 0, 20 … 100
+    // média de todos os deputados do filtro (não só dos 20 do topo)
+    linhaMedia(op, mediaDe(deps.filter(passa).map((d) => d.score_atividade)), t, { formatter: fmt.num1 });
     return op;
   }, { tabela: { colunas: ['Deputado', 'Partido', 'UF', 'Score de atividade'], linhas: top.map((d) => [d.nome, d.sigla_partido, d.sigla_uf, fmt.num1(d.score_atividade)]) } });
 }
@@ -286,6 +288,7 @@ function desenharGastos() {
                                series: [{ name: 'Gasto da cota', data: partidos.map(([, v]) => Math.round(v)) }] })(t), partidos[0]?.[1]);
     // nome do partido com o nº de deputados (a categoria continua só a sigla, usada no tooltip)
     op.yAxis.axisLabel = { ...op.yAxis.axisLabel, formatter: (p) => `${p} (${fmt.num(qtd(p))})` };
+    linhaMedia(op, mediaDe([...porPartido.values()]), t, { formatter: fmt.brl });  // média de todos os partidos
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)} (${pct(ps[0].value)} do total)<br>${fmt.num(qtd(ps[0].name))} deputados · ${fmt.brl(ps[0].value / qtd(ps[0].name))} por deputado` };
     return op;
@@ -296,6 +299,7 @@ function desenharGastos() {
       categorias: top.map((d) => `${d.nome} (${d.sigla_partido}-${d.sigla_uf})`), horizontal: true, rotulo: true, formatter: fmt.brl,
       gradiente: true, series: [{ name: 'Gasto da cota', data: top.map((d) => Math.round(d.gasto_total || 0)) }],
     })(t), top[0]?.gasto_total, 3);
+    linhaMedia(op, mediaDe(ls.map((d) => d.gasto_total || 0)), t, { formatter: fmt.brl });  // média de todos os deputados do filtro
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Gasto: ${fmt.brlCheio(ps[0].value)} (${pct(ps[0].value)} do total dos ${fmt.num(ls.length)} deputados)` };
     return op;
@@ -329,6 +333,8 @@ function desenharProjetosDeputado() {
     // rótulo mais longo ("536 (19,51%)"); a esquerda encosta nos nomes
     op.grid = { ...op.grid, left: 0, right: 96 };
     op.xAxis = { ...op.xAxis, ...eixoAte(porDep[top[0].id_deputado].total, 6), axisLabel: { ...op.xAxis.axisLabel, showMaxLabel: true } };
+    // média de projetos de todos os deputados do filtro (quem não apresentou conta como zero)
+    linhaMedia(op, mediaDe(deps.filter(passa).map((d) => porDep[d.id_deputado]?.total || 0)), t, { formatter: fmt.num1 });
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: (xs) => {
       const d = top[xs[0].dataIndex]; const a = porDep[d.id_deputado];
       const temas = Object.entries(a.temas).sort((x, y) => y[1] - x[1]).slice(0, 3)
