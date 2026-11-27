@@ -151,8 +151,16 @@ export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotu
   const ponto = eixo === 'x' ? { xAxis: media } : { yAxis: media };
   const estilo = { color: cor || t.text, type: 'dashed', width: 1.5, opacity: 0.8 };
   // média com 1 casa no rótulo (formatadores de contagem mostravam 761,071)
-  const label = { formatter: `${rotulo} ${formatter(Math.round(media * 10) / 10)}`, color: cor || t.text, fontSize: 12, fontWeight: 700,
-                  position: posicao || (eixo === 'x' ? 'start' : 'insideEndTop'), distance: 6 };
+  const texto = `${rotulo} ${formatter(Math.round(media * 10) / 10)}`;
+  // linha horizontal: o rótulo fica à direita, fora da área das barras (dentro dela encavalava no
+  // número de alguma barra); a margem direita cresce o bastante para o texto caber
+  const fora = eixo === 'y' && !posicao;
+  const label = { formatter: fora ? texto.replace(' ', '\n') : texto, color: cor || t.text, fontSize: 12, fontWeight: 700,
+                  lineHeight: 15, position: posicao || (eixo === 'x' ? 'start' : 'end'), distance: 6 };
+  if (fora) {
+    const largura = Math.max(...texto.replace(' ', '\n').split('\n').map((l) => l.length)) * 7 + 14;
+    if ((op.grid?.right ?? 0) < largura) op.grid = { ...op.grid, right: largura };
+  }
   // rótulo no topo da linha vertical: garante espaço acima das barras (sem legenda o topo era 12 px e o
   // texto "média …" saía cortado)
   if (eixo === 'x' && (op.grid?.top ?? 0) < 28) op.grid = { ...op.grid, top: 28 };

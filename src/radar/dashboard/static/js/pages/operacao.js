@@ -74,7 +74,7 @@ await seguro(document.getElementById('graf-funil'), async () => {
                { name: 'Silver', data: f.map((d) => d.silver), itemStyle: { color: COR_CAMADA.silver } },
                { name: 'Gold', data: f.map((d) => d.gold), itemStyle: { color: COR_CAMADA.gold } }],
     })(t);
-    linhaMedia(op, mediaDe(f.map((d) => d.gold)), t, { eixo: 'y', serie: 2, rotulo: 'média Gold por entidade' });
+    linhaMedia(op, mediaDe(f.map((d) => d.gold)), t, { eixo: 'y', serie: 2, rotulo: 'média Gold' });
     return op;
   }, { tabela: { colunas: ['Entidade', 'Bronze', 'Silver', 'Gold', 'Rejeitados'], linhas: f.map((d) => [d.entidade, d.bronze, d.silver, d.gold, d.rejeitados]) } });
 });
