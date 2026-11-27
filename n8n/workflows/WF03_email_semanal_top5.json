@@ -57,28 +57,27 @@
     },
     {
       "parameters": {
-        "fromEmail": "<remetente>",
-        "toEmail": "<destinatario>",
+        "sendTo": "<destinatario>",
         "subject": "Radar Legislativo — Top 5 da semana",
-        "emailFormat": "html",
-        "html": "={{ $json.html }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
         "options": {}
       },
-      "id": "e6eb8608-c5c5-56ee-a9f6-2ab665940472",
+      "id": "8338d6b9-8ae4-53aa-9c9d-3d5ba3cf6e1e",
       "name": "Envia e-mail",
-      "type": "n8n-nodes-base.emailSend",
+      "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
         720,
         0
       ],
       "credentials": {
-        "smtp": {
+        "gmailOAuth2": {
           "id": "",
-          "name": "Radar SMTP"
+          "name": "Gmail account"
         }
       },
-      "disabled": true
+      "webhookId": "0a764b38-f150-53a8-b4f7-9102980075c5"
     }
   ],
   "connections": {
@@ -124,6 +123,6 @@
     "errorWorkflow": "<ID do WF99 depois de importar>"
   },
   "meta": {
-    "observacao": "Gerado pelo Radar Legislativo (M6). Credenciais por nome; reassocie após importar."
+    "observacao": "Gerado pelo Radar Legislativo (M6). Credenciais por nome; reassocie após importar. WF03 envia pelo Gmail (credencial OAuth do autor), validado em 27/11/2026."
   }
 }

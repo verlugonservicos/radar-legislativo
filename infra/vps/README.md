@@ -47,7 +47,7 @@ RADAR_VERSAO=<versão> docker stack deploy -c infra/vps/stack.radar.yml radar
 
 Os workflows ficam em `n8n/workflows/` e são importados no n8n existente (D3), com as credenciais
 criadas no próprio n8n: `Radar Runner Token` (Header Auth `X-Runner-Token`), `Radar Postgres`,
-`Radar Telegram Bot` e `Radar SMTP`.
+`Radar Telegram Bot` e `Gmail account` (OAuth, usada pelo WF03 no lugar do SMTP).
 
 ## Regras
 - Nenhum arquivo de `/opt/supabase` é alterado.
