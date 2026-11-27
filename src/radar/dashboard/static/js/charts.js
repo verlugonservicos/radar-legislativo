@@ -153,6 +153,9 @@ export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotu
   // média com 1 casa no rótulo (formatadores de contagem mostravam 761,071)
   const label = { formatter: `${rotulo} ${formatter(Math.round(media * 10) / 10)}`, color: cor || t.text, fontSize: 12, fontWeight: 700,
                   position: posicao || (eixo === 'x' ? 'start' : 'insideEndTop'), distance: 6 };
+  // rótulo no topo da linha vertical: garante espaço acima das barras (sem legenda o topo era 12 px e o
+  // texto "média …" saía cortado)
+  if (eixo === 'x' && (op.grid?.top ?? 0) < 28) op.grid = { ...op.grid, top: 28 };
   const atual = s.markLine || { silent: true, symbol: 'none', data: [] };
   s.markLine = { ...atual, silent: true, symbol: 'none', lineStyle: atual.lineStyle || estilo,
                  label: atual.label || label, data: [...(atual.data || []), { ...ponto, lineStyle: estilo, label }] };

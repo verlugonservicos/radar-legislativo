@@ -95,7 +95,9 @@ await seguro(document.getElementById('graf-temas'), async () => {
       categorias: ordem.map(([tm]) => tm), horizontal: true, rotulo: true,
       series: [{ name: 'Proposições', data: ordem.map(([tm, v]) => ({ value: v, itemStyle: { color: corTema(tm) } })) }],
     })(t);
-    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pcts[x.dataIndex]})` };
+    // fundo da cor do card atrás do número: a linha da média passa por baixo sem riscar o texto
+    op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pcts[x.dataIndex]})`,
+                           backgroundColor: t.surface, padding: [1, 3], borderRadius: 3 };
     op.grid = { ...op.grid, right: 104 };
     linhaMedia(op, mediaDe(ordem.map(([, v]) => v)), t, { formatter: fmt.num1 });  // média de proposições por tema
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
