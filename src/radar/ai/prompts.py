@@ -4,9 +4,14 @@ resumo-v3 (23/11/2026), ajustes do teste com 5 proposições:
 - o resumo não repete "O PL X/AAAA propõe…" (o número já aparece no painel) e começa pelo verbo;
 - setores vêm de uma lista fechada (enum no schema), com nomes curtos e comparáveis nos gráficos;
 - reforço explícito para não acrescentar leis, órgãos ou efeitos que não estejam no texto.
+
+resumo-v4 (27/11/2026): "Serviços" aparecia em 89% dos resumos e não diferenciava nada. Os setores
+passam a ser os DIRETAMENTE afetados, em ordem de importância, preferindo sempre o setor específico
+(com exemplos); "Serviços" e "Setor Público" ficam restritos aos casos em que são o alvo da mudança.
+O resto do prompt é igual ao v3 (texto do v3 no histórico do Git e em docs/prompts.md).
 """
 
-PROMPT_VERSAO = "resumo-v3"
+PROMPT_VERSAO = "resumo-v4"
 
 SETORES = [
     "Agronegócio", "Comércio", "Construção e Imobiliário", "Cultura e Entretenimento", "Educação",
@@ -35,7 +40,17 @@ Gere:
 2. "nivel_impacto": "baixo", "medio" ou "alto" para empresas e o mercado
    (homenagens, títulos e datas comemorativas = "baixo"; mudanças tributárias, regulatórias
    ou de obrigações empresariais amplas = "alto"; efeitos restritos a um setor ou região = "medio").
-3. "setores_afetados": de 1 a 4 setores econômicos afetados, escolhidos da lista permitida."""
+3. "setores_afetados": de 1 a 4 setores econômicos DIRETAMENTE afetados, da lista permitida, do mais
+   afetado ao menos afetado. Prefira sempre o setor específico: escolas e universidades → "Educação";
+   hospitais, medicamentos e planos de saúde → "Saúde"; ônibus, aplicativos de transporte, frete e
+   rodovias → "Transporte e Logística"; bancos, crédito e seguros → "Financeiro"; telefonia, internet e
+   dados → "Tecnologia e Telecomunicações"; lojas e consumidor → "Comércio".
+   "Serviços" é exceção: antes de usá-lo, confira se a proposição muda regras para EMPRESAS
+   PRESTADORAS DE SERVIÇOS como um todo (ex.: ISS, terceirização, profissões liberais). Se não mudar,
+   NÃO use "Serviços". Nunca use "Serviços" para serviço público, atendimento ao cidadão, assistência
+   social, segurança, trânsito, saúde ou educação — use o setor correspondente. Use "Setor Público" SÓ
+   quando a mudança recair sobre órgãos, servidores, compras ou contas do governo. Na dúvida, escolha
+   menos setores."""
 
 SCHEMA_RESUMO = {
     "type": "object",

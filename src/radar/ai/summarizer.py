@@ -24,7 +24,7 @@ SAIDA_ESTIMADA = 150  # tokens por resumo (medido no teste: ~90)
 
 PENDENTES = """
 SELECT f.id_proposicao, f.sigla_tipo, f.numero, f.ano, f.tema_ia, f.ementa, f.ementa_detalhada,
-       f.keywords, o.sigla AS orgao_situacao, f.regime, f.ultimo_despacho, f.ia_texto_hash
+       f.keywords, o.sigla AS orgao_situacao, f.regime, f.ultimo_despacho, f.ia_texto_hash, f.ia_prompt_versao
 FROM gold.fato_proposicao f
 LEFT JOIN gold.dim_orgao o ON o.id_orgao = f.id_orgao_situacao
 WHERE f.sigla_tipo = ANY(:tipos) AND f.tema_ia IS NOT NULL AND f.ementa IS NOT NULL
@@ -55,7 +55,8 @@ def pendentes(engine: Engine, limit: int | None = None) -> list[dict]:
     saida = []
     for r in linhas:
         h = hash_resumo(r["ementa"], r["ementa_detalhada"])
-        if h != r["ia_texto_hash"]:
+        # pendente se o texto mudou OU se o resumo foi feito com outra versão do prompt (ex.: v3 → v4)
+        if h != r["ia_texto_hash"] or r.get("ia_prompt_versao") != PROMPT_VERSAO:
             saida.append({**r, "_hash": h})
             if limit is not None and len(saida) >= limit:
                 break

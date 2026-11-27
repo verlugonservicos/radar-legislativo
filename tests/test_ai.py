@@ -37,7 +37,7 @@ def test_hash_do_resumo_ignora_o_despacho():
 
 
 def test_schema_do_resumo_estrito_e_setores_fechados():
-    assert PROMPT_VERSAO == "resumo-v3"
+    assert PROMPT_VERSAO == "resumo-v4"
     assert SCHEMA_RESUMO["additionalProperties"] is False
     assert SCHEMA_RESUMO["properties"]["setores_afetados"]["items"]["enum"] == SETORES
     assert all(1 <= len(s.split()) <= 3 for s in SETORES)
