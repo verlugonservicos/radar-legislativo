@@ -1,0 +1,52 @@
+/* Design tokens (SPEC V3 12.2). Cores semânticas com contraste AA nos dois temas.
+   Destaque em grafite (24/11/2026): neutro, deixa o degradê vermelho→âmbar→verde carregar o significado. */
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-full: 999px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px;
+  --fs-xs: .75rem; --fs-sm: .875rem; --fs-md: 1rem; --fs-lg: 1.25rem; --fs-xl: 1.75rem; --fs-kpi: 2.25rem;
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / .06); --shadow-md: 0 4px 16px rgb(15 23 42 / .08);
+  --ease: cubic-bezier(.2, .8, .2, 1); --dur: 180ms;
+  --sidebar: 248px; --sidebar-mini: 72px; --header: 64px;
+
+  color-scheme: light;
+  --bg: #F8FAFC; --surface: #FFFFFF; --surface-2: #F1F5F9; --border: #E2E8F0;
+  --text: #0F172A; --text-muted: #5B6B82; --accent: #334155; --accent-soft: #E2E8F0; --accent-text: #FFFFFF;
+  --positive: #047857; --negative: #DC2626; --warning: #B45309;
+  --positive-soft: #ECFDF5; --negative-soft: #FEF2F2; --warning-soft: #FFFBEB;
+  --chart-grid: #E2E8F0; --chart-axis: #64748B;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0B1120; --surface: #111827; --surface-2: #1F2937; --border: #273244;
+  --text: #E5E7EB; --text-muted: #A3B1C6; --accent: #CBD5E1; --accent-soft: #1E293B; --accent-text: #0B1120;
+  --positive: #34D399; --negative: #F87171; --warning: #FBBF24;
+  --positive-soft: #052E26; --negative-soft: #3B1219; --warning-soft: #3A2A06;
+  --chart-grid: #273244; --chart-axis: #94A3B8;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / .4); --shadow-md: 0 8px 24px rgb(0 0 0 / .35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0B1120; --surface: #111827; --surface-2: #1F2937; --border: #273244;
+    --text: #E5E7EB; --text-muted: #A3B1C6; --accent: #CBD5E1; --accent-soft: #1E293B; --accent-text: #0B1120;
+    --positive: #34D399; --negative: #F87171; --warning: #FBBF24;
+    --positive-soft: #052E26; --negative-soft: #3B1219; --warning-soft: #3A2A06;
+    --chart-grid: #273244; --chart-axis: #94A3B8;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / .4); --shadow-md: 0 8px 24px rgb(0 0 0 / .35);
+  }
+}
+/* Modo daltônico: positivo/negativo em azul/laranja (Okabe-Ito) no lugar de verde/vermelho */
+:root[data-cores="daltonico"] {
+  --positive: #0072B2; --negative: #C2410C; --positive-soft: #E6F1F8; --negative-soft: #FDEEE6;
+}
+:root[data-cores="daltonico"][data-theme="dark"] {
+  --positive: #56B4E9; --negative: #F28B4B; --positive-soft: #0B2A3D; --negative-soft: #3A1E0E;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-cores="daltonico"]:not([data-theme="light"]) {
+    --positive: #56B4E9; --negative: #F28B4B; --positive-soft: #0B2A3D; --negative-soft: #3A1E0E;
+  }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

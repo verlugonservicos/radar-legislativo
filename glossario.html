@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glossário · Radar Legislativo</title>
+  <meta name="description" content="O que significa cada termo usado nos painéis: do Legislativo, dos indicadores, da IA e do pipeline.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#334155">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23334155'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='white'/%3E%3C/svg%3E">
+  <script>
+    /* aplica o tema salvo antes de pintar (evita piscar) */
+    try { const t = localStorage.getItem('radar-tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    try { if (localStorage.getItem('radar-cores') === 'daltonico') document.documentElement.dataset.cores = 'daltonico'; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="static/css/tokens.4b96701d69.css">
+  <link rel="stylesheet" href="static/css/layout.b090a52276.css">
+  <link rel="stylesheet" href="static/css/components.7d0c545729.css">
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<div class="app">
+  <aside class="sidebar" aria-label="Navegação principal">
+    <a class="brand" href="index.html">
+      <span class="brand__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34M4 6h.01M2.29 9.62A10 10 0 1 0 21.31 8.35M16.24 7.76A6 6 0 1 0 8.23 16.67M12 18h.01M17.99 11.66A6 6 0 0 1 15.77 16.67"/><circle cx="12" cy="12" r="2"/><path d="m13.41 10.59 5.66-5.66"/></svg></span>
+      <span class="brand__text"><span class="brand__name">Radar Legislativo</span><span class="brand__sub">Bússola Pública</span></span>
+    </a>
+    <nav class="nav">
+      <a href="index.html"  title="Visão Executiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span>Visão Executiva</span></a>
+      <a href="proposicoes.html"  title="Proposições e Temas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><span>Proposições e Temas</span></a>
+      <a href="votacoes.html"  title="Votações e Partidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 12 2 2 4-4"/><path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7z"/><path d="M22 19H2"/></svg><span>Votações e Partidos</span></a>
+      <a href="deputados.html"  title="Deputados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Deputados</span></a>
+      <a href="despesas.html"  title="Despesas da Cota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span>Despesas da Cota</span></a>
+      <a href="agenda.html"  title="Agenda e Órgãos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>Agenda e Órgãos</span></a>
+      <a href="articulacao.html"  title="Articulação Política"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"/></svg><span>Articulação Política</span></a>
+      <a href="operacao.html"  title="Operação e Qualidade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span>Operação e Qualidade</span></a>
+      <a href="glossario.html" aria-current="page" title="Glossário"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Glossário</span></a>
+    </nav>
+    <div class="sidebar__foot">
+      <p>Cobertura da API: <strong data-meta="cobertura">78/78</strong> endpoints</p>
+      <p><a href="https://github.com/verlugonservicos/radar-legislativo" rel="noopener">Código no GitHub</a></p>
+    </div>
+  </aside>
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="main">
+    <header class="header">
+      <button class="icon-btn menu-btn" type="button" data-action="menu" aria-label="Abrir menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <button class="icon-btn collapse-btn" type="button" data-action="recolher" aria-label="Recolher menu lateral" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg></button>
+      <h1 class="header__title">Glossário</h1>
+      <div class="header__actions">
+        <span class="update-badge" data-update><span class="update-badge__dot" aria-hidden="true"></span><span data-update-text>Carregando…</span></span>
+        <button class="icon-btn" type="button" data-action="cores" aria-label="Ativar cores para daltônicos" title="Cores para daltônicos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="icon-btn" type="button" data-action="tema" aria-label="Alternar tema" aria-pressed="false">
+          <span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+        </button>
+      </div>
+    </header>
+    <main class="content" id="conteudo" tabindex="-1">
+      <p class="page-intro">O que significa cada termo usado nos painéis: do Legislativo, dos indicadores, da IA e do pipeline.</p>
+<div class="filters" role="search">
+  <label class="sr-only" for="busca-glossario">Buscar termo</label>
+  <input class="input" type="search" id="busca-glossario" placeholder="Buscar termo… (ex.: PEC, fidelidade, embedding)" autocomplete="off" style="flex:1 1 320px">
+  <nav class="glossario__indice" aria-label="Seções do glossário">
+<a class="btn" href="#legislativo">O Legislativo</a><a class="btn" href="#indicadores">Indicadores dos painéis</a><a class="btn" href="#ia">Inteligência artificial</a><a class="btn" href="#dados">Dados e pipeline</a>  </nav>
+</div>
+<p class="muted" id="glossario-info" role="status" aria-live="polite"></p>
+<section class="card glossario__secao" id="legislativo" aria-labelledby="legislativo-t">
+  <h2 class="card__title" id="legislativo-t">O Legislativo</h2>
+  <dl class="glossario">
+    <div class="glossario__item" id="proposicao" data-busca="proposição todo documento apresentado para deliberação da câmara: projetos de lei, propostas de emenda à constituição, medidas provisórias, requerimentos, pareceres, entre outros. cada proposição tem tipo, número e ano (ex.: pl 5864/2026) e percorre um caminho até ser aprovada, rejeitada ou arquivada.">
+      <dt><a href="#proposicao" class="glossario__ancora" aria-label="Link para Proposição">#</a>Proposição</dt>
+      <dd>
+        <p>Todo documento apresentado para deliberação da Câmara: projetos de lei, propostas de emenda à Constituição, medidas provisórias, requerimentos, pareceres, entre outros. Cada proposição tem tipo, número e ano (ex.: PL 5864/2026) e percorre um caminho até ser aprovada, rejeitada ou arquivada.</p>
+<p class="muted"><strong>Exemplo:</strong> PL 3057/2026 — inclui medicamentos de alto custo na Relação Nacional de Medicamentos Essenciais.</p>      </dd>
+    </div>
+    <div class="glossario__item" id="tipos" data-busca="tipos de proposição (pl, plp, pec, mpv, pdl…) pl (projeto de lei) cria ou altera leis ordinárias. plp (projeto de lei complementar) trata de temas que a constituição exige por lei complementar e precisa de maioria absoluta (257 votos). pec (proposta de emenda à constituição) altera a constituição: dois turnos de votação e 3/5 dos votos (308). mpv (medida provisória) é editada pelo presidente da república, vale de imediato e precisa ser aprovada pelo congresso. pdl (projeto de decreto legislativo) trata de assuntos só do congresso, como aprovar tratados e renovar concessões de rádio e tv. req e ric são requerimentos (o ric pede informações a ministros).">
+      <dt><a href="#tipos" class="glossario__ancora" aria-label="Link para Tipos de proposição (PL, PLP, PEC, MPV, PDL…)">#</a>Tipos de proposição (PL, PLP, PEC, MPV, PDL…)</dt>
+      <dd>
+        <p>PL (Projeto de Lei) cria ou altera leis ordinárias. PLP (Projeto de Lei Complementar) trata de temas que a Constituição exige por lei complementar e precisa de maioria absoluta (257 votos). PEC (Proposta de Emenda à Constituição) altera a Constituição: dois turnos de votação e 3/5 dos votos (308). MPV (Medida Provisória) é editada pelo Presidente da República, vale de imediato e precisa ser aprovada pelo Congresso. PDL (Projeto de Decreto Legislativo) trata de assuntos só do Congresso, como aprovar tratados e renovar concessões de rádio e TV. REQ e RIC são requerimentos (o RIC pede informações a ministros).</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="relevantes" data-busca="proposição relevante nos painéis, são as proposições dos tipos que mudam regras para empresas e cidadãos — pl, plp, pec, mpv e pdl. só elas recebem tema, resumo e score da ia. no kpi &#34;proposições relevantes&#34;, entram as que têm score de relevância de 0,50 ou mais.">
+      <dt><a href="#relevantes" class="glossario__ancora" aria-label="Link para Proposição relevante">#</a>Proposição relevante</dt>
+      <dd>
+        <p>Nos painéis, são as proposições dos tipos que mudam regras para empresas e cidadãos — PL, PLP, PEC, MPV e PDL. Só elas recebem tema, resumo e score da IA. No KPI &#34;Proposições relevantes&#34;, entram as que têm score de relevância de 0,50 ou mais.</p>
+<p class="muted">Veja também: <a href="#relevancia">Score de relevância</a></p>      </dd>
+    </div>
+    <div class="glossario__item" id="ementa" data-busca="ementa resumo oficial, em uma ou duas frases, do que a proposição faz. a ementa detalhada e as palavras-chave (quando existem) complementam o texto.">
+      <dt><a href="#ementa" class="glossario__ancora" aria-label="Link para Ementa">#</a>Ementa</dt>
+      <dd>
+        <p>Resumo oficial, em uma ou duas frases, do que a proposição faz. A ementa detalhada e as palavras-chave (quando existem) complementam o texto.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="temas-oficiais" data-busca="temas oficiais classificação temática que a própria câmara atribui às proposições (32 temas, como &#34;saúde&#34; ou &#34;finanças públicas e orçamento&#34;). servem para avaliar a classificação feita pela ia.">
+      <dt><a href="#temas-oficiais" class="glossario__ancora" aria-label="Link para Temas oficiais">#</a>Temas oficiais</dt>
+      <dd>
+        <p>Classificação temática que a própria Câmara atribui às proposições (32 temas, como &#34;Saúde&#34; ou &#34;Finanças Públicas e Orçamento&#34;). Servem para avaliar a classificação feita pela IA.</p>
+<p class="muted">Veja também: <a href="#tema-ia">Tema (IA)</a></p>      </dd>
+    </div>
+    <div class="glossario__item" id="tramitacao" data-busca="tramitação o caminho da proposição dentro da câmara: apresentação, despacho às comissões, pareceres, votações e envio ao senado ou à sanção. cada passo fica registrado com data, órgão e situação.">
+      <dt><a href="#tramitacao" class="glossario__ancora" aria-label="Link para Tramitação">#</a>Tramitação</dt>
+      <dd>
+        <p>O caminho da proposição dentro da Câmara: apresentação, despacho às comissões, pareceres, votações e envio ao Senado ou à sanção. Cada passo fica registrado com data, órgão e situação.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="despacho" data-busca="despacho decisão que encaminha a proposição — por exemplo, &#34;às comissões de saúde e de constituição e justiça&#34;. o último despacho mostra onde ela está agora.">
+      <dt><a href="#despacho" class="glossario__ancora" aria-label="Link para Despacho">#</a>Despacho</dt>
+      <dd>
+        <p>Decisão que encaminha a proposição — por exemplo, &#34;às Comissões de Saúde e de Constituição e Justiça&#34;. O último despacho mostra onde ela está agora.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="regime" data-busca="regime de tramitação velocidade com que a proposição anda. ordinário é o ritmo normal; prioridade encurta prazos; urgência dispensa formalidades e permite votar logo no plenário.">
+      <dt><a href="#regime" class="glossario__ancora" aria-label="Link para Regime de tramitação">#</a>Regime de tramitação</dt>
+      <dd>
+        <p>Velocidade com que a proposição anda. Ordinário é o ritmo normal; prioridade encurta prazos; urgência dispensa formalidades e permite votar logo no Plenário.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="orgao" data-busca="órgão (comissão) colegiado da câmara que analisa as proposições de um assunto: comissões permanentes (ex.: ccjc, constituição e justiça e de cidadania), comissões especiais, cpis e o próprio plenário (plen).">
+      <dt><a href="#orgao" class="glossario__ancora" aria-label="Link para Órgão (comissão)">#</a>Órgão (comissão)</dt>
+      <dd>
+        <p>Colegiado da Câmara que analisa as proposições de um assunto: comissões permanentes (ex.: CCJC, Constituição e Justiça e de Cidadania), comissões especiais, CPIs e o próprio Plenário (PLEN).</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="plenario" data-busca="plenário reunião de todos os 513 deputados, onde acontecem as votações finais na câmara.">
+      <dt><a href="#plenario" class="glossario__ancora" aria-label="Link para Plenário">#</a>Plenário</dt>
+      <dd>
+        <p>Reunião de todos os 513 deputados, onde acontecem as votações finais na Câmara.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="evento" data-busca="evento qualquer atividade com data e hora registrada pela câmara: sessões do plenário (deliberativas ou não), reuniões de comissão, audiências públicas, seminários, reuniões técnicas e solenidades. um evento pode ter pauta (lista de proposições a discutir ou votar) e lista de presença.">
+      <dt><a href="#evento" class="glossario__ancora" aria-label="Link para Evento">#</a>Evento</dt>
+      <dd>
+        <p>Qualquer atividade com data e hora registrada pela Câmara: sessões do Plenário (deliberativas ou não), reuniões de comissão, audiências públicas, seminários, reuniões técnicas e solenidades. Um evento pode ter pauta (lista de proposições a discutir ou votar) e lista de presença.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="eventos-por-dia" data-busca="eventos por dia quantos eventos aconteceram, ou estão marcados, em cada data. no calendário da página agenda e órgãos cada quadrado é um dia e a cor mais forte indica mais eventos; dias em cinza não têm eventos registrados. a janela vai de 30 dias antes a 7 dias depois da data de referência.">
+      <dt><a href="#eventos-por-dia" class="glossario__ancora" aria-label="Link para Eventos por dia">#</a>Eventos por dia</dt>
+      <dd>
+        <p>Quantos eventos aconteceram, ou estão marcados, em cada data. No calendário da página Agenda e Órgãos cada quadrado é um dia e a cor mais forte indica mais eventos; dias em cinza não têm eventos registrados. A janela vai de 30 dias antes a 7 dias depois da data de referência.</p>
+<p class="muted">Veja também: <a href="#data-referencia">Data de referência e período</a></p>      </dd>
+    </div>
+    <div class="glossario__item" id="pauta" data-busca="pauta e item de pauta a pauta é a lista do que será tratado num evento. cada item de pauta normalmente é uma proposição; um item é crítico quando a proposição é de um tema crítico para a bússola pública.">
+      <dt><a href="#pauta" class="glossario__ancora" aria-label="Link para Pauta e item de pauta">#</a>Pauta e item de pauta</dt>
+      <dd>
+        <p>A pauta é a lista do que será tratado num evento. Cada item de pauta normalmente é uma proposição; um item é crítico quando a proposição é de um tema crítico para a Bússola Pública.</p>
+<p class="muted">Veja também: <a href="#tema-critico">Tema crítico</a></p>      </dd>
+    </div>
+    <div class="glossario__item" id="votacao" data-busca="votação nominal e simbólica na votação nominal cada deputado registra o voto no painel eletrônico (sim, não, abstenção, obstrução), e o voto individual fica público. na simbólica, o presidente da sessão pergunta e proclama o resultado sem contagem individual — por isso só as nominais entram nos indicadores de fidelidade, governismo e presença.">
+      <dt><a href="#votacao" class="glossario__ancora" aria-label="Link para Votação nominal e simbólica">#</a>Votação nominal e simbólica</dt>
+      <dd>
+        <p>Na votação nominal cada deputado registra o voto no painel eletrônico (Sim, Não, Abstenção, Obstrução), e o voto individual fica público. Na simbólica, o presidente da sessão pergunta e proclama o resultado sem contagem individual — por isso só as nominais entram nos indicadores de fidelidade, governismo e presença.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="orientacao" data-busca="orientação de bancada recomendação do líder do partido, do bloco ou do governo sobre como votar. &#34;liberado&#34; significa que a bancada não orientou; esses casos ficam fora dos cálculos de fidelidade e governismo.">
+      <dt><a href="#orientacao" class="glossario__ancora" aria-label="Link para Orientação de bancada">#</a>Orientação de bancada</dt>
+      <dd>
+        <p>Recomendação do líder do partido, do bloco ou do governo sobre como votar. &#34;Liberado&#34; significa que a bancada não orientou; esses casos ficam fora dos cálculos de fidelidade e governismo.</p>
+<p class="muted">Veja também: <a href="#fidelidade">Fidelidade partidária</a></p>      </dd>
+    </div>
+    <div class="glossario__item" id="obstrucao" data-busca="obstrução e &#34;artigo 17&#34; obstrução é a estratégia de não votar para dificultar o quórum. &#34;artigo 17&#34; aparece no voto do presidente da sessão, que pelo regimento só vota em situações específicas.">
+      <dt><a href="#obstrucao" class="glossario__ancora" aria-label="Link para Obstrução e &#34;Artigo 17&#34;">#</a>Obstrução e &#34;Artigo 17&#34;</dt>
+      <dd>
+        <p>Obstrução é a estratégia de não votar para dificultar o quórum. &#34;Artigo 17&#34; aparece no voto do presidente da sessão, que pelo Regimento só vota em situações específicas.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="partido-bloco" data-busca="bloco parlamentar e federação bloco parlamentar é uma aliança de partidos dentro da câmara, que passa a atuar com uma liderança comum. federação partidária é a união de partidos que funcionam como um só por pelo menos quatro anos, inclusive nas eleições.">
+      <dt><a href="#partido-bloco" class="glossario__ancora" aria-label="Link para Bloco parlamentar e federação">#</a>Bloco parlamentar e federação</dt>
+      <dd>
+        <p>Bloco parlamentar é uma aliança de partidos dentro da Câmara, que passa a atuar com uma liderança comum. Federação partidária é a união de partidos que funcionam como um só por pelo menos quatro anos, inclusive nas eleições.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="lideranca" data-busca="lideranças deputados escolhidos para falar e orientar votos em nome de um partido ou bloco, além dos líderes do governo, da oposição, da maioria e da minoria.">
+      <dt><a href="#lideranca" class="glossario__ancora" aria-label="Link para Lideranças">#</a>Lideranças</dt>
+      <dd>
+        <p>Deputados escolhidos para falar e orientar votos em nome de um partido ou bloco, além dos líderes do Governo, da Oposição, da Maioria e da Minoria.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="mesa" data-busca="mesa diretora grupo que dirige os trabalhos da câmara: presidente, vice-presidentes, secretários e suplentes, eleitos para mandatos de dois anos.">
+      <dt><a href="#mesa" class="glossario__ancora" aria-label="Link para Mesa Diretora">#</a>Mesa Diretora</dt>
+      <dd>
+        <p>Grupo que dirige os trabalhos da Câmara: presidente, vice-presidentes, secretários e suplentes, eleitos para mandatos de dois anos.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="frente" data-busca="frente parlamentar associação de deputados (e às vezes senadores) de vários partidos em torno de um tema, como agropecuária ou saúde. ajuda a ver alianças que cruzam as linhas partidárias.">
+      <dt><a href="#frente" class="glossario__ancora" aria-label="Link para Frente parlamentar">#</a>Frente parlamentar</dt>
+      <dd>
+        <p>Associação de deputados (e às vezes senadores) de vários partidos em torno de um tema, como agropecuária ou saúde. Ajuda a ver alianças que cruzam as linhas partidárias.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="cota" data-busca="cota parlamentar (ceap) cota para o exercício da atividade parlamentar: verba mensal, que varia por uf, para despesas do mandato como passagens, combustível, aluguel de escritório e divulgação. os gastos são públicos.">
+      <dt><a href="#cota" class="glossario__ancora" aria-label="Link para Cota parlamentar (CEAP)">#</a>Cota parlamentar (CEAP)</dt>
+      <dd>
+        <p>Cota para o Exercício da Atividade Parlamentar: verba mensal, que varia por UF, para despesas do mandato como passagens, combustível, aluguel de escritório e divulgação. Os gastos são públicos.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="valores-despesa" data-busca="valor do documento, glosa e valor líquido valor do documento é o total da nota fiscal. glosa é a parte que a câmara não reembolsa. valor líquido é o que foi efetivamente pago (documento menos glosa) — é o valor usado nos painéis.">
+      <dt><a href="#valores-despesa" class="glossario__ancora" aria-label="Link para Valor do documento, glosa e valor líquido">#</a>Valor do documento, glosa e valor líquido</dt>
+      <dd>
+        <p>Valor do documento é o total da nota fiscal. Glosa é a parte que a Câmara não reembolsa. Valor líquido é o que foi efetivamente pago (documento menos glosa) — é o valor usado nos painéis.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="discurso" data-busca="discurso pronunciamento de um deputado registrado pela câmara, com data, fase da sessão e sumário.">
+      <dt><a href="#discurso" class="glossario__ancora" aria-label="Link para Discurso">#</a>Discurso</dt>
+      <dd>
+        <p>Pronunciamento de um deputado registrado pela Câmara, com data, fase da sessão e sumário.</p>
+      </dd>
+    </div>
+  </dl>
+</section>
+<section class="card glossario__secao" id="indicadores" aria-labelledby="indicadores-t">
+  <h2 class="card__title" id="indicadores-t">Indicadores dos painéis</h2>
+  <dl class="glossario">
+    <div class="glossario__item" id="data-referencia" data-busca="data de referência e período a data do dado mais recente carregado (proposição, votação ou evento), limitada a hoje. todas as janelas — &#34;últimos 7 dias&#34;, &#34;últimos 90 dias&#34; — contam a partir dela. o período no rodapé mostra o intervalo coberto pelos indicadores diários.">
+      <dt><a href="#data-referencia" class="glossario__ancora" aria-label="Link para Data de referência e período">#</a>Data de referência e período</dt>
+      <dd>
+        <p>A data do dado mais recente carregado (proposição, votação ou evento), limitada a hoje. Todas as janelas — &#34;últimos 7 dias&#34;, &#34;últimos 90 dias&#34; — contam a partir dela. O período no rodapé mostra o intervalo coberto pelos indicadores diários.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="kpi" data-busca="kpi e variação os cartões do topo da visão executiva somam os últimos 7 dias e comparam com os 7 dias anteriores (▲ subiu, ▼ caiu). a linha pequena (sparkline) mostra os últimos 30 dias, dia a dia.">
+      <dt><a href="#kpi" class="glossario__ancora" aria-label="Link para KPI e variação">#</a>KPI e variação</dt>
+      <dd>
+        <p>Os cartões do topo da Visão Executiva somam os últimos 7 dias e comparam com os 7 dias anteriores (▲ subiu, ▼ caiu). A linha pequena (sparkline) mostra os últimos 30 dias, dia a dia.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="participacao" data-busca="participação e presença em votações presença de um deputado = votos dele ÷ votações nominais do plenário no período. participação de um partido = média da presença dos seus deputados em exercício.">
+      <dt><a href="#participacao" class="glossario__ancora" aria-label="Link para Participação e presença em votações">#</a>Participação e presença em votações</dt>
+      <dd>
+        <p>Presença de um deputado = votos dele ÷ votações nominais do Plenário no período. Participação de um partido = média da presença dos seus deputados em exercício.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="fidelidade" data-busca="fidelidade partidária percentual dos votos em que o deputado votou como o seu partido (ou bloco) orientou. orientação &#34;liberado&#34; fica de fora da conta.">
+      <dt><a href="#fidelidade" class="glossario__ancora" aria-label="Link para Fidelidade partidária">#</a>Fidelidade partidária</dt>
+      <dd>
+        <p>Percentual dos votos em que o deputado votou como o seu partido (ou bloco) orientou. Orientação &#34;Liberado&#34; fica de fora da conta.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="governismo" data-busca="governismo percentual dos votos em que o deputado votou como o líder do governo orientou.">
+      <dt><a href="#governismo" class="glossario__ancora" aria-label="Link para Governismo">#</a>Governismo</dt>
+      <dd>
+        <p>Percentual dos votos em que o deputado votou como o líder do Governo orientou.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="concordancia" data-busca="concordância entre partidos para cada votação nominal, toma-se o voto da maioria de cada partido (sim ou não). concordância é o percentual das votações em comum em que dois partidos votaram igual. só partidos com cinco ou mais deputados.">
+      <dt><a href="#concordancia" class="glossario__ancora" aria-label="Link para Concordância entre partidos">#</a>Concordância entre partidos</dt>
+      <dd>
+        <p>Para cada votação nominal, toma-se o voto da maioria de cada partido (Sim ou Não). Concordância é o percentual das votações em comum em que dois partidos votaram igual. Só partidos com cinco ou mais deputados.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="score-atividade" data-busca="score de atividade nota de 0 a 100 que resume a atividade do deputado: média das posições (percentis) dele entre os 513 em autorias de proposições, presença em votações, presenças em eventos e discursos. um score 90 significa que ele está à frente de cerca de 90% dos colegas nesses quesitos.">
+      <dt><a href="#score-atividade" class="glossario__ancora" aria-label="Link para Score de atividade">#</a>Score de atividade</dt>
+      <dd>
+        <p>Nota de 0 a 100 que resume a atividade do deputado: média das posições (percentis) dele entre os 513 em autorias de proposições, presença em votações, presenças em eventos e discursos. Um score 90 significa que ele está à frente de cerca de 90% dos colegas nesses quesitos.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="tramitacao-dias" data-busca="tempo de tramitação (mediana e p90) dias desde a apresentação. a mediana é o tempo típico (metade das proposições levou menos, metade mais); o p90 mostra o tempo das mais demoradas (90% levaram menos que isso).">
+      <dt><a href="#tramitacao-dias" class="glossario__ancora" aria-label="Link para Tempo de tramitação (mediana e P90)">#</a>Tempo de tramitação (mediana e P90)</dt>
+      <dd>
+        <p>Dias desde a apresentação. A mediana é o tempo típico (metade das proposições levou menos, metade mais); o P90 mostra o tempo das mais demoradas (90% levaram menos que isso).</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="gasto-deputado" data-busca="gasto por deputado valor líquido da cota parlamentar dividido pelo número de deputados em exercício do partido ou da uf, para comparar grupos de tamanhos diferentes.">
+      <dt><a href="#gasto-deputado" class="glossario__ancora" aria-label="Link para Gasto por deputado">#</a>Gasto por deputado</dt>
+      <dd>
+        <p>Valor líquido da cota parlamentar dividido pelo número de deputados em exercício do partido ou da UF, para comparar grupos de tamanhos diferentes.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="outlier" data-busca="gasto fora da curva (z-score) quantos desvios-padrão o gasto de um deputado num tipo de despesa está acima da média dos colegas naquele tipo. acima de 2 é incomum e merece um olhar — não significa irregularidade.">
+      <dt><a href="#outlier" class="glossario__ancora" aria-label="Link para Gasto fora da curva (z-score)">#</a>Gasto fora da curva (z-score)</dt>
+      <dd>
+        <p>Quantos desvios-padrão o gasto de um deputado num tipo de despesa está acima da média dos colegas naquele tipo. Acima de 2 é incomum e merece um olhar — não significa irregularidade.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="quarentena" data-busca="quarentena de qualidade registros que não passaram nas regras de validação (ex.: despesa com valor negativo, que costuma ser estorno) e por isso ficam fora dos totais, guardados para análise.">
+      <dt><a href="#quarentena" class="glossario__ancora" aria-label="Link para Quarentena de qualidade">#</a>Quarentena de qualidade</dt>
+      <dd>
+        <p>Registros que não passaram nas regras de validação (ex.: despesa com valor negativo, que costuma ser estorno) e por isso ficam fora dos totais, guardados para análise.</p>
+      </dd>
+    </div>
+  </dl>
+</section>
+<section class="card glossario__secao" id="ia" aria-labelledby="ia-t">
+  <h2 class="card__title" id="ia-t">Inteligência artificial</h2>
+  <dl class="glossario">
+    <div class="glossario__item" id="tema-ia" data-busca="tema (ia) um dos 12 temas de interesse da bússola pública (como tributário e fiscal ou tecnologia e inovação), escolhido automaticamente pela semelhança entre o texto da proposição e a descrição de cada tema. quando nenhum tema é parecido o bastante, a proposição fica em &#34;outros&#34;.">
+      <dt><a href="#tema-ia" class="glossario__ancora" aria-label="Link para Tema (IA)">#</a>Tema (IA)</dt>
+      <dd>
+        <p>Um dos 12 temas de interesse da Bússola Pública (como Tributário e Fiscal ou Tecnologia e Inovação), escolhido automaticamente pela semelhança entre o texto da proposição e a descrição de cada tema. Quando nenhum tema é parecido o bastante, a proposição fica em &#34;Outros&#34;.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="tema-critico" data-busca="tema crítico tema de maior impacto para os clientes: tributário e fiscal, tecnologia e inovação e economia e sistema financeiro. pesa no score de relevância e destaca itens na pauta.">
+      <dt><a href="#tema-critico" class="glossario__ancora" aria-label="Link para Tema crítico">#</a>Tema crítico</dt>
+      <dd>
+        <p>Tema de maior impacto para os clientes: Tributário e Fiscal, Tecnologia e Inovação e Economia e Sistema Financeiro. Pesa no score de relevância e destaca itens na pauta.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="embedding" data-busca="embedding e similaridade a ia transforma cada texto num vetor de 1.536 números (embedding) que representa o seu significado. textos com sentido parecido ficam próximos; a similaridade (0 a 100%) mede essa proximidade. a proposição recebe o tema com maior similaridade.">
+      <dt><a href="#embedding" class="glossario__ancora" aria-label="Link para Embedding e similaridade">#</a>Embedding e similaridade</dt>
+      <dd>
+        <p>A IA transforma cada texto num vetor de 1.536 números (embedding) que representa o seu significado. Textos com sentido parecido ficam próximos; a similaridade (0 a 100%) mede essa proximidade. A proposição recebe o tema com maior similaridade.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="limiar" data-busca="limiar similaridade mínima para aceitar um tema (hoje 30%). abaixo disso a proposição vai para &#34;outros&#34;, porque nessas faixas a ia mais erra do que acerta.">
+      <dt><a href="#limiar" class="glossario__ancora" aria-label="Link para Limiar">#</a>Limiar</dt>
+      <dd>
+        <p>Similaridade mínima para aceitar um tema (hoje 30%). Abaixo disso a proposição vai para &#34;Outros&#34;, porque nessas faixas a IA mais erra do que acerta.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="busca-semantica" data-busca="proposições parecidas (busca semântica) no detalhe de uma proposição, as cinco com embedding mais próximo — parecidas no assunto, mesmo quando usam palavras diferentes.">
+      <dt><a href="#busca-semantica" class="glossario__ancora" aria-label="Link para Proposições parecidas (busca semântica)">#</a>Proposições parecidas (busca semântica)</dt>
+      <dd>
+        <p>No detalhe de uma proposição, as cinco com embedding mais próximo — parecidas no assunto, mesmo quando usam palavras diferentes.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="resumo" data-busca="resumo executivo, nível de impacto e setores texto de até três linhas escrito pela ia (modelo gpt-4o-mini) a partir da ementa, dizendo o que muda e quem é afetado; o nível de impacto (baixo, médio ou alto) para empresas e mercado; e até quatro setores econômicos afetados. a ia usa só o texto oficial e não acrescenta fatos.">
+      <dt><a href="#resumo" class="glossario__ancora" aria-label="Link para Resumo executivo, nível de impacto e setores">#</a>Resumo executivo, nível de impacto e setores</dt>
+      <dd>
+        <p>Texto de até três linhas escrito pela IA (modelo gpt-4o-mini) a partir da ementa, dizendo o que muda e quem é afetado; o nível de impacto (baixo, médio ou alto) para empresas e mercado; e até quatro setores econômicos afetados. A IA usa só o texto oficial e não acrescenta fatos.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="relevancia" data-busca="score de relevância nota de 0 a 100 que ordena o que merece atenção primeiro: 30% peso do tipo (pec pesa mais que pl), 25% tema crítico, 20% nível de impacto, 10% regime de urgência e 15% estar em pauta nos próximos 7 dias.">
+      <dt><a href="#relevancia" class="glossario__ancora" aria-label="Link para Score de relevância">#</a>Score de relevância</dt>
+      <dd>
+        <p>Nota de 0 a 100 que ordena o que merece atenção primeiro: 30% peso do tipo (PEC pesa mais que PL), 25% tema crítico, 20% nível de impacto, 10% regime de urgência e 15% estar em pauta nos próximos 7 dias.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="acuracia" data-busca="acurácia e &#34;sem vazamento&#34; percentual de proposições em que o tema da ia bate com os temas oficiais da câmara. &#34;sem vazamento&#34; é a medida honesta: a ia classifica sem ver os temas oficiais (81% na última avaliação).">
+      <dt><a href="#acuracia" class="glossario__ancora" aria-label="Link para Acurácia e &#34;sem vazamento&#34;">#</a>Acurácia e &#34;sem vazamento&#34;</dt>
+      <dd>
+        <p>Percentual de proposições em que o tema da IA bate com os temas oficiais da Câmara. &#34;Sem vazamento&#34; é a medida honesta: a IA classifica sem ver os temas oficiais (81% na última avaliação).</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="custo-ia" data-busca="custo de ia valor pago à openai pelas chamadas, registrado a cada execução. só se paga o que mudou: um resumo é refeito apenas quando a ementa muda.">
+      <dt><a href="#custo-ia" class="glossario__ancora" aria-label="Link para Custo de IA">#</a>Custo de IA</dt>
+      <dd>
+        <p>Valor pago à OpenAI pelas chamadas, registrado a cada execução. Só se paga o que mudou: um resumo é refeito apenas quando a ementa muda.</p>
+      </dd>
+    </div>
+  </dl>
+</section>
+<section class="card glossario__secao" id="dados" aria-labelledby="dados-t">
+  <h2 class="card__title" id="dados-t">Dados e pipeline</h2>
+  <dl class="glossario">
+    <div class="glossario__item" id="api" data-busca="api de dados abertos e endpoints serviço público da câmara que entrega os dados em formato aberto. cada endereço de consulta é um endpoint (ex.: lista de deputados, votos de uma votação). o radar coleta todos os 78.">
+      <dt><a href="#api" class="glossario__ancora" aria-label="Link para API de Dados Abertos e endpoints">#</a>API de Dados Abertos e endpoints</dt>
+      <dd>
+        <p>Serviço público da Câmara que entrega os dados em formato aberto. Cada endereço de consulta é um endpoint (ex.: lista de deputados, votos de uma votação). O Radar coleta todos os 78.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="cobertura" data-busca="cobertura 78/78 quantos dos 78 endpoints da api foram coletados com sucesso na última execução. 78/78 significa cobertura completa.">
+      <dt><a href="#cobertura" class="glossario__ancora" aria-label="Link para Cobertura 78/78">#</a>Cobertura 78/78</dt>
+      <dd>
+        <p>Quantos dos 78 endpoints da API foram coletados com sucesso na última execução. 78/78 significa cobertura completa.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="medalhao" data-busca="arquitetura medalhão (landing, bronze, silver, gold) as camadas por onde o dado passa. landing guarda a resposta da api como veio. bronze guarda cada versão no banco, sem alterar nada. silver limpa, valida e padroniza. gold organiza para análise (fatos, dimensões e ia). os marts são tabelas-resumo da gold feitas para estes painéis.">
+      <dt><a href="#medalhao" class="glossario__ancora" aria-label="Link para Arquitetura medalhão (Landing, Bronze, Silver, Gold)">#</a>Arquitetura medalhão (Landing, Bronze, Silver, Gold)</dt>
+      <dd>
+        <p>As camadas por onde o dado passa. Landing guarda a resposta da API como veio. Bronze guarda cada versão no banco, sem alterar nada. Silver limpa, valida e padroniza. Gold organiza para análise (fatos, dimensões e IA). Os marts são tabelas-resumo da Gold feitas para estes painéis.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="funil" data-busca="funil bronze → silver → gold quantas linhas de cada entidade existem em cada camada. a bronze costuma ter mais, porque guarda versões repetidas e registros que a validação recusou.">
+      <dt><a href="#funil" class="glossario__ancora" aria-label="Link para Funil Bronze → Silver → Gold">#</a>Funil Bronze → Silver → Gold</dt>
+      <dd>
+        <p>Quantas linhas de cada entidade existem em cada camada. A Bronze costuma ter mais, porque guarda versões repetidas e registros que a validação recusou.</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="execucao" data-busca="execução do pipeline e status cada rodada de coleta e processamento. incremental busca só o que é novo; backfill recarrega um período. status: success (tudo certo), partial (algum endpoint ou etapa falhou, o resto foi gravado) e failed (a execução não terminou).">
+      <dt><a href="#execucao" class="glossario__ancora" aria-label="Link para Execução do pipeline e status">#</a>Execução do pipeline e status</dt>
+      <dd>
+        <p>Cada rodada de coleta e processamento. Incremental busca só o que é novo; backfill recarrega um período. Status: success (tudo certo), partial (algum endpoint ou etapa falhou, o resto foi gravado) e failed (a execução não terminou).</p>
+      </dd>
+    </div>
+    <div class="glossario__item" id="atualizado" data-busca="atualizado há… tempo desde o fim da última execução do pipeline que trouxe dados. os painéis mostram o que estava no banco naquele momento.">
+      <dt><a href="#atualizado" class="glossario__ancora" aria-label="Link para Atualizado há…">#</a>Atualizado há…</dt>
+      <dd>
+        <p>Tempo desde o fim da última execução do pipeline que trouxe dados. Os painéis mostram o que estava no banco naquele momento.</p>
+      </dd>
+    </div>
+  </dl>
+</section>
+<div class="empty" id="glossario-vazio" hidden>Nenhum termo encontrado. Tente outra palavra.</div>
+    </main>
+    <footer class="footer">
+      <a href="glossario.html">Glossário de termos</a> · Fonte: API de Dados Abertos da Câmara dos Deputados · período <span data-meta="periodo">—</span> · atualizado em <span data-meta="atualizado">—</span> ·
+      Radar Legislativo para Bússola Pública · 2026
+    </footer>
+  </div>
+</div>
+<script type="module" src="static/js/pages/glossario.82cf0cee15.js"></script>
+</body>
+</html>

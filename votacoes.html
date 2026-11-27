@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Votações e Partidos · Radar Legislativo</title>
+  <meta name="description" content="Resultado das votações, participação, fidelidade e governismo por partido.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#334155">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23334155'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='white' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='white'/%3E%3C/svg%3E">
+  <script>
+    /* aplica o tema salvo antes de pintar (evita piscar) */
+    try { const t = localStorage.getItem('radar-tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    try { if (localStorage.getItem('radar-cores') === 'daltonico') document.documentElement.dataset.cores = 'daltonico'; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="static/css/tokens.4b96701d69.css">
+  <link rel="stylesheet" href="static/css/layout.b090a52276.css">
+  <link rel="stylesheet" href="static/css/components.7d0c545729.css">
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<div class="app">
+  <aside class="sidebar" aria-label="Navegação principal">
+    <a class="brand" href="index.html">
+      <span class="brand__logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34M4 6h.01M2.29 9.62A10 10 0 1 0 21.31 8.35M16.24 7.76A6 6 0 1 0 8.23 16.67M12 18h.01M17.99 11.66A6 6 0 0 1 15.77 16.67"/><circle cx="12" cy="12" r="2"/><path d="m13.41 10.59 5.66-5.66"/></svg></span>
+      <span class="brand__text"><span class="brand__name">Radar Legislativo</span><span class="brand__sub">Bússola Pública</span></span>
+    </a>
+    <nav class="nav">
+      <a href="index.html"  title="Visão Executiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span>Visão Executiva</span></a>
+      <a href="proposicoes.html"  title="Proposições e Temas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg><span>Proposições e Temas</span></a>
+      <a href="votacoes.html" aria-current="page" title="Votações e Partidos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 12 2 2 4-4"/><path d="M5 7c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v12H5V7z"/><path d="M22 19H2"/></svg><span>Votações e Partidos</span></a>
+      <a href="deputados.html"  title="Deputados"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Deputados</span></a>
+      <a href="despesas.html"  title="Despesas da Cota"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span>Despesas da Cota</span></a>
+      <a href="agenda.html"  title="Agenda e Órgãos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span>Agenda e Órgãos</span></a>
+      <a href="articulacao.html"  title="Articulação Política"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M12 12V8"/></svg><span>Articulação Política</span></a>
+      <a href="operacao.html"  title="Operação e Qualidade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span>Operação e Qualidade</span></a>
+      <a href="glossario.html"  title="Glossário"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Glossário</span></a>
+    </nav>
+    <div class="sidebar__foot">
+      <p>Cobertura da API: <strong data-meta="cobertura">78/78</strong> endpoints</p>
+      <p><a href="https://github.com/verlugonservicos/radar-legislativo" rel="noopener">Código no GitHub</a></p>
+    </div>
+  </aside>
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="main">
+    <header class="header">
+      <button class="icon-btn menu-btn" type="button" data-action="menu" aria-label="Abrir menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <button class="icon-btn collapse-btn" type="button" data-action="recolher" aria-label="Recolher menu lateral" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg></button>
+      <h1 class="header__title">Votações e Partidos</h1>
+      <div class="header__actions">
+        <span class="update-badge" data-update><span class="update-badge__dot" aria-hidden="true"></span><span data-update-text>Carregando…</span></span>
+        <button class="icon-btn" type="button" data-action="cores" aria-label="Ativar cores para daltônicos" title="Cores para daltônicos" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="icon-btn" type="button" data-action="tema" aria-label="Alternar tema" aria-pressed="false">
+          <span class="ico-sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+        </button>
+      </div>
+    </header>
+    <main class="content" id="conteudo" tabindex="-1">
+      <p class="page-intro">Resultado das votações, participação, fidelidade e governismo por partido.</p>
+<div class="grid">
+<section class="card span-7 " aria-labelledby="dia-t">
+  <header class="card__head">
+    <div><h2 class="card__title" id="dia-t">Votações por semana</h2><p class="card__sub">Aprovadas × rejeitadas · últimos 90 dias · S-NN = número da semana no ano (segunda a domingo)</p></div>
+<div class="card__actions"><a class="btn" href="glossario.html#votacao" title="Ver no glossário">O que é?<span class="sr-only"> Votações por semana no glossário</span></a></div>  </header>
+  <div class="chart chart--lg chart--estica skeleton" id="graf-dia" aria-label="Barras empilhadas de votações aprovadas e rejeitadas por semana"></div>
+</section><section class="card span-5 " aria-labelledby="participacao-t">
+  <header class="card__head">
+    <div><h2 class="card__title" id="participacao-t">Participação por partido</h2><p class="card__sub">Presença média dos deputados em exercício nas votações nominais do Plenário</p></div>
+<div class="card__actions"><a class="btn" href="glossario.html#participacao" title="Ver no glossário">O que é?<span class="sr-only"> Participação por partido no glossário</span></a></div>  </header>
+  <div class="chart chart--lg skeleton" id="graf-participacao" aria-label="Barras de participação por partido"></div>
+</section><section class="card span-6 " aria-labelledby="dispersao-t">
+  <header class="card__head">
+    <div><h2 class="card__title" id="dispersao-t">Fidelidade × governismo</h2><p class="card__sub">Cada bolha é um partido; o tamanho é o número de deputados · horizontal: fidelidade ao partido · role o mouse sobre o gráfico para ampliar</p></div>
+<div class="card__actions"><a class="btn" href="glossario.html#fidelidade" title="Ver no glossário">O que é?<span class="sr-only"> Fidelidade × governismo no glossário</span></a></div>  </header>
+  <div class="chart chart--xl chart--estica skeleton" id="graf-dispersao" aria-label="Dispersão de fidelidade partidária e governismo por partido"></div>
+</section><section class="card span-6 " aria-labelledby="heatmap-t">
+  <header class="card__head">
+    <div><h2 class="card__title" id="heatmap-t">Concordância entre partidos</h2><p class="card__sub">% das votações em que os dois partidos votaram igual (voto da maioria, Sim/Não) · partidos com 5+ deputados, ordenados por governismo</p></div>
+<div class="card__actions"><a class="btn" href="glossario.html#concordancia" title="Ver no glossário">O que é?<span class="sr-only"> Concordância entre partidos no glossário</span></a></div>  </header>
+  <div class="chart chart--xl skeleton" id="graf-heatmap" aria-label="Mapa de calor de concordância entre partidos"></div>
+</section><section class="card span-12 " aria-labelledby="tabela-t">
+  <header class="card__head">
+    <div><h2 class="card__title" id="tabela-t">Indicadores por partido</h2><p class="card__sub">Deputados em exercício</p></div>
+  </header>
+  <div id="tabela-partidos"></div>
+</section></div>
+    </main>
+    <footer class="footer">
+      <a href="glossario.html">Glossário de termos</a> · Fonte: API de Dados Abertos da Câmara dos Deputados · período <span data-meta="periodo">—</span> · atualizado em <span data-meta="atualizado">—</span> ·
+      Radar Legislativo para Bússola Pública · 2026
+    </footer>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js" integrity="sha384-Mx5lkUEQPM1pOJCwFtUICyX45KNojXbkWdYhkKUKsbv391mavbfoAmONbzkgYPzR" crossorigin="anonymous" defer></script><script type="module" src="static/js/pages/votacoes.a033dbe80d.js"></script>
+</body>
+</html>
