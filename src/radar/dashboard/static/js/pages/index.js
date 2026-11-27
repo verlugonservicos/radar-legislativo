@@ -97,6 +97,7 @@ await seguro(document.getElementById('graf-temas'), async () => {
     })(t);
     op.series[0].label = { ...op.series[0].label, formatter: (x) => `${fmt.num(x.value)} (${pcts[x.dataIndex]})` };
     op.grid = { ...op.grid, right: 104 };
+    linhaMedia(op, mediaDe(ordem.map(([, v]) => v)), t, { formatter: fmt.num1 });  // média de proposições por tema
     op.tooltip = { trigger: 'axis', axisPointer: { type: 'shadow' },
       formatter: (ps) => `<b>${fmt.escapar(ps[0].name)}</b><br>Proposições: <b>${fmt.num(ps[0].value)}</b> (${pcts[ps[0].dataIndex]} do total)` };
     return op;

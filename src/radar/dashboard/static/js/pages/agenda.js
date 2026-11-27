@@ -1,7 +1,7 @@
 // Agenda e Órgãos: calendário de eventos, órgãos, tipos/presença, pauta crítica e tabela.
 import { iniciar, seguro } from '../app.js';
 import { dados } from '../data.js';
-import { barras, montar, linhaMedia, mediaDe } from '../charts.js';
+import { barras, linhaMedia, mediaDe, montar, PALETA } from '../charts.js';
 import { chipTema, Tabela, vazio } from '../ui.js';
 import * as fmt from '../format.js';
 
@@ -54,12 +54,22 @@ await seguro(document.getElementById('graf-orgaos'), async () => {
 });
 
 await seguro(document.getElementById('graf-tipos'), async () => {
-  const tipos = contar(ag, (d) => d.tipo || 'Outro').slice(0, 10);
+  const todosTipos = contar(ag, (d) => d.tipo || 'Outro');
+  const tipos = todosTipos.slice(0, 10);
   const presenca = tipos.map(([t]) => { const ls = ag.filter((d) => (d.tipo || 'Outro') === t); return Math.round(ls.reduce((a, d) => a + d.presentes, 0) / ls.length); });
-  montar(limpa('graf-tipos'), barras({
-    categorias: tipos.map((d) => d[0]), horizontal: true,
-    series: [{ name: 'Eventos', data: tipos.map((d) => d[1]) }, { name: 'Presença média', data: presenca }],
-  }), { tabela: { colunas: ['Tipo', 'Eventos', 'Presença média'], linhas: tipos.map((d, i) => [d[0], d[1], presenca[i]]) } });
+  // duas médias, uma por série, na cor da série: eventos por tipo (todos os tipos) e presença média de
+  // todos os eventos; o rótulo da presença corre ao longo da linha para não encavalar no dos eventos
+  montar(limpa('graf-tipos'), (t) => {
+    const op = barras({
+      categorias: tipos.map((d) => d[0]), horizontal: true,
+      series: [{ name: 'Eventos', data: tipos.map((d) => d[1]) }, { name: 'Presença média', data: presenca }],
+    })(t);
+    const cores = [t.accent, PALETA[1]];  // as cores do tema para as duas séries
+    linhaMedia(op, mediaDe(todosTipos.map((d) => d[1])), t, { formatter: fmt.num1, rotulo: 'média eventos', cor: cores[0] });
+    linhaMedia(op, mediaDe(ag.map((d) => d.presentes)), t,
+      { formatter: fmt.num1, rotulo: 'presença média', serie: 1, cor: cores[1], posicao: 'insideStartTop' });
+    return op;
+  }, { tabela: { colunas: ['Tipo', 'Eventos', 'Presença média'], linhas: tipos.map((d, i) => [d[0], d[1], presenca[i]]) } });
 });
 
 await seguro(document.getElementById('lista-pauta'), async () => {

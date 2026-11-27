@@ -145,14 +145,14 @@ export function barras({ categorias, series, horizontal = false, empilhado = fal
 /** Linha de média em destaque (padrão do "Gasto por deputado"): rótulo em negrito na cor do texto.
  *  eixo 'x' = linha vertical (barras horizontais), 'y' = linha horizontal (barras verticais e linhas).
  *  Acrescenta à markLine que a série já tiver; `serie` escolhe em qual série desenhar. */
-export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotulo = 'média', serie = 0, cor } = {}) {
+export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotulo = 'média', serie = 0, cor, posicao } = {}) {
   if (media === null || media === undefined || Number.isNaN(media) || !op.series?.[serie]) return op;
   const s = op.series[serie];
   const ponto = eixo === 'x' ? { xAxis: media } : { yAxis: media };
   const estilo = { color: cor || t.text, type: 'dashed', width: 1.5, opacity: 0.8 };
   // média com 1 casa no rótulo (formatadores de contagem mostravam 761,071)
   const label = { formatter: `${rotulo} ${formatter(Math.round(media * 10) / 10)}`, color: cor || t.text, fontSize: 12, fontWeight: 700,
-                  position: eixo === 'x' ? 'start' : 'insideEndTop', distance: 6 };
+                  position: posicao || (eixo === 'x' ? 'start' : 'insideEndTop'), distance: 6 };
   const atual = s.markLine || { silent: true, symbol: 'none', data: [] };
   s.markLine = { ...atual, silent: true, symbol: 'none', lineStyle: atual.lineStyle || estilo,
                  label: atual.label || label, data: [...(atual.data || []), { ...ponto, lineStyle: estilo, label }] };
