@@ -1,0 +1,62 @@
+{
+  "name": "WF99_error_handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "12d3d4ab-bffc-5f43-9fec-be2836434723",
+      "name": "Erro em workflow",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "<TELEGRAM_CHAT_ID>",
+        "text": "=❌ Radar: falha no {{ $json.workflow.name }} (nó {{ $json.execution.lastNodeExecuted }}): {{ $json.execution.error.message }}\n{{ $json.execution.url }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "5cd9d25f-cb89-587f-a44e-4172a783c6fc",
+      "name": "Avisa erro",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Radar Telegram Bot"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Erro em workflow": {
+      "main": [
+        [
+          {
+            "node": "Avisa erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "executionTimeout": 3600
+  },
+  "meta": {
+    "observacao": "Gerado pelo Radar Legislativo (M6). Credenciais por nome; reassocie após importar."
+  }
+}

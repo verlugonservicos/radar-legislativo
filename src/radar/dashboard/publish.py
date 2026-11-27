@@ -107,7 +107,10 @@ def publish(out_dir: Path, *, remote: str | None = None, branch: str | None = No
     env = dict(os.environ)
     chave = deploy_key or (s.gh_deploy_key_path if s.gh_deploy_key_path.exists() else None)
     if chave:
-        env["GIT_SSH_COMMAND"] = f"ssh -i {chave} -o IdentitiesOnly=yes"
+        # no contêiner não há ~/.ssh: a chave do github.com é aceita na 1ª conexão e guardada em data/
+        conhecidos = RAIZ_PROJETO / "data" / "known_hosts"
+        env["GIT_SSH_COMMAND"] = (f"ssh -i {chave} -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "
+                                  f"-o UserKnownHostsFile={conhecidos}")  # fmt: skip
     _preparar_worktree(remote, branch, env)
     _copiar(out_dir)
     _git("add", "-A", cwd=WORKTREE)

@@ -1,0 +1,48 @@
+# Stack `radar` no Swarm da VPS (decisão D2): o runner entra na rede verlugonnet, onde o n8n o chama
+# por http://radar_runner:8000. Nenhuma porta publicada.
+#
+#   cd /opt/portfolio/radar-legislativo
+#   docker build -t radar-runner:${RADAR_VERSAO} .
+#   RADAR_VERSAO=<versão> docker stack deploy -c infra/vps/stack.radar.yml radar
+#
+# Pré-requisitos (uma vez): .env com permissão 600 nesta pasta e o secret gh_deploy_key
+# (docker secret create gh_deploy_key <arquivo da chave>). Ver infra/vps/README.md.
+services:
+  runner:
+    image: radar-runner:${RADAR_VERSAO:-latest}
+    env_file: ../../.env
+    environment:
+      DASHBOARD_OUT_DIR: site
+      GH_DEPLOY_KEY_PATH: /run/secrets/gh_deploy_key
+      TZ: America/Sao_Paulo
+      # autor dos commits do gh-pages (o código chega por rsync, sem .git para ler o autor)
+      GIT_AUTHOR_NAME: verlugonservicos
+      GIT_AUTHOR_EMAIL: 342045083+verlugonservicos@users.noreply.github.com
+      GIT_COMMITTER_NAME: verlugonservicos
+      GIT_COMMITTER_EMAIL: 342045083+verlugonservicos@users.noreply.github.com
+    volumes:
+      - /opt/portfolio/radar-legislativo/data:/app/data
+      - /opt/portfolio/radar-legislativo/site:/app/site
+    secrets:
+      - source: gh_deploy_key
+        uid: "1000"
+        gid: "1000"
+        mode: 0400
+    networks:
+      - verlugonnet
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1536M   # D5
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+
+secrets:
+  gh_deploy_key:
+    external: true
+
+networks:
+  verlugonnet:
+    external: true

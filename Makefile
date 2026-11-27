@@ -9,7 +9,7 @@ VPS_DB_DESTINO     ?= 127.0.0.1:5433
 TUNNEL_PORTA_LOCAL ?= 5433
 VPS_DIR            ?= /opt/portfolio/radar-legislativo
 
-.PHONY: ai ai-avaliar dashboard publish catalog catalog-check amostras dicionario setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync
+.PHONY: ai ai-avaliar dashboard publish catalog catalog-check amostras dicionario setup lock db-init db-check test test-integration lint format precommit tunnel vps-diag vps-sync vps-deploy-sync
 
 setup:            ## cria o ambiente, instala dependências e os hooks do pre-commit
 	$(PYTHON) -m venv $(VENV)
@@ -38,6 +38,12 @@ vps-diag:         ## diagnóstico somente leitura da VPS (saída bruta fica loca
 vps-sync:         ## copia infra/vps para a VPS (não executa nada lá)
 	ssh $(VPS_SSH) 'mkdir -p $(VPS_DIR)/infra/vps'
 	rsync -av --exclude '*.raw.txt' infra/vps/ $(VPS_SSH):$(VPS_DIR)/infra/vps/
+
+vps-deploy-sync:  ## copia o código do projeto para a VPS (M6; não executa nada lá)
+	rsync -av --delete --exclude='/.git' --exclude='/.venv' --exclude='/.env' --exclude='/data' \
+	  --exclude='/docs' --exclude='/negocio' --exclude='/site' --exclude='/notebooks' \
+	  --exclude='__pycache__' --exclude='.*_cache' --exclude='*.raw.txt' --exclude='.coverage' \
+	  ./ $(VPS_SSH):$(VPS_DIR)/
 
 catalog:          ## sincroniza config/endpoints.yaml com o OpenAPI oficial
 	$(PY) -m radar catalog sync

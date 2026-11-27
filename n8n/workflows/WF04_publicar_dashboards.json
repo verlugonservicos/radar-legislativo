@@ -1,0 +1,159 @@
+{
+  "name": "WF04_publicar_dashboards",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "45df37e2-5bd7-5037-a8fa-c4cf90d8e4b9",
+      "name": "Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "68a6f97a-8310-54cf-b215-41ba4edc7167",
+      "name": "Chamado por outro workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://radar_runner:8000/dashboard/build",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "521ed092-952e-5835-bf8e-8ac3d7c1515a",
+      "name": "Gera dashboards",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Radar Runner Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://radar_runner:8000/dashboard/publish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "6d104fb1-dbb9-58d3-bb34-a66b3d400827",
+      "name": "Publica no Pages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Radar Runner Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "<TELEGRAM_CHAT_ID>",
+        "text": "📊 Dashboards atualizados: https://verlugonservicos.github.io/radar-legislativo/",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "c62745cf-fcc8-5023-a8ad-ae598c94b9b3",
+      "name": "Avisa",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Radar Telegram Bot"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Manual": {
+      "main": [
+        [
+          {
+            "node": "Gera dashboards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamado por outro workflow": {
+      "main": [
+        [
+          {
+            "node": "Gera dashboards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gera dashboards": {
+      "main": [
+        [
+          {
+            "node": "Publica no Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publica no Pages": {
+      "main": [
+        [
+          {
+            "node": "Avisa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "executionTimeout": 3600,
+    "errorWorkflow": "<ID do WF99 depois de importar>"
+  },
+  "meta": {
+    "observacao": "Gerado pelo Radar Legislativo (M6). Credenciais por nome; reassocie após importar."
+  }
+}

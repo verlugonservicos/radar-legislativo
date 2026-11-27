@@ -10,6 +10,7 @@ Destino na VPS: `/opt/portfolio/radar-legislativo/infra/vps/`.
 | `docker-compose.gateway.yml` | `pg-gateway`: acesso ao banco em `127.0.0.1:5433` e `172.18.0.1:5433`, sem expor a 5432 | Sim |
 | `backup_bancos.sh` + `bancos.conf` | `pg_dump` diário de cada banco, com retenção | Sim (grava em `/var/backups/postgres`) |
 | `testar_restauracao.sh` | Restaura o último dump num banco temporário e compara contagens | Cria e remove um banco de teste |
+| `stack.radar.yml` + `Dockerfile` (raiz) | Runner HTTP do pipeline como stack `radar` do Swarm, na rede `verlugonnet`, sem porta publicada (M6, ADR-031) | Sim |
 
 ## Ordem de uso (primeira vez)
 
@@ -29,6 +30,24 @@ crontab -e   # 0 3 * * * /opt/portfolio/radar-legislativo/infra/vps/backup_banco
 make tunnel        # deixe aberto em outro terminal
 make db-check && make db-init
 ```
+
+## Runner (M6)
+
+```bash
+# 1. Na máquina de desenvolvimento: enviar o código (sem .env, data, docs, site)
+make vps-deploy-sync
+
+# 2. Na VPS, uma vez: .env (permissão 600, digitado pelo autor) e a deploy key como secret
+#    docker secret create gh_deploy_key <arquivo da chave privada> && rm <arquivo da chave privada>
+# 3. Na VPS, a cada versão:
+cd /opt/portfolio/radar-legislativo
+docker build -t radar-runner:<versão> .
+RADAR_VERSAO=<versão> docker stack deploy -c infra/vps/stack.radar.yml radar
+```
+
+Os workflows ficam em `n8n/workflows/` e são importados no n8n existente (D3), com as credenciais
+criadas no próprio n8n: `Radar Runner Token` (Header Auth `X-Runner-Token`), `Radar Postgres`,
+`Radar Telegram Bot` e `Radar SMTP`.
 
 ## Regras
 - Nenhum arquivo de `/opt/supabase` é alterado.

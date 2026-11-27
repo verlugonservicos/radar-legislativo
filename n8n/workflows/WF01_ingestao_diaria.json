@@ -1,0 +1,425 @@
+{
+  "name": "WF01_ingestao_diaria",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "98a2c176-57d5-5130-9882-214adb4dbf8e",
+      "name": "Todo dia 06:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "45df37e2-5bd7-5037-a8fa-c4cf90d8e4b9",
+      "name": "Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://radar_runner:8000/run",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 60000
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"mode\": \"incremental\", \"orcamento\": 0.15}"
+      },
+      "id": "43e36c4e-a2d4-56c4-b849-db5582c775f8",
+      "name": "Inicia carga",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Radar Runner Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "3567bf4e-ff13-5b73-9926-1f0d196bf0d3",
+      "name": "Espera 5 min",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=http://radar_runner:8000/jobs/{{ $('Inicia carga').item.json.job }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "93d84f25-12ec-5601-9267-82c939201b82",
+      "name": "Consulta job",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Radar Runner Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "4593570e-647a-5455-a2a5-d38d4f16ebd9",
+              "leftValue": "={{ $json.concluido }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0d43c5a1-a51c-51ff-8641-2db3100c0992",
+      "name": "Terminou?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "c4c9fede-e57f-54b8-be44-3b6e59d13755",
+              "leftValue": "={{ ['success','partial'].includes($json.status) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "18c37ec2-5c79-5cb7-9394-5ff78bed8176",
+      "name": "Sucesso ou parcial?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://radar_runner:8000/dashboard/build",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "521ed092-952e-5835-bf8e-8ac3d7c1515a",
+      "name": "Gera dashboards",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        -100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Radar Runner Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://radar_runner:8000/dashboard/publish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "6d104fb1-dbb9-58d3-bb34-a66b3d400827",
+      "name": "Publica no Pages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        -100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "",
+          "name": "Radar Runner Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "<TELEGRAM_CHAT_ID>",
+        "text": "=⚠️ Radar: execução {{ $('Consulta job').item.json.resultado.id_execucao }} parcial — {{ $('Consulta job').item.json.erro }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "ba03949c-b6e0-59b9-b14c-ef4276671166",
+      "name": "Aviso: carga parcial",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2160,
+        -100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Radar Telegram Bot"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "errorMessage": "=Radar: carga falhou — {{ $json.erro }}"
+      },
+      "id": "99e7f914-4f1b-5770-b7ed-93cc23a2fbce",
+      "name": "Falhou",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "parcial",
+              "leftValue": "={{ $('Consulta job').item.json.status === 'partial' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f2eefaa7-3a3e-48ee-8f10-a680416c8441",
+      "name": "Parcial?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        -100
+      ]
+    }
+  ],
+  "connections": {
+    "Todo dia 06:00": {
+      "main": [
+        [
+          {
+            "node": "Inicia carga",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual": {
+      "main": [
+        [
+          {
+            "node": "Inicia carga",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inicia carga": {
+      "main": [
+        [
+          {
+            "node": "Espera 5 min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Espera 5 min": {
+      "main": [
+        [
+          {
+            "node": "Consulta job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta job": {
+      "main": [
+        [
+          {
+            "node": "Terminou?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Terminou?": {
+      "main": [
+        [
+          {
+            "node": "Sucesso ou parcial?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Espera 5 min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sucesso ou parcial?": {
+      "main": [
+        [
+          {
+            "node": "Gera dashboards",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Falhou",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gera dashboards": {
+      "main": [
+        [
+          {
+            "node": "Publica no Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publica no Pages": {
+      "main": [
+        [
+          {
+            "node": "Parcial?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parcial?": {
+      "main": [
+        [
+          {
+            "node": "Aviso: carga parcial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "executionTimeout": 14400,
+    "errorWorkflow": "<ID do WF99 depois de importar>"
+  },
+  "meta": {
+    "observacao": "Gerado pelo Radar Legislativo (M6). Credenciais por nome; reassocie após importar."
+  }
+}

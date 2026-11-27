@@ -1,0 +1,153 @@
+{
+  "name": "WF02_alertas_telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "49eae378-4822-55fb-92a4-38dbb111f6b2",
+      "name": "Chamado pelo WF01",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "45df37e2-5bd7-5037-a8fa-c4cf90d8e4b9",
+      "name": "Manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM gold.mart_alertas_pendentes LIMIT 20",
+        "options": {}
+      },
+      "id": "65122eab-8b44-5862-ad69-1ff8fbe696a5",
+      "name": "Alertas pendentes",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        240,
+        100
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Radar Postgres"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "<TELEGRAM_CHAT_ID>",
+        "text": "=🔔 <b>{{ $json.sigla_tipo }} {{ $json.numero }}/{{ $json.ano }}</b> · {{ $json.tema_ia }} · impacto {{ $json.nivel_impacto }}\n{{ $json.resumo_executivo }}\n<a href=\"{{ $json.link_camara }}\">Ver na Câmara</a>",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "36cc30f0-8c03-5a5d-9f2d-404025a861d7",
+      "name": "Envia alerta",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "Radar Telegram Bot"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO ops.alertas_enviados (id_proposicao, canal) VALUES ($1, 'telegram') ON CONFLICT DO NOTHING",
+        "options": {
+          "queryReplacement": "={{ $('Alertas pendentes').item.json.id_proposicao }}"
+        }
+      },
+      "id": "14420167-4bf6-51ab-88ea-cd5de16fe114",
+      "name": "Marca enviado",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        720,
+        100
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "",
+          "name": "Radar Postgres"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Chamado pelo WF01": {
+      "main": [
+        [
+          {
+            "node": "Alertas pendentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual": {
+      "main": [
+        [
+          {
+            "node": "Alertas pendentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alertas pendentes": {
+      "main": [
+        [
+          {
+            "node": "Envia alerta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia alerta": {
+      "main": [
+        [
+          {
+            "node": "Marca enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "executionTimeout": 3600,
+    "errorWorkflow": "<ID do WF99 depois de importar>"
+  },
+  "meta": {
+    "observacao": "Gerado pelo Radar Legislativo (M6). Credenciais por nome; reassocie após importar."
+  }
+}
