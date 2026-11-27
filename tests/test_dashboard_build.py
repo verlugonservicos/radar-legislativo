@@ -92,6 +92,15 @@ def test_json_grande_e_cortado_com_aviso(tmp_path):
     assert tamanho <= 50_000 and corpo["meta"]["cortado"] and corpo["meta"]["linhas_total"] == 2000
 
 
+def test_json_grande_vira_colunar_antes_de_cortar(tmp_path):
+    linhas = [{"identificador_longo": n, "descricao_bem_comprida": "x" * 20} for n in range(1000)]
+    tamanho = b.gravar_json(tmp_path / "x.json", "x", linhas, limite=40_000)
+    corpo = json.loads((tmp_path / "x.json").read_text())
+    assert tamanho <= 40_000 and "cortado" not in corpo["meta"]
+    assert corpo["meta"]["colunas"] == ["identificador_longo", "descricao_bem_comprida"]
+    assert len(corpo["dados"]) == 1000 and corpo["dados"][0] == [0, "x" * 20]
+
+
 def test_valores_numericos_e_datas_em_iso():
     from datetime import date, datetime
     from decimal import Decimal

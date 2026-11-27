@@ -86,6 +86,20 @@ def gravar_json(
     """Grava `{"meta": {...}, "dados": [...]}`; acima do limite corta linhas e avisa no próprio JSON."""
     meta = {"dataset": nome, "gerado_em": datetime.now(UTC).isoformat(), **(extra or {})}
     corpo = json.dumps({"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":"))
+    # acima do limite (RNF04: JSON ≤ 1 MB), antes de cortar linhas tenta o formato colunar: os nomes
+    # dos campos saem de cada linha e vão uma vez só em meta.colunas (data.js remonta os objetos)
+    if (
+        len(corpo.encode()) > limite
+        and isinstance(dados, list)
+        and dados
+        and all(isinstance(r, dict) for r in dados)
+    ):
+        colunas = list(dados[0].keys())
+        meta["colunas"] = colunas
+        dados = [[r.get(c) for c in colunas] for r in dados]
+        corpo = json.dumps(
+            {"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":")
+        )
     if len(corpo.encode()) > limite and isinstance(dados, list) and dados:
         total = len(dados)
         while len(corpo.encode()) > limite and dados:
