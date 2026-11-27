@@ -16,6 +16,8 @@ Detalhes no glossário do próprio site.
 | `src/radar/` | Código do pipeline (CLI `python -m radar`) | Sim |
 | `sql/` | DDL das camadas (`000_schemas.sql`, `ops/`) | Sim |
 | `tests/` | Testes unitários e de integração | Sim |
+| `infra/vps/` | Scripts e stack do Swarm usados na VPS (banco, gateway, backup, runner) | Sim |
+| `n8n/workflows/` | Workflows WF01–WF04 e WF99 para importar no n8n | Sim |
 | `negocio/` | Material do desafio, áudio do DataCast, rascunhos | Não |
 | `data/` | Dados extraídos (landing JSON, dumps) | Não |
 
@@ -38,6 +40,13 @@ Catálogo: `python -m radar catalog check` (cobertura 78/78 contra o OpenAPI), `
 O banco fica no Supabase self-hosted da VPS do autor, num banco dedicado ao projeto, sem porta pública.
 Provisionamento, túnel e backup: ver `infra/vps/README.md`.
 
+## Automação
+
+Todo dia às 06:00 o n8n (WF01) chama o runner HTTP do projeto (`src/radar/runner/`), que roda na VPS
+como serviço do Docker Swarm, sem porta pública. O runner faz a carga incremental (API → Bronze → Silver
+→ Gold → IA → marts) em segundo plano; o n8n acompanha até o fim e então gera e publica os dashboards no
+GitHub Pages. Detalhes em `infra/vps/README.md`.
+
 ## Andamento
 
 | Marco | Status |
@@ -48,6 +57,6 @@ Provisionamento, túnel e backup: ver `infra/vps/README.md`.
 | M2 Landing + Bronze | ✅ |
 | M3 Silver + Gold | ✅ |
 | M4 IA | ✅ |
-| M5 Dashboards | ⏳ validação |
-| M6 Automação | ⏳ |
+| M5 Dashboards | ✅ `v0.5-dashboards` (27/11/2026) |
+| M6 Automação | 🔄 no ar desde 27/11/2026 (1ª execução pelo n8n: sucesso); tag `v0.6-automacao` após a 1ª execução agendada |
 | M7 Docs e pitch | ⏳ |
