@@ -58,7 +58,8 @@ await seguro(document.getElementById('graf-tipos'), async () => {
   const tipos = todosTipos.slice(0, 10);
   const presenca = tipos.map(([t]) => { const ls = ag.filter((d) => (d.tipo || 'Outro') === t); return Math.round(ls.reduce((a, d) => a + d.presentes, 0) / ls.length); });
   // duas médias, uma por série, na cor da série: eventos por tipo (todos os tipos) e presença média de
-  // todos os eventos; o rótulo da presença corre ao longo da linha para não encavalar no dos eventos
+  // todos os eventos. Rótulos deitados: o dos eventos no topo (abaixo da legenda) e o da presença
+  // embaixo, depois dos números do eixo, para um não encavalar no outro
   montar(limpa('graf-tipos'), (t) => {
     const op = barras({
       categorias: tipos.map((d) => d[0]), horizontal: true,
@@ -67,7 +68,8 @@ await seguro(document.getElementById('graf-tipos'), async () => {
     const cores = [t.accent, PALETA[1]];  // as cores do tema para as duas séries
     linhaMedia(op, mediaDe(todosTipos.map((d) => d[1])), t, { formatter: fmt.num1, rotulo: 'média eventos', cor: cores[0] });
     linhaMedia(op, mediaDe(ag.map((d) => d.presentes)), t,
-      { formatter: fmt.num1, rotulo: 'presença média', serie: 1, cor: cores[1], posicao: 'insideStartTop' });
+      { formatter: fmt.num1, rotulo: 'presença média', serie: 1, cor: cores[1], posicao: 'end', distancia: 24 });
+    op.grid = { ...op.grid, top: 52, bottom: 30 };  // espaço para os dois rótulos
     return op;
   }, { tabela: { colunas: ['Tipo', 'Eventos', 'Presença média'], linhas: tipos.map((d, i) => [d[0], d[1], presenca[i]]) } });
 });

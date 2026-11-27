@@ -145,7 +145,7 @@ export function barras({ categorias, series, horizontal = false, empilhado = fal
 /** Linha de média em destaque (padrão do "Gasto por deputado"): rótulo em negrito na cor do texto.
  *  eixo 'x' = linha vertical (barras horizontais), 'y' = linha horizontal (barras verticais e linhas).
  *  Acrescenta à markLine que a série já tiver; `serie` escolhe em qual série desenhar. */
-export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotulo = 'média', serie = 0, cor, posicao } = {}) {
+export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotulo = 'média', serie = 0, cor, posicao, distancia = 6 } = {}) {
   if (media === null || media === undefined || Number.isNaN(media) || !op.series?.[serie]) return op;
   const s = op.series[serie];
   const ponto = eixo === 'x' ? { xAxis: media } : { yAxis: media };
@@ -156,7 +156,7 @@ export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotu
   // número de alguma barra); a margem direita cresce o bastante para o texto caber
   const fora = eixo === 'y' && !posicao;
   const label = { formatter: fora ? texto.replace(' ', '\n') : texto, color: cor || t.text, fontSize: 12, fontWeight: 700,
-                  lineHeight: 15, position: posicao || (eixo === 'x' ? 'start' : 'end'), distance: 6 };
+                  lineHeight: 15, position: posicao || (eixo === 'x' ? 'start' : 'end'), distance: distancia };
   if (fora) {
     const largura = Math.max(...texto.replace(' ', '\n').split('\n').map((l) => l.length)) * 7 + 14;
     if ((op.grid?.right ?? 0) < largura) op.grid = { ...op.grid, right: largura };
