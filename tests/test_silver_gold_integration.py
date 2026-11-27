@@ -2,11 +2,13 @@
 
 import json
 import os
+from pathlib import Path
 
 import pytest
 from sqlalchemy import text
 
 from radar import db
+from radar.ai.prompts import PROMPT_VERSAO
 from radar.bronze import loader
 from radar.catalog.amostras import FIXTURES
 from radar.catalog.loader import load_catalog
@@ -205,7 +207,7 @@ def test_ia_classifica_resume_pontua_e_e_idempotente(props_ia):
         "Serviços",
         "Setor Público",
     ]  # sem repetição
-    assert _ia(props_ia, 9000001, "ia_prompt_versao") == "resumo-v3"
+    assert _ia(props_ia, 9000001, "ia_prompt_versao") == PROMPT_VERSAO
     assert float(_ia(props_ia, 9000002, "relevancia_score")) > float(
         _ia(props_ia, 9000003, "relevancia_score")
     )
@@ -290,7 +292,9 @@ def test_marts_com_indice_unico_e_site_gerado_do_banco(engine, tmp_path):
     run_silver(engine, None)
     build(engine)
     r = refresh_marts(engine)
-    assert len(r["marts"]) == 24
+    # todos os marts declarados no SQL (o número cresce a cada painel novo: não fixar)
+    sql = (Path(__file__).parents[1] / "sql" / "gold" / "100_marts.sql").read_text(encoding="utf-8")
+    assert len(r["marts"]) == sql.count("CREATE MATERIALIZED VIEW")
     with engine.connect() as conn:
         sem_indice = conn.execute(text(
             "SELECT m.matviewname FROM pg_matviews m WHERE m.schemaname = 'gold' AND NOT EXISTS ("
