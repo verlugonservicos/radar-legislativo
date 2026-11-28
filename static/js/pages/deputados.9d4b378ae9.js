@@ -1,7 +1,7 @@
 // Deputados: mapa por UF, ranking de atividade, tabela e perfil em drawer.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { GRADIENTE, barras, linhaMedia, mediaDe, montar } from '../charts.dd3790bfbe.js';
+import { GRADIENTE, barras, linhaMedia, mediaDe, montar } from '../charts.83ed569f4b.js';
 import { abrirDrawer, notaDivergencia, Tabela, textoLotes, vazio } from '../ui.6a7de658b0.js';
 import * as estado from '../state.a9d7c61d1d.js';
 import * as fmt from '../format.20a0ca273f.js';

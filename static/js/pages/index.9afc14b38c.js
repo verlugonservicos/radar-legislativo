@@ -1,7 +1,7 @@
 // Visão Executiva: KPIs da semana, série diária, temas, Top 5 e pautas críticas.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { barras, corTema, montar, linhaMedia, mediaDe } from '../charts.dd3790bfbe.js';
+import { barras, corTema, linhaMedia, mediaDe, montar, PALETA } from '../charts.83ed569f4b.js';
 import { badgeImpacto, chipTema, kpi, vazio } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 
@@ -54,10 +54,11 @@ await seguro(document.querySelector('.kpi-row'), async () => {
   const chaves = [...semanas.keys()].sort();
   const el = document.getElementById('graf-serie');
   el.classList.remove('skeleton');
-  // média semanal de cada série (linha tracejada; semanas parciais entram no cálculo)
+  // média semanal de cada série: linha tracejada na cor da série, com o valor na legenda (o texto na
+  // lateral tirava largura do gráfico); semanas parciais entram no cálculo
   const comMedias = (op, t) => {
-    linhaMedia(op, mediaDe(chaves.map((c) => semanas.get(c).proposicoes)), t, { eixo: 'y', serie: 0, rotulo: 'média proposições', formatter: fmt.num });
-    linhaMedia(op, mediaDe(chaves.map((c) => semanas.get(c).votacoes)), t, { eixo: 'y', serie: 1, rotulo: 'média votações', formatter: fmt.num });
+    linhaMedia(op, mediaDe(chaves.map((c) => semanas.get(c).proposicoes)), t, { eixo: 'y', serie: 0, rotulo: 'média proposições', formatter: fmt.num, legenda: true, cor: t.accent });
+    linhaMedia(op, mediaDe(chaves.map((c) => semanas.get(c).votacoes)), t, { eixo: 'y', serie: 1, rotulo: 'média votações', formatter: fmt.num, legenda: true, cor: PALETA[1] });
     return op;
   };
   montar(el, (t) => comMedias({
@@ -67,7 +68,7 @@ await seguro(document.querySelector('.kpi-row'), async () => {
       trigger: 'axis',
       formatter: (ps) => {
         const s = chaves[ps[0].dataIndex]; const parcial = semanas.get(s).dias < 7 ? ' <i>(semana parcial)</i>' : '';
-        return `<b>${fmt.rotuloSemana(s)}</b>${parcial}<br>${ps.map((p) => `${p.marker} ${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`;
+        return `<b>${fmt.rotuloSemana(s)}</b>${parcial}<br>${ps.filter((p) => p.value != null).map((p) => `${p.marker} ${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`;
       },
     },
     xAxis: { type: 'category', data: chaves, axisLabel: { formatter: (v) => `S-${fmt.semanaAno(v)}`, interval: 0, hideOverlap: true } },  // nº da semana (ISO)

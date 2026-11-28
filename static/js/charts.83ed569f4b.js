@@ -145,8 +145,32 @@ export function barras({ categorias, series, horizontal = false, empilhado = fal
 /** Linha de média em destaque (padrão do "Gasto por deputado"): rótulo em negrito na cor do texto.
  *  eixo 'x' = linha vertical (barras horizontais), 'y' = linha horizontal (barras verticais e linhas).
  *  Acrescenta à markLine que a série já tiver; `serie` escolhe em qual série desenhar. */
-export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotulo = 'média', serie = 0, cor, posicao, distancia = 6 } = {}) {
+// ícone tracejado para a média na legenda (três traços curtos)
+const ICONE_TRACEJADO = 'path://M0,4h5v2h-5zM7,4h5v2h-5zM14,4h5v2h-5z';
+
+/** Média como item da legenda (gráficos semanais com linha horizontal): a linha tracejada vira uma
+ *  série própria, sem pontos, com o valor no nome ("média semanal 167,7"); o texto sai da lateral do
+ *  gráfico e clicar na legenda mostra ou esconde a média, como as demais séries. */
+function mediaNaLegenda(op, media, t, texto, cor) {
+  const eixoX = Array.isArray(op.xAxis) ? op.xAxis[0] : op.xAxis;
+  const n = (eixoX?.data || []).length;
+  const c = cor || t.text;
+  op.series.push({
+    name: texto, type: 'line', data: Array(n).fill(null), symbol: 'none', silent: true, tooltip: { show: false },
+    itemStyle: { color: c }, lineStyle: { color: c, type: 'dashed', width: 1.5 },
+    markLine: { silent: true, symbol: 'none', label: { show: false },
+                lineStyle: { color: c, type: 'dashed', width: 1.5, opacity: 0.8 }, data: [{ yAxis: media }] },
+  });
+  const legenda = Array.isArray(op.legend) ? op.legend[0] : op.legend || { top: 0, left: 0 };
+  op.legend = { ...legenda, data: op.series.map((x) => (x.markLine && x.data.every((v) => v === null)
+    ? { name: x.name, icon: ICONE_TRACEJADO, itemStyle: { color: x.itemStyle.color }, textStyle: { fontWeight: 700, color: t.text } }
+    : x.name)) };  // a média em negrito, como o rótulo "média" dos demais gráficos
+  return op;
+}
+
+export function linhaMedia(op, media, t, { eixo = 'x', formatter = fmt.num, rotulo = 'média', serie = 0, cor, posicao, distancia = 6, legenda = false } = {}) {
   if (media === null || media === undefined || Number.isNaN(media) || !op.series?.[serie]) return op;
+  if (legenda && eixo === 'y') return mediaNaLegenda(op, media, t, `${rotulo} ${formatter(Math.round(media * 10) / 10)}`, cor);
   const s = op.series[serie];
   const ponto = eixo === 'x' ? { xAxis: media } : { yAxis: media };
   const estilo = { color: cor || t.text, type: 'dashed', width: 1.5, opacity: 0.8 };

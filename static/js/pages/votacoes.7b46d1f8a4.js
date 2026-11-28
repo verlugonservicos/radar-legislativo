@@ -2,7 +2,7 @@
 /* global echarts */
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados, meta } from '../data.4fb3031e8e.js';
-import { barras, GRADIENTE, linhaMedia, mediaDe, montar } from '../charts.dd3790bfbe.js';
+import { barras, GRADIENTE, linhaMedia, mediaDe, montar } from '../charts.83ed569f4b.js';
 import { Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 
@@ -49,14 +49,14 @@ await seguro(document.getElementById('graf-dia'), async () => {
       ],
     })(t);
     // média de votações por semana no período (semanas sem votação contam como zero)
-    linhaMedia(op, mediaDe(chaves.map((c) => total(semanas.get(c)))), t, { eixo: 'y', rotulo: 'média semanal', formatter: fmt.num1 });
+    linhaMedia(op, mediaDe(chaves.map((c) => total(semanas.get(c)))), t, { eixo: 'y', rotulo: 'média semanal', formatter: fmt.num1, legenda: true });
     op.tooltip.formatter = (ps) => {
       const s = semanas.get(chaves[ps[0].dataIndex]);
       const seg = chaves[ps[0].dataIndex];
       const dom = new Date(Date.parse(`${seg}T00:00:00Z`) + 6 * DIA).toISOString().slice(0, 10);
       const cab = `<b>Semana ${fmt.semanaAno(seg)}</b> · ${fmt.dataCurta(seg)} a ${fmt.dataCurta(dom)}<br>`;
       if (!total(s)) return `${cab}Sem votações`;
-      return `${cab}${ps.map((p) => `${p.marker}${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`
+      return `${cab}${ps.filter((p) => p.value != null).map((p) => `${p.marker}${p.seriesName}: <b>${fmt.num(p.value)}</b>`).join('<br>')}`
         + `<br>Total: <b>${fmt.num(total(s))}</b> em ${s.dias} ${s.dias === 1 ? 'dia' : 'dias'} com votação`;
     };
     return op;

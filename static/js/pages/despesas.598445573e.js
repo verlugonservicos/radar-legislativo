@@ -1,7 +1,7 @@
 // Despesas da Cota: série mensal, tipos, fornecedores, partido, UF, outliers e quarentena.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { barras, montar, linhaMedia, mediaDe } from '../charts.dd3790bfbe.js';
+import { barras, montar, linhaMedia, mediaDe } from '../charts.83ed569f4b.js';
 import { notaDivergencia, Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 

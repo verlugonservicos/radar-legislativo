@@ -1,7 +1,7 @@
 // Operação e Qualidade: execuções, banco, cobertura, funil, rejeições e custos de IA.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { barras, montar, rosca, linhaMedia, mediaDe } from '../charts.dd3790bfbe.js';
+import { barras, montar, rosca, linhaMedia, mediaDe } from '../charts.83ed569f4b.js';
 import { badgeStatus, Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 
