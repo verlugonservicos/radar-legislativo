@@ -1,6 +1,6 @@
 // Agenda e Órgãos: calendário de eventos, órgãos, tipos/presença, pauta crítica e tabela.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
-import { dados } from '../data.2c348c9ca7.js';
+import { dados } from '../data.4fb3031e8e.js';
 import { barras, linhaMedia, mediaDe, montar, PALETA } from '../charts.dd3790bfbe.js';
 import { chipTema, Tabela, vazio } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';

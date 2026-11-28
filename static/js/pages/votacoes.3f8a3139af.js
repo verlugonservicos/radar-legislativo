@@ -1,7 +1,7 @@
 // Votações e Partidos: votações por semana, participação, fidelidade × governismo e concordância.
 /* global echarts */
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
-import { dados, meta } from '../data.2c348c9ca7.js';
+import { dados, meta } from '../data.4fb3031e8e.js';
 import { barras, GRADIENTE, linhaMedia, mediaDe, montar } from '../charts.dd3790bfbe.js';
 import { Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
@@ -19,7 +19,9 @@ await seguro(document.getElementById('graf-dia'), async () => {
   const segunda = (s) => { const ms = Date.parse(`${s}T00:00:00Z`); return iso(ms - ((new Date(ms).getUTCDay() + 6) % 7) * DIA); };
   const fim = Date.parse(`${m.periodo.fim}T00:00:00Z`);
   const semanas = new Map();
-  for (let ms = Date.parse(`${segunda(iso(fim - 89 * DIA))}T00:00:00Z`); ms <= fim; ms += 7 * DIA) {
+  // semanas desde o início da janela do painel (dia 1º do mês; ver gold.vw_data_referencia)
+  const inicio = m.periodo.inicio ? Date.parse(`${m.periodo.inicio}T00:00:00Z`) : fim - 89 * DIA;
+  for (let ms = Date.parse(`${segunda(iso(inicio))}T00:00:00Z`); ms <= fim; ms += 7 * DIA) {
     semanas.set(iso(ms), { aprovadas: 0, rejeitadas: 0, sem: 0, nominais: 0, dias: 0 });
   }
   for (const d of v) {

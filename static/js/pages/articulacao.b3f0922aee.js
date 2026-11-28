@@ -1,6 +1,6 @@
 // Articulação Política: frentes, partidos nos blocos (sankey), Mesa Diretora e lideranças.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
-import { dados } from '../data.2c348c9ca7.js';
+import { dados } from '../data.4fb3031e8e.js';
 import { barras, montar, PALETA, linhaMedia, mediaDe } from '../charts.dd3790bfbe.js';
 import { Tabela, vazio } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
