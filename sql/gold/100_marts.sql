@@ -22,19 +22,29 @@ DROP MATERIALIZED VIEW IF EXISTS
     CASCADE;
 
 -- ------------------------------------------------------------------ data de referência
+-- data_inicio = janela dos painéis (pedido do autor, 28/11/2026): 6 meses cheios antes do mês da
+-- data de referência + o mês corrente, começando sempre no dia 1º; se os dados começam depois, no dia 1º
+-- do primeiro mês com eventos carregados (proposições e votações trazem datas antigas; a agenda só
+-- existe a partir da primeira janela carregada).
 CREATE OR REPLACE VIEW gold.vw_data_referencia AS
-SELECT least(current_date, greatest(
-           (SELECT max(data) FROM gold.fato_votacao WHERE data <= current_date),
-           (SELECT max(data) FROM gold.fato_evento WHERE data <= current_date),
-           (SELECT max(data_apresentacao) FROM gold.fato_proposicao WHERE data_apresentacao <= current_date)
-       )) AS data_ref;
+WITH ref AS (
+    SELECT least(current_date, greatest(
+               (SELECT max(data) FROM gold.fato_votacao WHERE data <= current_date),
+               (SELECT max(data) FROM gold.fato_evento WHERE data <= current_date),
+               (SELECT max(data_apresentacao) FROM gold.fato_proposicao WHERE data_apresentacao <= current_date)
+           )) AS data_ref
+)
+SELECT ref.data_ref,
+       greatest((date_trunc('month', ref.data_ref) - interval '6 months')::date,
+                date_trunc('month', (SELECT min(data) FROM gold.fato_evento))::date) AS data_inicio
+FROM ref;
 
 -- ------------------------------------------------------------------ Visão Executiva
--- Um dia por linha nos últimos 90 dias (dias sem atividade aparecem com zero).
+-- Um dia por linha na janela dos painéis (data_inicio..data_ref; dias sem atividade aparecem com zero).
 CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_kpis_diarios AS
 WITH dias AS (
     SELECT t.data FROM gold.dim_tempo t, gold.vw_data_referencia r
-    WHERE t.data BETWEEN r.data_ref - 89 AND r.data_ref
+    WHERE t.data BETWEEN r.data_inicio AND r.data_ref
 ),
 prop AS (
     SELECT p.data_apresentacao AS data, count(*) AS proposicoes,
@@ -63,13 +73,13 @@ LEFT JOIN prop USING (data) LEFT JOIN vot USING (data) LEFT JOIN eve USING (data
 LEFT JOIN dis USING (data) LEFT JOIN des USING (data) LEFT JOIN ale USING (data);
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_kpis_diarios ON gold.mart_kpis_diarios (data);
 
--- Proposições relevantes por tema e semana (últimas 26 semanas)
+-- Proposições relevantes por tema e semana (janela dos painéis)
 CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_proposicoes_tema_semana AS
 SELECT t.inicio_semana, coalesce(p.tema_ia, 'Outros') AS tema, p.sigla_tipo, count(*)::int AS qtd
 FROM gold.fato_proposicao p
 JOIN gold.dim_tempo t ON t.data = p.data_apresentacao
 CROSS JOIN gold.vw_data_referencia r
-WHERE p.tema_ia IS NOT NULL AND p.data_apresentacao BETWEEN r.data_ref - 181 AND r.data_ref
+WHERE p.tema_ia IS NOT NULL AND p.data_apresentacao BETWEEN r.data_inicio AND r.data_ref
 GROUP BY 1, 2, 3;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_prop_tema_semana ON gold.mart_proposicoes_tema_semana (inicio_semana, tema, sigla_tipo);
 
@@ -86,7 +96,7 @@ LEFT JOIN gold.dim_orgao o ON o.id_orgao = p.id_orgao_situacao
 LEFT JOIN silver.proposicoes sp ON sp.id_proposicao = p.id_proposicao
 CROSS JOIN gold.vw_data_referencia r
 WHERE p.tema_ia IS NOT NULL
-  AND (p.data_apresentacao BETWEEN r.data_ref - 89 AND r.data_ref OR p.em_pauta_proximos_7d);
+  AND (p.data_apresentacao BETWEEN r.data_inicio AND r.data_ref OR p.em_pauta_proximos_7d);
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_prop_recentes ON gold.mart_proposicoes_recentes (id_proposicao);
 
 -- Tempo de tramitação por tema (proposições relevantes classificadas)
@@ -108,7 +118,7 @@ FROM gold.fato_proposicao p, unnest(p.setores_afetados) AS s(setor)
 GROUP BY 1, 2;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_setores ON gold.mart_setores (setor, tema);
 
--- Projetos apresentados (últimas 26 semanas) por partido × tema × deputado: o painel soma por partido
+-- Projetos apresentados (janela dos painéis) por partido × tema × deputado: o painel soma por partido
 -- respeitando o filtro de tema e acha o maior autor. Mesmo critério de mart_partidos.projetos: só o
 -- autor principal (1º signatário) e só PL, PLP, PEC e PDL; partido atual do deputado.
 CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_projetos_partido AS
@@ -119,12 +129,12 @@ JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
 JOIN gold.fato_proposicao p USING (id_proposicao)
 CROSS JOIN gold.vw_data_referencia r
 WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
-  AND p.data_apresentacao > r.data_ref - 182 AND d.sigla_partido IS NOT NULL
+  AND p.data_apresentacao BETWEEN r.data_inicio AND r.data_ref AND d.sigla_partido IS NOT NULL
 GROUP BY 1, 2, 3, 4;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_projetos_partido ON gold.mart_projetos_partido (sigla_partido, tema, id_deputado);
 
 -- Lotes atípicos de autoria: dia em que um mesmo deputado protocolou 50+ projetos como autor principal
--- (últimas 26 semanas). Alimenta as notas de divergência dos painéis (ex.: 17/07/2026, 890 PLs de dois
+-- (janela dos painéis). Alimenta as notas de divergência dos painéis (ex.: 17/07/2026, 890 PLs de dois
 -- deputados), para quem lê não confundir o pico com erro de dados.
 CREATE MATERIALIZED VIEW IF NOT EXISTS gold.mart_lotes_autoria AS
 SELECT p.data_apresentacao AS data, d.id_deputado, d.nome, d.sigla_partido, d.sigla_uf,
@@ -134,7 +144,7 @@ JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
 JOIN gold.fato_proposicao p USING (id_proposicao)
 CROSS JOIN gold.vw_data_referencia r
 WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
-  AND p.data_apresentacao > r.data_ref - 182
+  AND p.data_apresentacao BETWEEN r.data_inicio AND r.data_ref
 GROUP BY 1, 2, 3, 4, 5
 HAVING count(DISTINCT a.id_proposicao) >= 50;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_lotes_autoria ON gold.mart_lotes_autoria (data, id_deputado);
@@ -157,7 +167,7 @@ SELECT v.data, count(*)::int AS total,
        count(*) FILTER (WHERE v.aprovacao = 0)::int AS rejeitadas,
        count(*) FILTER (WHERE v.nominal)::int AS nominais
 FROM gold.fato_votacao v CROSS JOIN gold.vw_data_referencia r
-WHERE v.data BETWEEN r.data_ref - 89 AND r.data_ref
+WHERE v.data BETWEEN r.data_inicio AND r.data_ref
 GROUP BY 1;
 CREATE UNIQUE INDEX IF NOT EXISTS ux_mart_votacoes_dia ON gold.mart_votacoes_dia (data);
 
@@ -185,7 +195,7 @@ autorias AS (
     FROM gold.ponte_proposicao_autor a JOIN gold.dim_deputado d ON d.id_deputado = a.id_deputado AND d.atual
     GROUP BY 1
 ),
--- projetos apresentados nas últimas 26 semanas: só o autor principal (1º signatário, sem dupla contagem
+-- projetos apresentados na janela dos painéis: só o autor principal (1º signatário, sem dupla contagem
 -- de coautorias) e só PL, PLP, PEC e PDL (requerimentos e indicações ficam de fora)
 projetos_dep AS (
     SELECT d.sigla_partido, d.nome, count(DISTINCT a.id_proposicao) AS qtd
@@ -194,7 +204,7 @@ projetos_dep AS (
     JOIN gold.fato_proposicao p USING (id_proposicao)
     CROSS JOIN gold.vw_data_referencia r
     WHERE a.ordem_assinatura = 1 AND p.sigla_tipo IN ('PL', 'PLP', 'PEC', 'PDL')
-      AND p.data_apresentacao > r.data_ref - 182
+      AND p.data_apresentacao BETWEEN r.data_inicio AND r.data_ref
     GROUP BY 1, 2
 ),
 projetos AS (

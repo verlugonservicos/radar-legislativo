@@ -142,9 +142,11 @@ secoes:
       - id: data-referencia
         termo: Data de referência e período
         definicao: >-
-          A data do dado mais recente carregado (proposição, votação ou evento), limitada a hoje. Todas as
-          janelas — "últimos 7 dias", "últimos 90 dias" — contam a partir dela. O período no rodapé mostra
-          o intervalo coberto pelos indicadores diários.
+          A data do dado mais recente carregado (proposição, votação ou evento), limitada a hoje. As janelas
+          curtas ("últimos 7 dias") contam a partir dela. A janela do painel, usada nas séries, rankings e
+          tabelas, vai do dia 1º do mês de seis meses atrás até a data de referência (6 meses cheios + o mês
+          atual); se os dados começam depois, vai do dia 1º do primeiro mês com dados. O período no rodapé
+          mostra essa janela.
       - id: kpi
         termo: KPI e variação
         definicao: >-

@@ -19,7 +19,9 @@ await seguro(document.getElementById('graf-dia'), async () => {
   const segunda = (s) => { const ms = Date.parse(`${s}T00:00:00Z`); return iso(ms - ((new Date(ms).getUTCDay() + 6) % 7) * DIA); };
   const fim = Date.parse(`${m.periodo.fim}T00:00:00Z`);
   const semanas = new Map();
-  for (let ms = Date.parse(`${segunda(iso(fim - 89 * DIA))}T00:00:00Z`); ms <= fim; ms += 7 * DIA) {
+  // semanas desde o início da janela do painel (dia 1º do mês; ver gold.vw_data_referencia)
+  const inicio = m.periodo.inicio ? Date.parse(`${m.periodo.inicio}T00:00:00Z`) : fim - 89 * DIA;
+  for (let ms = Date.parse(`${segunda(iso(inicio))}T00:00:00Z`); ms <= fim; ms += 7 * DIA) {
     semanas.set(iso(ms), { aprovadas: 0, rejeitadas: 0, sem: 0, nominais: 0, dias: 0 });
   }
   for (const d of v) {

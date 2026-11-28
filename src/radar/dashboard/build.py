@@ -80,14 +80,32 @@ def _linhas(conn, sql: str) -> list[dict]:
 CORTADOS: list[str] = []  # datasets cortados no último build (aparecem no resumo)
 
 
+def _corpo(meta: dict, dados: Any) -> str:
+    return json.dumps({"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":"))
+
+
+def _fatiar(dados: Any, partes: int) -> list:
+    """Divide lista (por linhas) ou dicionário (por chaves) em `partes` pedaços em ordem."""
+    itens = list(dados.items()) if isinstance(dados, dict) else list(dados)
+    tam = -(-len(itens) // partes)
+    pedacos = [itens[i : i + tam] for i in range(0, len(itens), tam)]
+    return [dict(p) for p in pedacos] if isinstance(dados, dict) else pedacos
+
+
 def gravar_json(
     caminho: Path, nome: str, dados: Any, limite: int, extra: dict | None = None
 ) -> int:
-    """Grava `{"meta": {...}, "dados": [...]}`; acima do limite corta linhas e avisa no próprio JSON."""
+    """Grava `{"meta": {...}, "dados": ...}` respeitando o limite por arquivo (RNF04: JSON ≤ 1 MB).
+
+    Acima do limite: 1) lista de objetos vira formato colunar (nomes dos campos uma vez só em
+    meta.colunas); 2) se ainda passar, o dataset é dividido em partes (`<nome>.json`, `<nome>_p2.json`…),
+    cada uma abaixo do limite; o principal lista as partes em meta.partes e o data.js junta tudo.
+    Nada é cortado. Devolve o total de bytes gravados.
+    """
     meta = {"dataset": nome, "gerado_em": datetime.now(UTC).isoformat(), **(extra or {})}
-    corpo = json.dumps({"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":"))
-    # acima do limite (RNF04: JSON ≤ 1 MB), antes de cortar linhas tenta o formato colunar: os nomes
-    # dos campos saem de cada linha e vão uma vez só em meta.colunas (data.js remonta os objetos)
+    for antigo in caminho.parent.glob(f"{caminho.stem}_p*.json"):  # partes de um build anterior
+        antigo.unlink()
+    corpo = _corpo(meta, dados)
     if (
         len(corpo.encode()) > limite
         and isinstance(dados, list)
@@ -97,28 +115,24 @@ def gravar_json(
         colunas = list(dados[0].keys())
         meta["colunas"] = colunas
         dados = [[r.get(c) for c in colunas] for r in dados]
-        corpo = json.dumps(
-            {"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":")
-        )
-    if len(corpo.encode()) > limite and isinstance(dados, list) and dados:
-        total = len(dados)
-        while len(corpo.encode()) > limite and dados:
-            dados = dados[: int(len(dados) * 0.9)]
-            meta.update(cortado=True, linhas_total=total, linhas=len(dados))
-            corpo = json.dumps(
-                {"meta": meta, "dados": dados}, ensure_ascii=False, separators=(",", ":")
-            )
-        log.warning(
-            "%s: JSON acima de %d bytes; cortado de %d para %d linhas — os totais do painel ficam "
-            "incompletos: exporte um resumo em vez do detalhe",
-            nome,
-            limite,
-            total,
-            len(dados),
-        )
-        CORTADOS.append(nome)
-    caminho.write_text(corpo, encoding="utf-8")
-    return len(corpo.encode())
+        corpo = _corpo(meta, dados)
+    if len(corpo.encode()) <= limite or not isinstance(dados, (list, dict)) or len(dados) < 2:
+        caminho.write_text(corpo, encoding="utf-8")
+        return len(corpo.encode())
+    partes = max(2, -(-len(corpo.encode()) // int(limite * 0.9)))
+    while True:
+        pedacos = _fatiar(dados, partes)
+        nomes = [caminho.name] + [f"{caminho.stem}_p{i}.json" for i in range(2, len(pedacos) + 1)]
+        corpos = [
+            _corpo({**meta, "partes": nomes, "parte": i + 1}, p) for i, p in enumerate(pedacos)
+        ]
+        if all(len(c.encode()) <= limite for c in corpos) or partes >= len(dados):
+            break
+        partes += 1
+    for n, c in zip(nomes, corpos, strict=True):
+        (caminho.parent / n).write_text(c, encoding="utf-8")
+    log.info("%s: %d partes de até %d bytes (RNF04)", nome, len(nomes), limite)
+    return sum(len(c.encode()) for c in corpos)
 
 
 def exportar_dados(engine: Engine, data_dir: Path, limite: int) -> dict[str, int]:

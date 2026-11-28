@@ -3,7 +3,7 @@
 {% block conteudo %}
 <div class="strip" role="note">
   <span>Cobertura da API: <strong data-meta="cobertura">78/78</strong> endpoints</span>
-  <span>Período: <strong data-meta="periodo">—</strong></span>
+  <span title="6 meses cheios + o mês atual, a partir do dia 1º (ou do 1º mês com dados)">Janela do painel: <strong data-meta="periodo">—</strong></span>
   <span>Acurácia da IA: <strong id="acuracia-ia">—</strong></span>
   <span>Custo de IA acumulado: <strong id="custo-ia">—</strong></span>
 </div>
@@ -15,7 +15,7 @@
   {{ kpi("kpi-despesas", "Despesas da cota", "Valor líquido · último mês fechado (notas chegam com até 90 dias de atraso)") }}
 </div>
 <div class="grid" style="margin-top:var(--space-6)">
-  {% call card("serie", "Proposições × votações por semana", "Últimos 90 dias · S-NN = número da semana no ano (segunda a domingo)", "span-7") %}{{ grafico("graf-serie", "Linha semanal de proposições apresentadas e votações", "chart--lg") }}{% endcall %}
+  {% call card("serie", "Proposições × votações por semana", "Janela do painel · S-NN = número da semana no ano (segunda a domingo)", "span-7") %}{{ grafico("graf-serie", "Linha semanal de proposições apresentadas e votações", "chart--lg") }}{% endcall %}
   {% call card("temas", "Proposições relevantes por tema", "Classificação por IA · últimas 4 semanas", "span-5", termo="tema-ia") %}{{ grafico("graf-temas", "Barras de proposições por tema", "chart--lg") }}{% endcall %}
   {% call card("top", "Proposições da semana (Top 5)", "Maior score de relevância nos últimos 7 dias", "span-7", termo="relevancia") %}<div class="stack" id="lista-top"><div class="skeleton" style="height:240px"></div></div>{% endcall %}
   {% call card("pauta", "Próximas pautas críticas", "Temas críticos em pauta nos próximos 7 dias", "span-5", termo="pauta") %}<div class="stack" id="lista-pauta"><div class="skeleton" style="height:240px"></div></div>{% endcall %}
