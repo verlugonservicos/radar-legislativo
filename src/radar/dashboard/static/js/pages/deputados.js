@@ -148,6 +148,7 @@ function desenharDestaques(itens, formatter, rotulo, metrica) {
   }));
 }
 
+let ultimoCliqueMapa = 0;
 function desenharMapa() {
   const [rotulo, formatter] = METRICAS[selMetrica.value];
   const metrica = selMetrica.value;
@@ -182,7 +183,14 @@ function desenharMapa() {
     }), { tabela: { colunas: ['UF', 'Deputados', rotulo],
                     linhas: Object.entries(ufs).map(([uf, a]) => [uf, a.deputados, formatter(a[metrica])]) },
           depois: (inst, t) => etiquetaUfSelecionada(inst, t, ufs) });
-    mapa.instancia.on('click', (p) => { selUf.value = selUf.value === p.name ? '' : p.name; aplicar(); });
+    // um toque no tablet (Chrome em modo computador) pode chegar como 2 cliques: o 1º filtra e redesenha
+    // o mapa; o 2º caía no mapa novo e desmarcava a UF. Cliques a menos de 0,7 s do anterior são ignorados.
+    mapa.instancia.on('click', (p) => {
+      const agora = Date.now();
+      if (agora - ultimoCliqueMapa < 700) return;
+      ultimoCliqueMapa = agora;
+      selUf.value = selUf.value === p.name ? '' : p.name; aplicar();
+    });
     desenharDestaques(Object.entries(ufs).map(([uf, a]) => ({ chave: uf, nome: `${nomeUf[uf]} (${uf})`, valor: a[metrica], deputados: a.deputados })),
                       formatter, rotulo, metrica);
     return;
