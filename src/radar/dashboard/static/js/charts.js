@@ -163,7 +163,8 @@ function mediaNaLegenda(op, media, t, texto, cor) {
   });
   const legenda = Array.isArray(op.legend) ? op.legend[0] : op.legend || { top: 0, left: 0 };
   op.legend = { ...legenda, data: op.series.map((x) => (x.markLine && x.data.every((v) => v === null)
-    ? { name: x.name, icon: ICONE_TRACEJADO, itemStyle: { color: x.itemStyle.color } } : x.name)) };
+    ? { name: x.name, icon: ICONE_TRACEJADO, itemStyle: { color: x.itemStyle.color }, textStyle: { fontWeight: 700, color: t.text } }
+    : x.name)) };  // a média em negrito, como o rótulo "média" dos demais gráficos
   return op;
 }
 
