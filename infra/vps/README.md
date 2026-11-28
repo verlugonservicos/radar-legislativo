@@ -48,6 +48,9 @@ RADAR_VERSAO=<versão> docker stack deploy -c infra/vps/stack.radar.yml radar
 Os workflows ficam em `n8n/workflows/` e são importados no n8n existente (D3), com as credenciais
 criadas no próprio n8n: `Radar Runner Token` (Header Auth `X-Runner-Token`), `Radar Postgres`,
 `Radar Telegram Bot` e `Gmail account` (OAuth, usada pelo WF03 no lugar do SMTP).
+Nos nós do Telegram, o *Chat ID* é preenchido só no n8n (nos arquivos fica `<TELEGRAM_CHAT_ID>`): é o
+`chat.id` da resposta de `getUpdates`, não o `update_id`. Agenda: WF01 06:00 (diário), WF02 09:00
+(diário), WF03 segunda 08:00; WF99 é o *Error Workflow* dos demais.
 
 ## Regras
 - Nenhum arquivo de `/opt/supabase` é alterado.

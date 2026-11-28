@@ -67,8 +67,7 @@
           "id": "",
           "name": "Radar Telegram Bot"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -92,6 +91,25 @@
           "name": "Radar Postgres"
         }
       }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "5d860ea8-512e-56a6-abbf-b8bfef8becdf",
+      "name": "Todo dia 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -200
+      ]
     }
   ],
   "connections": {
@@ -133,6 +151,17 @@
         [
           {
             "node": "Marca enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Todo dia 09:00": {
+      "main": [
+        [
+          {
+            "node": "Alertas pendentes",
             "type": "main",
             "index": 0
           }
