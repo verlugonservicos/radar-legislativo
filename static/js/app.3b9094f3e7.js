@@ -1,6 +1,6 @@
 // Inicialização comum a todas as páginas: shell, tema, metadados e cores dos temas.
 import { meta } from './data.4fb3031e8e.js';
-import { definirCoresTemas } from './charts.83ed569f4b.js';
+import { definirCoresTemas } from './charts.5bb8fe5a75.js';
 import { badgeAtualizacao, iniciarShell, toast } from './ui.6a7de658b0.js';
 import * as fmt from './format.20a0ca273f.js';
 

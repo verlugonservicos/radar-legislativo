@@ -1,6 +1,6 @@
 // Componentes de interface: tema, navegação, toast, chips, KPI, tabela, drawer, estados vazios.
 import * as fmt from './format.20a0ca273f.js';
-import { corTema, montar, redesenharTodos, sparkline } from './charts.83ed569f4b.js';
+import { corTema, montar, redesenharTodos, sparkline } from './charts.5bb8fe5a75.js';
 
 // ------------------------------------------------------------------ tema claro/escuro
 const CHAVE_TEMA = 'radar-tema';

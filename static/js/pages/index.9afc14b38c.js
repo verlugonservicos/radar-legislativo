@@ -1,7 +1,7 @@
 // Visão Executiva: KPIs da semana, série diária, temas, Top 5 e pautas críticas.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { barras, corTema, linhaMedia, mediaDe, montar, PALETA } from '../charts.83ed569f4b.js';
+import { barras, corTema, linhaMedia, mediaDe, montar, PALETA } from '../charts.5bb8fe5a75.js';
 import { badgeImpacto, chipTema, kpi, vazio } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 

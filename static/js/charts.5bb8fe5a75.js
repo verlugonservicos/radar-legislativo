@@ -161,10 +161,14 @@ function mediaNaLegenda(op, media, t, texto, cor) {
     markLine: { silent: true, symbol: 'none', label: { show: false },
                 lineStyle: { color: c, type: 'dashed', width: 1.5, opacity: 0.8 }, data: [{ yAxis: media }] },
   });
-  const legenda = Array.isArray(op.legend) ? op.legend[0] : op.legend || { top: 0, left: 0 };
-  op.legend = { ...legenda, data: op.series.map((x) => (x.markLine && x.data.every((v) => v === null)
+  // gráfico de uma série só (sem legenda): a legenda nasce só com a média, e o topo abre espaço para ela
+  const soMedia = !op.legend || (Array.isArray(op.legend) && !op.legend.length);
+  const legenda = Array.isArray(op.legend) ? op.legend[0] || { top: 0, left: 0 } : op.legend || { top: 0, left: 0 };
+  const ehMedia = (x) => x.markLine && Array.isArray(x.data) && x.data.every((v) => v === null);
+  op.legend = { ...legenda, data: op.series.filter((x) => !soMedia || ehMedia(x)).map((x) => (ehMedia(x)
     ? { name: x.name, icon: ICONE_TRACEJADO, itemStyle: { color: x.itemStyle.color }, textStyle: { fontWeight: 700, color: t.text } }
     : x.name)) };  // a média em negrito, como o rótulo "média" dos demais gráficos
+  if ((op.grid?.top ?? 0) < 36) op.grid = { ...op.grid, top: 36 };
   return op;
 }
 

@@ -1,7 +1,7 @@
 // Operação e Qualidade: execuções, banco, cobertura, funil, rejeições e custos de IA.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { barras, montar, rosca, linhaMedia, mediaDe } from '../charts.83ed569f4b.js';
+import { barras, montar, rosca, linhaMedia, mediaDe } from '../charts.5bb8fe5a75.js';
 import { badgeStatus, Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 
@@ -22,7 +22,7 @@ await seguro(document.getElementById('graf-execucoes'), async () => {
       series: [{ name: 'Duração', data: ops.map((e) => ({ value: e.duracao_s, itemStyle: { color: { success: t.positive, partial: t.warning, failed: t.negative }[e.status] || t.muted } })) }],
     })(t);
     op.yAxis = { ...op.yAxis, interval: passo * 60, max: Math.ceil(maiorMin / passo) * passo * 60 };
-    linhaMedia(op, mediaDe(ops.map((e) => e.duracao_s)), t, { eixo: 'y', formatter: min });  // duração média das execuções
+    linhaMedia(op, mediaDe(ops.map((e) => e.duracao_s)), t, { eixo: 'y', formatter: min, legenda: true });  // duração média das execuções
     return op;
   }, { tabela: { colunas: ['Execução', 'Modo', 'Status', 'Duração (min)'], linhas: ops.map((e) => [e.id_execucao, e.modo, e.status, Math.round(e.duracao_s / 60)]) } });
 });
@@ -74,7 +74,7 @@ await seguro(document.getElementById('graf-funil'), async () => {
                { name: 'Silver', data: f.map((d) => d.silver), itemStyle: { color: COR_CAMADA.silver } },
                { name: 'Gold', data: f.map((d) => d.gold), itemStyle: { color: COR_CAMADA.gold } }],
     })(t);
-    linhaMedia(op, mediaDe(f.map((d) => d.gold)), t, { eixo: 'y', serie: 2, rotulo: 'média Gold' });
+    linhaMedia(op, mediaDe(f.map((d) => d.gold)), t, { eixo: 'y', serie: 2, rotulo: 'média Gold', legenda: true });
     return op;
   }, { tabela: { colunas: ['Entidade', 'Bronze', 'Silver', 'Gold', 'Rejeitados'], linhas: f.map((d) => [d.entidade, d.bronze, d.silver, d.gold, d.rejeitados]) } });
 });

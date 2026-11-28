@@ -1,7 +1,7 @@
 // Despesas da Cota: série mensal, tipos, fornecedores, partido, UF, outliers e quarentena.
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados } from '../data.4fb3031e8e.js';
-import { barras, montar, linhaMedia, mediaDe } from '../charts.83ed569f4b.js';
+import { barras, montar, linhaMedia, mediaDe } from '../charts.5bb8fe5a75.js';
 import { notaDivergencia, Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 
@@ -13,17 +13,14 @@ await seguro(document.getElementById('graf-mensal'), async () => {
   const brutos = await dados('despesas_mensal');
   const meses = brutos.map((d) => [`${d.ano}-${String(d.mes).padStart(2, '0')}`, d.valor_liquido]);
   notaDivergencia(document.getElementById('graf-mensal'), notaMensal(brutos));
-  montar(limpa('graf-mensal'), barras({
+  // média dos meses carregados na legenda (tracejada, em negrito): referência para ver quais meses
+  // ficaram acima ou abaixo, sem rótulo sobre as barras
+  const valores = meses.map(([, v]) => Math.round(v));
+  montar(limpa('graf-mensal'), (t) => linhaMedia(barras({
     categorias: meses.map(([k]) => `${MESES[Number(k.slice(5)) - 1]}/${k.slice(2, 4)}`), formatter: fmt.brl, rotulo: true,
     gradiente: true,
-    series: [{
-      name: 'Valor líquido', data: meses.map(([, v]) => Math.round(v)),
-      // média dos meses carregados: referência para ver quais meses ficaram acima ou abaixo
-      markLine: { silent: true, symbol: 'none', data: [{ type: 'average', name: 'Média' }],
-        lineStyle: { type: 'dashed', width: 1.5, color: '#64748B' },
-        label: { position: 'insideEndTop', formatter: (p) => `Média: ${fmt.brl(p.value)}`, color: '#64748B', fontWeight: 600 } },
-    }],
-  }), { tabela: { colunas: ['Mês', 'Valor líquido'], linhas: meses.map(([k, v]) => [k, fmt.brlCheio(v)]) } });
+    series: [{ name: 'Valor líquido', data: valores }],
+  })(t), mediaDe(valores), t, { eixo: 'y', formatter: fmt.brl, legenda: true }), { tabela: { colunas: ['Mês', 'Valor líquido'], linhas: meses.map(([k, v]) => [k, fmt.brlCheio(v)]) } });
 });
 
 // Nota gerada dos dados: meses em que a divulgação da atividade parlamentar despenca (vedação eleitoral:

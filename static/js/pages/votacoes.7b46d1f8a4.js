@@ -2,7 +2,7 @@
 /* global echarts */
 import { iniciar, seguro } from '../app.3b9094f3e7.js';
 import { dados, meta } from '../data.4fb3031e8e.js';
-import { barras, GRADIENTE, linhaMedia, mediaDe, montar } from '../charts.83ed569f4b.js';
+import { barras, GRADIENTE, linhaMedia, mediaDe, montar } from '../charts.5bb8fe5a75.js';
 import { Tabela } from '../ui.6a7de658b0.js';
 import * as fmt from '../format.20a0ca273f.js';
 
